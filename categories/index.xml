@@ -30,15 +30,6 @@
     </item>
     
     <item>
-      <title>Awrace</title>
-      <link>https://blog.crazyark.me/categories/awrace/</link>
-      <pubDate>Wed, 01 Aug 2018 19:59:45 +0800</pubDate>
-      
-      <guid>https://blog.crazyark.me/categories/awrace/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>Data Structure</title>
       <link>https://blog.crazyark.me/categories/data-structure/</link>
       <pubDate>Mon, 16 Apr 2018 13:02:27 +0800</pubDate>
@@ -53,15 +44,6 @@
       <pubDate>Mon, 16 Apr 2018 19:51:21 +0800</pubDate>
       
       <guid>https://blog.crazyark.me/categories/development/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Dubbo</title>
-      <link>https://blog.crazyark.me/categories/dubbo/</link>
-      <pubDate>Wed, 01 Aug 2018 19:59:45 +0800</pubDate>
-      
-      <guid>https://blog.crazyark.me/categories/dubbo/</guid>
       <description></description>
     </item>
     
@@ -134,15 +116,6 @@
       <pubDate>Fri, 25 Aug 2017 21:32:26 +0800</pubDate>
       
       <guid>https://blog.crazyark.me/categories/project-euler/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Rocketmq</title>
-      <link>https://blog.crazyark.me/categories/rocketmq/</link>
-      <pubDate>Wed, 01 Aug 2018 19:59:45 +0800</pubDate>
-      
-      <guid>https://blog.crazyark.me/categories/rocketmq/</guid>
       <description></description>
     </item>
     
