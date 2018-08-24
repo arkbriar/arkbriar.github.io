@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://blog.crazyark.me/posts/hash_table_collision/</loc>
+    <lastmod>2018-08-24T16:34:42+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://blog.crazyark.me/posts/awrace2018/</loc>
     <lastmod>2018-08-01T20:25:57+08:00</lastmod>
   </url>
@@ -189,6 +194,12 @@
   </url>
   
   <url>
+    <loc>https://blog.crazyark.me/categories/computer-science/</loc>
+    <lastmod>2018-08-24T16:34:42+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://blog.crazyark.me/contact/</loc>
     <lastmod>2017-08-04T00:09:34+08:00</lastmod>
   </url>
@@ -292,6 +303,12 @@
   <url>
     <loc>https://blog.crazyark.me/tags/halls-marriage-theorem/</loc>
     <lastmod>2018-04-16T14:01:17+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://blog.crazyark.me/categories/hash-table/</loc>
+    <lastmod>2018-08-24T16:34:42+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -429,7 +446,7 @@
   
   <url>
     <loc>https://blog.crazyark.me/posts/</loc>
-    <lastmod>2018-08-01T20:25:57+08:00</lastmod>
+    <lastmod>2018-08-24T16:34:42+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -483,7 +500,7 @@
   
   <url>
     <loc>https://blog.crazyark.me/</loc>
-    <lastmod>2018-08-01T20:25:57+08:00</lastmod>
+    <lastmod>2018-08-24T16:34:42+08:00</lastmod>
     <priority>0</priority>
   </url>
   

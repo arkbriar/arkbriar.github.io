@@ -39,6 +39,15 @@
     </item>
     
     <item>
+      <title>Computer Science</title>
+      <link>https://blog.crazyark.me/categories/computer-science/</link>
+      <pubDate>Thu, 16 Aug 2018 14:55:23 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.me/categories/computer-science/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Data Structure</title>
       <link>https://blog.crazyark.me/categories/data-structure/</link>
       <pubDate>Mon, 16 Apr 2018 13:02:27 +0800</pubDate>
@@ -80,6 +89,15 @@
       <pubDate>Tue, 26 Sep 2017 22:26:08 +0800</pubDate>
       
       <guid>https://blog.crazyark.me/categories/graph-theory/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Hash Table</title>
+      <link>https://blog.crazyark.me/categories/hash-table/</link>
+      <pubDate>Thu, 16 Aug 2018 14:55:23 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.me/categories/hash-table/</guid>
       <description></description>
     </item>
     

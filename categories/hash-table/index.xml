@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Hash Table on crazy.ark</title>
+    <link>https://blog.crazyark.me/categories/hash-table/</link>
+    <description>Recent content in Hash Table on crazy.ark</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 16 Aug 2018 14:55:23 +0800</lastBuildDate>
+    
+	<atom:link href="https://blog.crazyark.me/categories/hash-table/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>哈希表 -- 哈希冲突</title>
+      <link>https://blog.crazyark.me/posts/hash_table_collision/</link>
+      <pubDate>Thu, 16 Aug 2018 14:55:23 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.me/posts/hash_table_collision/</guid>
+      <description>Hash table &amp;ndash; Collision 在计算机科学中，哈希表 (hash table) 是一个非常重要的数据结构，它帮助我们快速的进行插入和查询。理论上来说，在表中查询一次的耗时应该是 O(1) 的。这里</description>
+    </item>
+    
+  </channel>
+</rss>
