@@ -6,11 +6,11 @@
   
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-<meta name="generator" content="Hugo 0.46" />
+<meta name="generator" content="Hugo 0.87.0" />
 
 
-<link rel="stylesheet" href="https://blog.crazyark.me/css/vec.css">
-<link rel="stylesheet" href="https://blog.crazyark.me/css/github.css">
+<link rel="stylesheet" href="https://blog.crazyark.xyz/css/vec.css">
+<link rel="stylesheet" href="https://blog.crazyark.xyz/css/github.css">
 
 
 <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
@@ -28,7 +28,7 @@
       
       
       <li class="pull-left ">
-        <a href="https://blog.crazyark.me/">/home/crazy.ark</a>
+        <a href="https://blog.crazyark.xyz/">/home/crazy.ark</a>
       </li>
       
       
@@ -56,141 +56,121 @@
     </ul>
   </nav>
 </header>
+
   <div class="content toc">
     <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li>
-<ul>
-<li><a href="#proxy-模式">Proxy 模式</a></li>
-<li><a href="#java-中的静态代理">Java 中的静态代理</a></li>
-<li><a href="#java-中的动态代理">Java 中的动态代理</a></li>
-</ul></li>
-</ul></li>
-</ul>
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#proxy-模式">Proxy 模式</a></li>
+        <li><a href="#java-中的静态代理">Java 中的静态代理</a></li>
+        <li><a href="#java-中的动态代理">Java 中的动态代理</a></li>
+      </ul>
+    </li>
+  </ul>
 </nav>
     
     <section class="post">
-      <h1 class="post-title"><a href="https://blog.crazyark.me/posts/dynamic_proxy/">Dynamic Proxy in Java</a></h1>
+      <h1 class="post-title"><a href="https://blog.crazyark.xyz/posts/dynamic_proxy/">Dynamic Proxy in Java</a></h1>
       <span class="post-date">Jul 29, 2017 </span>
       <div class="post-content">
         <p>虽然在一年前就知道了 Proxy 模式，但是基本没有尝试使用过，仅在框架里看到一些例子。昨天翻阅《大型网站系统与Java中间件实践》时，偶然发现了 Proxy 模式在 Java 中的应用 —— 动态代理，遂记录下来，顺便复习一下 Proxy 模式。</p>
-
-<p></p>
-
 <p>以下内容参考自</p>
-
 <ol>
 <li>《Design Patterns》</li>
 <li>《大型网站系统与Java中间件实践》。</li>
 <li><a href="http://www.baeldung.com/java-dynamic-proxies">http://www.baeldung.com/java-dynamic-proxies</a></li>
 </ol>
-
 <p>Proxy 模式图示：</p>
-
-<p><img src="/img/proxy_pattern.jpg" alt="Proxy Pattern" /></p>
-
+<p><img src="/img/proxy_pattern.jpg" alt="Proxy Pattern"></p>
 <h3 id="proxy-模式">Proxy 模式</h3>
-
 <p>在《Design Patterns》书中提到了使用 Proxy 模式的四种常见情况：</p>
-
 <ol>
 <li><strong>远程代理 (Remote Proxy)</strong> 为一个对象在不同的地址空间提供局部代表。</li>
 <li><strong>虚代理 (Virtual Proxy)</strong> 根据需要创建开销很大的对象。</li>
 <li><strong>保护代理 (Protection Proxy)</strong> 控制对原始对象的访问。保护代理用于对象应该有不同的访问权限的时候。</li>
 <li><strong>智能指针 (Smart Reference)</strong> 引用计数、实现线程安全、延迟创建，熟悉 C++ 的同学应该知道 <code>std::share_ptr</code>、 <code>std::weak_ptr</code>、<code>std::unique_ptr</code> 等。</li>
 </ol>
-
 <h3 id="java-中的静态代理">Java 中的静态代理</h3>
-
 <p>这里借用 《大型网站系统与Java中间件实践》中的例子：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#080;font-weight:bold">public</span> <span style="color:#080;font-weight:bold">interface</span> <span style="color:#b06;font-weight:bold">Calculator</span> <span style="color:#333">{</span>
+    <span style="color:#339;font-weight:bold">int</span> <span style="color:#06b;font-weight:bold">add</span><span style="color:#333">(</span><span style="color:#339;font-weight:bold">int</span> a<span style="color:#333">,</span> <span style="color:#339;font-weight:bold">int</span> b<span style="color:#333">);</span>
+<span style="color:#333">}</span>
 
-<pre><code class="language-java">public interface Calculator {
-    int add(int a, int b);
-}
+<span style="color:#080;font-weight:bold">public</span> <span style="color:#080;font-weight:bold">class</span> <span style="color:#b06;font-weight:bold">CalculatorImpl</span> <span style="color:#080;font-weight:bold">implements</span> Calculator <span style="color:#333">{</span>
+    <span style="color:#339;font-weight:bold">int</span> <span style="color:#06b;font-weight:bold">add</span><span style="color:#333">(</span><span style="color:#339;font-weight:bold">int</span> a<span style="color:#333">,</span> <span style="color:#339;font-weight:bold">int</span> b<span style="color:#333">)</span> <span style="color:#333">{</span>
+        <span style="color:#080;font-weight:bold">return</span> a <span style="color:#333">+</span> b<span style="color:#333">;</span>
+    <span style="color:#333">}</span>
+<span style="color:#333">}</span>
 
-public class CalculatorImpl implements Calculator {
-    int add(int a, int b) {
-        return a + b;
-    }
-}
-
-public class CalculatorProxy implements Calculator {
-    private Calculator calculator;
+<span style="color:#080;font-weight:bold">public</span> <span style="color:#080;font-weight:bold">class</span> <span style="color:#b06;font-weight:bold">CalculatorProxy</span> <span style="color:#080;font-weight:bold">implements</span> Calculator <span style="color:#333">{</span>
+    <span style="color:#080;font-weight:bold">private</span> Calculator calculator<span style="color:#333">;</span>
     
-    public CalculatorProxy(Calculator calculator) {
-        this.calculator = calculator;
-    }
+    <span style="color:#080;font-weight:bold">public</span> <span style="color:#06b;font-weight:bold">CalculatorProxy</span><span style="color:#333">(</span>Calculator calculator<span style="color:#333">)</span> <span style="color:#333">{</span>
+        <span style="color:#080;font-weight:bold">this</span><span style="color:#333">.</span><span style="color:#00c">calculator</span> <span style="color:#333">=</span> calculator<span style="color:#333">;</span>
+    <span style="color:#333">}</span>
     
-    int add(int a, int b) {
-        // We can do anything before and after real add is called,
-        // such as logging
-        return calculator.add(a, b);
-    }
-}
-</code></pre>
-
-<p>可以看到，在 CalculatorProxy 中我们可以调用了真正的add操作，并可以在add前后做很多额外的工作，这种方式看上去十分直接，但是如果我们有一批类需要代理，并且代理类中实现的功能是一致的，那么我们就需要为每一个类都实现一个 XxxProxy 类，这将会十分麻烦。</p>
-
+    <span style="color:#339;font-weight:bold">int</span> <span style="color:#06b;font-weight:bold">add</span><span style="color:#333">(</span><span style="color:#339;font-weight:bold">int</span> a<span style="color:#333">,</span> <span style="color:#339;font-weight:bold">int</span> b<span style="color:#333">)</span> <span style="color:#333">{</span>
+        <span style="color:#888">// We can do anything before and after real add is called,
+</span><span style="color:#888"></span>        <span style="color:#888">// such as logging
+</span><span style="color:#888"></span>        <span style="color:#080;font-weight:bold">return</span> calculator<span style="color:#333">.</span><span style="color:#00c">add</span><span style="color:#333">(</span>a<span style="color:#333">,</span> b<span style="color:#333">);</span>
+    <span style="color:#333">}</span>
+<span style="color:#333">}</span>
+</code></pre></div><p>可以看到，在 CalculatorProxy 中我们可以调用了真正的add操作，并可以在add前后做很多额外的工作，这种方式看上去十分直接，但是如果我们有一批类需要代理，并且代理类中实现的功能是一致的，那么我们就需要为每一个类都实现一个 XxxProxy 类，这将会十分麻烦。</p>
 <h3 id="java-中的动态代理">Java 中的动态代理</h3>
-
 <p>Java 中提供了一种方式使我们能够动态的生成一个类的代理，我们来看一个例子</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#080;font-weight:bold">public</span> <span style="color:#080;font-weight:bold">class</span> <span style="color:#b06;font-weight:bold">DynamicProxyPlayground</span> <span style="color:#333">{</span>
 
-<pre><code class="language-java">public class DynamicProxyPlayground {
+    <span style="color:#080;font-weight:bold">public</span> <span style="color:#080;font-weight:bold">static</span> <span style="color:#339;font-weight:bold">void</span> <span style="color:#06b;font-weight:bold">main</span><span style="color:#333">(</span>String<span style="color:#333">[]</span> args<span style="color:#333">)</span> <span style="color:#333">{</span>
+        Map mapProxyInstance <span style="color:#333">=</span> <span style="color:#333">(</span>Map<span style="color:#333">)</span> Proxy
+            <span style="color:#333">.</span><span style="color:#00c">newProxyInstance</span><span style="color:#333">(</span>DynamicProxyPlayground<span style="color:#333">.</span><span style="color:#00c">class</span><span style="color:#333">.</span><span style="color:#00c">getClassLoader</span><span style="color:#333">(),</span> <span style="color:#080;font-weight:bold">new</span> Class<span style="color:#333">[]{</span>Map<span style="color:#333">.</span><span style="color:#00c">class</span><span style="color:#333">},</span>
+                <span style="color:#080;font-weight:bold">new</span> TimingDynamicInvocationHandler<span style="color:#333">(</span><span style="color:#080;font-weight:bold">new</span> HashMap<span style="color:#333">&lt;</span>String<span style="color:#333">,</span> String<span style="color:#333">&gt;()));</span>
 
-    public static void main(String[] args) {
-        Map mapProxyInstance = (Map) Proxy
-            .newProxyInstance(DynamicProxyPlayground.class.getClassLoader(), new Class[]{Map.class},
-                new TimingDynamicInvocationHandler(new HashMap&lt;String, String&gt;()));
+        <span style="color:#888">// DynamicProxyPlayground$TimingDynamicInvocationHandler invoke 
+</span><span style="color:#888"></span>        <span style="color:#888">// INFO: Executing put finished in 74094 ns.
+</span><span style="color:#888"></span>        mapProxyInstance<span style="color:#333">.</span><span style="color:#00c">put</span><span style="color:#333">(</span><span style="background-color:#fff0f0">&#34;hello&#34;</span><span style="color:#333">,</span> <span style="background-color:#fff0f0">&#34;world&#34;</span><span style="color:#333">);</span>
 
-        // DynamicProxyPlayground$TimingDynamicInvocationHandler invoke 
-        // INFO: Executing put finished in 74094 ns.
-        mapProxyInstance.put(&quot;hello&quot;, &quot;world&quot;);
+        CharSequence csProxyInstance <span style="color:#333">=</span> <span style="color:#333">(</span>CharSequence<span style="color:#333">)</span> Proxy<span style="color:#333">.</span><span style="color:#00c">newProxyInstance</span><span style="color:#333">(</span>
+            DynamicProxyPlayground<span style="color:#333">.</span><span style="color:#00c">class</span><span style="color:#333">.</span><span style="color:#00c">getClassLoader</span><span style="color:#333">(),</span>
+            <span style="color:#080;font-weight:bold">new</span> Class<span style="color:#333">[]</span> <span style="color:#333">{</span> CharSequence<span style="color:#333">.</span><span style="color:#00c">class</span> <span style="color:#333">},</span>
+            <span style="color:#080;font-weight:bold">new</span> TimingDynamicInvocationHandler<span style="color:#333">(</span><span style="background-color:#fff0f0">&#34;Hello World&#34;</span><span style="color:#333">));</span>
 
-        CharSequence csProxyInstance = (CharSequence) Proxy.newProxyInstance(
-            DynamicProxyPlayground.class.getClassLoader(),
-            new Class[] { CharSequence.class },
-            new TimingDynamicInvocationHandler(&quot;Hello World&quot;));
+        <span style="color:#888">// DynamicProxyPlayground$TimingDynamicInvocationHandler invoke 
+</span><span style="color:#888"></span>        <span style="color:#888">// INFO: Executing length finished in 11720 ns.
+</span><span style="color:#888"></span>        csProxyInstance<span style="color:#333">.</span><span style="color:#00c">length</span><span style="color:#333">();</span>
+    <span style="color:#333">}</span>
 
-        // DynamicProxyPlayground$TimingDynamicInvocationHandler invoke 
-        // INFO: Executing length finished in 11720 ns.
-        csProxyInstance.length();
-    }
+    <span style="color:#080;font-weight:bold">public</span> <span style="color:#080;font-weight:bold">static</span> <span style="color:#080;font-weight:bold">class</span> <span style="color:#b06;font-weight:bold">TimingDynamicInvocationHandler</span> <span style="color:#080;font-weight:bold">implements</span> InvocationHandler <span style="color:#333">{</span>
+        <span style="color:#080;font-weight:bold">private</span> <span style="color:#080;font-weight:bold">static</span> Logger logger <span style="color:#333">=</span>
+            Logger<span style="color:#333">.</span><span style="color:#00c">getLogger</span><span style="color:#333">(</span>TimingDynamicInvocationHandler<span style="color:#333">.</span><span style="color:#00c">class</span><span style="color:#333">.</span><span style="color:#00c">getName</span><span style="color:#333">());</span>
 
-    public static class TimingDynamicInvocationHandler implements InvocationHandler {
-        private static Logger logger =
-            Logger.getLogger(TimingDynamicInvocationHandler.class.getName());
+        <span style="color:#080;font-weight:bold">private</span> Object target<span style="color:#333">;</span>
 
-        private Object target;
+        <span style="color:#080;font-weight:bold">private</span> <span style="color:#06b;font-weight:bold">TimingDynamicInvocationHandler</span><span style="color:#333">(</span>Object target<span style="color:#333">)</span> <span style="color:#333">{</span>
+            <span style="color:#080;font-weight:bold">this</span><span style="color:#333">.</span><span style="color:#00c">target</span> <span style="color:#333">=</span> target<span style="color:#333">;</span>
+        <span style="color:#333">}</span>
 
-        private TimingDynamicInvocationHandler(Object target) {
-            this.target = target;
-        }
+        <span style="color:#555;font-weight:bold">@Override</span>
+        <span style="color:#080;font-weight:bold">public</span> Object <span style="color:#06b;font-weight:bold">invoke</span><span style="color:#333">(</span>Object proxy<span style="color:#333">,</span> Method method<span style="color:#333">,</span> Object<span style="color:#333">[]</span> args<span style="color:#333">)</span> <span style="color:#080;font-weight:bold">throws</span> Throwable <span style="color:#333">{</span>
+            <span style="color:#339;font-weight:bold">long</span> start <span style="color:#333">=</span> System<span style="color:#333">.</span><span style="color:#00c">nanoTime</span><span style="color:#333">();</span>
+            Object result <span style="color:#333">=</span> method<span style="color:#333">.</span><span style="color:#00c">invoke</span><span style="color:#333">(</span>target<span style="color:#333">,</span> args<span style="color:#333">);</span>
+            <span style="color:#339;font-weight:bold">long</span> elapsed <span style="color:#333">=</span> System<span style="color:#333">.</span><span style="color:#00c">nanoTime</span><span style="color:#333">()</span> <span style="color:#333">-</span> start<span style="color:#333">;</span>
 
-        @Override
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            long start = System.nanoTime();
-            Object result = method.invoke(target, args);
-            long elapsed = System.nanoTime() - start;
-
-            logger.info(String.format(&quot;Executing %s finished in %d ns.&quot;, method.getName(), elapsed));
-            return result;
-        }
-    }
-}
-</code></pre>
-
-<p>在上述例子中，通过实现一个 <code>InvocationHandler</code>，我们就可以使用<code>Proxy.newInstance</code>为一批类创建功能相同的动态代理。</p>
+            logger<span style="color:#333">.</span><span style="color:#00c">info</span><span style="color:#333">(</span>String<span style="color:#333">.</span><span style="color:#00c">format</span><span style="color:#333">(</span><span style="background-color:#fff0f0">&#34;Executing %s finished in %d ns.&#34;</span><span style="color:#333">,</span> method<span style="color:#333">.</span><span style="color:#00c">getName</span><span style="color:#333">(),</span> elapsed<span style="color:#333">));</span>
+            <span style="color:#080;font-weight:bold">return</span> result<span style="color:#333">;</span>
+        <span style="color:#333">}</span>
+    <span style="color:#333">}</span>
+<span style="color:#333">}</span>
+</code></pre></div><p>在上述例子中，通过实现一个 <code>InvocationHandler</code>，我们就可以使用<code>Proxy.newInstance</code>为一批类创建功能相同的动态代理。</p>
       </div>
     </section>
     
     <section class="pagination clearfix">
       
-      <a class="btn previous " href="https://blog.crazyark.me/posts/majority_voting_al/"> Boyer-Moore 投票算法 (Boyer-Moore Majority Voting Algorithm) </a> 
+      <a class="btn previous " href="https://blog.crazyark.xyz/posts/majority_voting_al/"> Boyer-Moore 投票算法 (Boyer-Moore Majority Voting Algorithm) </a> 
        
       
-      <a class="btn next " href="https://blog.crazyark.me/posts/selection_in_x_plus_y_and_matrices_with_sorted_rows_and_columns/"> 有序矩阵中的第k大数 (Selection in X&#43;Y or Sorted Matrices) </a> 
+      <a class="btn next " href="https://blog.crazyark.xyz/posts/selection_in_x_plus_y_and_matrices_with_sorted_rows_and_columns/"> 有序矩阵中的第k大数 (Selection in X&#43;Y or Sorted Matrices) </a> 
       
     </section>
     
@@ -198,7 +178,7 @@ public class CalculatorProxy implements Calculator {
 <section id="disqus_thread" class='disqus'></section>
 <script>
   var disqus_config = function () {
-    this.page.url = "https://blog.crazyark.me/posts/dynamic_proxy/";
+    this.page.url = "https://blog.crazyark.xyz/posts/dynamic_proxy/";
     
   };
   (function() {
@@ -217,13 +197,14 @@ public class CalculatorProxy implements Calculator {
     <p>
       <a href="mailto:arkbriar@gmail.com?subject="><i class="far fa-envelope"></i> arkbriar@gmail.com </a>
       {
-        <a href="https://gohugo.io/" title="Hugo :: A fast and modern static website engine">Hugo 0.46</a>,
+        <a href="https://gohugo.io/" title="Hugo :: A fast and modern static website engine">Hugo 0.87.0</a>,
         <a href="https://github.com/IvanChou/yii.im" title="vec">Vec</a> 
       }
       {<a href="http://creativecommons.org/licenses/by-nc-nd/3.0/" title="CC BY-NC-ND 3.0">CC BY-NC-ND 3.0</a>}
     </p>
   </div>
 </footer>
+
 
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
@@ -264,7 +245,7 @@ MathJax.Hub.Config({
 </script>
 
   
-  <script src="https://blog.crazyark.me/js/highlight.min.js"></script>
+  <script src="https://blog.crazyark.xyz/js/highlight.min.js"></script>
   <script>
     hljs.initHighlightingOnLoad();
   </script>

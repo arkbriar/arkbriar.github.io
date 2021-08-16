@@ -6,11 +6,11 @@
   
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-<meta name="generator" content="Hugo 0.46" />
+<meta name="generator" content="Hugo 0.87.0" />
 
 
-<link rel="stylesheet" href="https://blog.crazyark.me/css/vec.css">
-<link rel="stylesheet" href="https://blog.crazyark.me/css/github.css">
+<link rel="stylesheet" href="https://blog.crazyark.xyz/css/vec.css">
+<link rel="stylesheet" href="https://blog.crazyark.xyz/css/github.css">
 
 
 <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
@@ -28,7 +28,7 @@
       
       
       <li class="pull-left ">
-        <a href="https://blog.crazyark.me/">/home/crazy.ark</a>
+        <a href="https://blog.crazyark.xyz/">/home/crazy.ark</a>
       </li>
       
       
@@ -56,294 +56,274 @@
     </ul>
   </nav>
 </header>
+
   <div class="content toc">
     <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li>
-<ul>
-<li><a href="#简单介绍">简单介绍</a></li>
-<li><a href="#python-c-算法实现">Python、C++ 算法实现</a></li>
-<li><a href="#min-heap-o-klgn-算法">Min-Heap O(klgn) 算法</a></li>
-</ul></li>
-</ul></li>
-</ul>
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#简单介绍">简单介绍</a></li>
+        <li><a href="#pythonc-算法实现">Python、C++ 算法实现</a></li>
+        <li><a href="#min-heap-oklgn-算法">Min-Heap O(klgn) 算法</a></li>
+      </ul>
+    </li>
+  </ul>
 </nav>
     
     <section class="post">
-      <h1 class="post-title"><a href="https://blog.crazyark.me/posts/selection_in_x_plus_y_and_matrices_with_sorted_rows_and_columns/">有序矩阵中的第k大数 (Selection in X&#43;Y or Sorted Matrices)</a></h1>
+      <h1 class="post-title"><a href="https://blog.crazyark.xyz/posts/selection_in_x_plus_y_and_matrices_with_sorted_rows_and_columns/">有序矩阵中的第k大数 (Selection in X&#43;Y or Sorted Matrices)</a></h1>
       <span class="post-date">Aug 2, 2017 </span>
       <div class="post-content">
         <p>今天在刷 leetcode 的时候遇到一道题目 <a href="https://leetcode.com/problems/kth-smallest-element-in-a-sorted-matrix/description/">Kth Smallest Element in a Sorted Matrix</a>。</p>
-
 <p>首先用一个 Min-Heap 就可以得到 O(klgn) (n为列数)的算法，实现放在最后。</p>
-
 <p>然而在翻阅览 Discuss 区的时候发现，这玩意居然有 O(n) (n为行、列数) 的算法，来自一篇论文 <a href="http://www.cse.yorku.ca/~andy/pubs/X+Y.pdf">Selection in X + Y and Matrices with Sorted Rows and Columns</a>，同时适用于另一道题 <a href="https://leetcode.com/problems/find-k-pairs-with-smallest-sums/">Find k Pairs with Smallest Sums</a>，在此只做介绍，因为我不认为有人能在面试的时候写的出来&hellip;</p>
-
-<p></p>
-
 <h3 id="简单介绍">简单介绍</h3>
-
 <p>设 A 为一个 n * n 的矩阵，所有行和列都是非降续的。</p>
-
 <p>令 <code>$A^*$</code> 是 A 取所有奇数行的子矩阵，如果 n 为偶数的话添上 A 的最后一行一列；令 <code>$rank_{desc}(A, a)$</code> 为 A 中大于 a 的元素的数目，<code>$rank_{asc}(A, a)$</code> 为 A 中小于 a 的元素数目。</p>
-
 <p>那么有以下不等式成立</p>
-
 <ol>
 <li><code>$rank_{asc}(A, a) \le 4 rank_{asc}(A^*, a)$</code></li>
 <li><code>$rank_{desc}(A, a) \le 4 rank_{desc}(A^*, a)$</code></li>
 </ol>
-
 <p>这是这个算法的基础，加上巧妙的选择，可以是使得问题变为解一个在A*上的子问题。</p>
-
 <p>算法过程参考论文，非常不直观，需要不少理论证明，实在没法详述&hellip; 有兴趣的同学还是参阅原论文</p>
-
-<h3 id="python-c-算法实现">Python、C++ 算法实现</h3>
-
+<h3 id="pythonc-算法实现">Python、C++ 算法实现</h3>
 <p>在此摘录 discuss 上大佬给出的 python 和 cpp 版实现，在面试中谁能手写出来我只能跪穿。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#080;font-weight:bold">class</span> <span style="color:#b06;font-weight:bold">Solution</span>(<span style="color:#007020">object</span>):
+    <span style="color:#080;font-weight:bold">def</span> <span style="color:#06b;font-weight:bold">kthSmallest</span>(self, matrix, k):
 
-<pre><code class="language-python">class Solution(object):
-    def kthSmallest(self, matrix, k):
+        <span style="color:#888"># The median-of-medians selection function.</span>
+        <span style="color:#080;font-weight:bold">def</span> <span style="color:#06b;font-weight:bold">pick</span>(a, k):
+            <span style="color:#080;font-weight:bold">if</span> k <span style="color:#333">==</span> <span style="color:#00d;font-weight:bold">1</span>:
+                <span style="color:#080;font-weight:bold">return</span> <span style="color:#007020">min</span>(a)
+            groups <span style="color:#333">=</span> (a[i:i<span style="color:#333">+</span><span style="color:#00d;font-weight:bold">5</span>] <span style="color:#080;font-weight:bold">for</span> i <span style="color:#000;font-weight:bold">in</span> <span style="color:#007020">range</span>(<span style="color:#00d;font-weight:bold">0</span>, <span style="color:#007020">len</span>(a), <span style="color:#00d;font-weight:bold">5</span>))
+            medians <span style="color:#333">=</span> [<span style="color:#007020">sorted</span>(group)[<span style="color:#007020">len</span>(group) <span style="color:#333">/</span> <span style="color:#00d;font-weight:bold">2</span>] <span style="color:#080;font-weight:bold">for</span> group <span style="color:#000;font-weight:bold">in</span> groups]
+            pivot <span style="color:#333">=</span> pick(medians, <span style="color:#007020">len</span>(medians) <span style="color:#333">/</span> <span style="color:#00d;font-weight:bold">2</span> <span style="color:#333">+</span> <span style="color:#00d;font-weight:bold">1</span>)
+            smaller <span style="color:#333">=</span> [x <span style="color:#080;font-weight:bold">for</span> x <span style="color:#000;font-weight:bold">in</span> a <span style="color:#080;font-weight:bold">if</span> x <span style="color:#333">&lt;</span> pivot]
+            <span style="color:#080;font-weight:bold">if</span> k <span style="color:#333">&lt;=</span> <span style="color:#007020">len</span>(smaller):
+                <span style="color:#080;font-weight:bold">return</span> pick(smaller, k)
+            k <span style="color:#333">-=</span> <span style="color:#007020">len</span>(smaller) <span style="color:#333">+</span> a<span style="color:#333">.</span>count(pivot)
+            <span style="color:#080;font-weight:bold">return</span> pivot <span style="color:#080;font-weight:bold">if</span> k <span style="color:#333">&lt;</span> <span style="color:#00d;font-weight:bold">1</span> <span style="color:#080;font-weight:bold">else</span> pick([x <span style="color:#080;font-weight:bold">for</span> x <span style="color:#000;font-weight:bold">in</span> a <span style="color:#080;font-weight:bold">if</span> x <span style="color:#333">&gt;</span> pivot], k)
 
-        # The median-of-medians selection function.
-        def pick(a, k):
-            if k == 1:
-                return min(a)
-            groups = (a[i:i+5] for i in range(0, len(a), 5))
-            medians = [sorted(group)[len(group) / 2] for group in groups]
-            pivot = pick(medians, len(medians) / 2 + 1)
-            smaller = [x for x in a if x &lt; pivot]
-            if k &lt;= len(smaller):
-                return pick(smaller, k)
-            k -= len(smaller) + a.count(pivot)
-            return pivot if k &lt; 1 else pick([x for x in a if x &gt; pivot], k)
+        <span style="color:#888"># Find the k1-th and k2th smallest entries in the submatrix.</span>
+        <span style="color:#080;font-weight:bold">def</span> <span style="color:#06b;font-weight:bold">biselect</span>(index, k1, k2):
 
-        # Find the k1-th and k2th smallest entries in the submatrix.
-        def biselect(index, k1, k2):
-
-            # Provide the submatrix.
-            n = len(index)
-            def A(i, j):
-                return matrix[index[i]][index[j]]
+            <span style="color:#888"># Provide the submatrix.</span>
+            n <span style="color:#333">=</span> <span style="color:#007020">len</span>(index)
+            <span style="color:#080;font-weight:bold">def</span> <span style="color:#06b;font-weight:bold">A</span>(i, j):
+                <span style="color:#080;font-weight:bold">return</span> matrix[index[i]][index[j]]
             
-            # Base case.
-            if n &lt;= 2:
-                nums = sorted(A(i, j) for i in range(n) for j in range(n))
-                return nums[k1-1], nums[k2-1]
+            <span style="color:#888"># Base case.</span>
+            <span style="color:#080;font-weight:bold">if</span> n <span style="color:#333">&lt;=</span> <span style="color:#00d;font-weight:bold">2</span>:
+                nums <span style="color:#333">=</span> <span style="color:#007020">sorted</span>(A(i, j) <span style="color:#080;font-weight:bold">for</span> i <span style="color:#000;font-weight:bold">in</span> <span style="color:#007020">range</span>(n) <span style="color:#080;font-weight:bold">for</span> j <span style="color:#000;font-weight:bold">in</span> <span style="color:#007020">range</span>(n))
+                <span style="color:#080;font-weight:bold">return</span> nums[k1<span style="color:#333">-</span><span style="color:#00d;font-weight:bold">1</span>], nums[k2<span style="color:#333">-</span><span style="color:#00d;font-weight:bold">1</span>]
 
-            # Solve the subproblem.
-            index_ = index[::2] + index[n-1+n%2:]
-            k1_ = (k1 + 2*n) / 4 + 1 if n % 2 else n + 1 + (k1 + 3) / 4
-            k2_ = (k2 + 3) / 4
-            a, b = biselect(index_, k1_, k2_)
+            <span style="color:#888"># Solve the subproblem.</span>
+            index_ <span style="color:#333">=</span> index[::<span style="color:#00d;font-weight:bold">2</span>] <span style="color:#333">+</span> index[n<span style="color:#333">-</span><span style="color:#00d;font-weight:bold">1</span><span style="color:#333">+</span>n<span style="color:#333">%</span><span style="color:#00d;font-weight:bold">2</span>:]
+            k1_ <span style="color:#333">=</span> (k1 <span style="color:#333">+</span> <span style="color:#00d;font-weight:bold">2</span><span style="color:#333">*</span>n) <span style="color:#333">/</span> <span style="color:#00d;font-weight:bold">4</span> <span style="color:#333">+</span> <span style="color:#00d;font-weight:bold">1</span> <span style="color:#080;font-weight:bold">if</span> n <span style="color:#333">%</span> <span style="color:#00d;font-weight:bold">2</span> <span style="color:#080;font-weight:bold">else</span> n <span style="color:#333">+</span> <span style="color:#00d;font-weight:bold">1</span> <span style="color:#333">+</span> (k1 <span style="color:#333">+</span> <span style="color:#00d;font-weight:bold">3</span>) <span style="color:#333">/</span> <span style="color:#00d;font-weight:bold">4</span>
+            k2_ <span style="color:#333">=</span> (k2 <span style="color:#333">+</span> <span style="color:#00d;font-weight:bold">3</span>) <span style="color:#333">/</span> <span style="color:#00d;font-weight:bold">4</span>
+            a, b <span style="color:#333">=</span> biselect(index_, k1_, k2_)
 
-            # Prepare ra_less, rb_more and L with saddleback search variants.
-            ra_less = rb_more = 0
-            L = []
-            jb = n   # jb is the first where A(i, jb) is larger than b.
-            ja = n   # ja is the first where A(i, ja) is larger than or equal to a.
-            for i in range(n):
-                while jb and A(i, jb - 1) &gt; b:
-                    jb -= 1
-                while ja and A(i, ja - 1) &gt;= a:
-                    ja -= 1
-                ra_less += ja
-                rb_more += n - jb
-                L.extend(A(i, j) for j in range(jb, ja))
+            <span style="color:#888"># Prepare ra_less, rb_more and L with saddleback search variants.</span>
+            ra_less <span style="color:#333">=</span> rb_more <span style="color:#333">=</span> <span style="color:#00d;font-weight:bold">0</span>
+            L <span style="color:#333">=</span> []
+            jb <span style="color:#333">=</span> n   <span style="color:#888"># jb is the first where A(i, jb) is larger than b.</span>
+            ja <span style="color:#333">=</span> n   <span style="color:#888"># ja is the first where A(i, ja) is larger than or equal to a.</span>
+            <span style="color:#080;font-weight:bold">for</span> i <span style="color:#000;font-weight:bold">in</span> <span style="color:#007020">range</span>(n):
+                <span style="color:#080;font-weight:bold">while</span> jb <span style="color:#000;font-weight:bold">and</span> A(i, jb <span style="color:#333">-</span> <span style="color:#00d;font-weight:bold">1</span>) <span style="color:#333">&gt;</span> b:
+                    jb <span style="color:#333">-=</span> <span style="color:#00d;font-weight:bold">1</span>
+                <span style="color:#080;font-weight:bold">while</span> ja <span style="color:#000;font-weight:bold">and</span> A(i, ja <span style="color:#333">-</span> <span style="color:#00d;font-weight:bold">1</span>) <span style="color:#333">&gt;=</span> a:
+                    ja <span style="color:#333">-=</span> <span style="color:#00d;font-weight:bold">1</span>
+                ra_less <span style="color:#333">+=</span> ja
+                rb_more <span style="color:#333">+=</span> n <span style="color:#333">-</span> jb
+                L<span style="color:#333">.</span>extend(A(i, j) <span style="color:#080;font-weight:bold">for</span> j <span style="color:#000;font-weight:bold">in</span> <span style="color:#007020">range</span>(jb, ja))
                 
-            # Compute and return x and y.
-            x = a if ra_less &lt;= k1 - 1 else \
-                b if k1 + rb_more - n*n &lt;= 0 else \
-                pick(L, k1 + rb_more - n*n)
-            y = a if ra_less &lt;= k2 - 1 else \
-                b if k2 + rb_more - n*n &lt;= 0 else \
-                pick(L, k2 + rb_more - n*n)
-            return x, y
+            <span style="color:#888"># Compute and return x and y.</span>
+            x <span style="color:#333">=</span> a <span style="color:#080;font-weight:bold">if</span> ra_less <span style="color:#333">&lt;=</span> k1 <span style="color:#333">-</span> <span style="color:#00d;font-weight:bold">1</span> <span style="color:#080;font-weight:bold">else</span> \
+                b <span style="color:#080;font-weight:bold">if</span> k1 <span style="color:#333">+</span> rb_more <span style="color:#333">-</span> n<span style="color:#333">*</span>n <span style="color:#333">&lt;=</span> <span style="color:#00d;font-weight:bold">0</span> <span style="color:#080;font-weight:bold">else</span> \
+                pick(L, k1 <span style="color:#333">+</span> rb_more <span style="color:#333">-</span> n<span style="color:#333">*</span>n)
+            y <span style="color:#333">=</span> a <span style="color:#080;font-weight:bold">if</span> ra_less <span style="color:#333">&lt;=</span> k2 <span style="color:#333">-</span> <span style="color:#00d;font-weight:bold">1</span> <span style="color:#080;font-weight:bold">else</span> \
+                b <span style="color:#080;font-weight:bold">if</span> k2 <span style="color:#333">+</span> rb_more <span style="color:#333">-</span> n<span style="color:#333">*</span>n <span style="color:#333">&lt;=</span> <span style="color:#00d;font-weight:bold">0</span> <span style="color:#080;font-weight:bold">else</span> \
+                pick(L, k2 <span style="color:#333">+</span> rb_more <span style="color:#333">-</span> n<span style="color:#333">*</span>n)
+            <span style="color:#080;font-weight:bold">return</span> x, y
 
-        # Set up and run the search.
-        n = len(matrix)
-        start = max(k - n*n + n-1, 0)
-        k -= n*n - (n - start)**2
-        return biselect(range(start, min(n, start+k)), k, k)[0]
-</code></pre>
+        <span style="color:#888"># Set up and run the search.</span>
+        n <span style="color:#333">=</span> <span style="color:#007020">len</span>(matrix)
+        start <span style="color:#333">=</span> <span style="color:#007020">max</span>(k <span style="color:#333">-</span> n<span style="color:#333">*</span>n <span style="color:#333">+</span> n<span style="color:#333">-</span><span style="color:#00d;font-weight:bold">1</span>, <span style="color:#00d;font-weight:bold">0</span>)
+        k <span style="color:#333">-=</span> n<span style="color:#333">*</span>n <span style="color:#333">-</span> (n <span style="color:#333">-</span> start)<span style="color:#333">**</span><span style="color:#00d;font-weight:bold">2</span>
+        <span style="color:#080;font-weight:bold">return</span> biselect(<span style="color:#007020">range</span>(start, <span style="color:#007020">min</span>(n, start<span style="color:#333">+</span>k)), k, k)[<span style="color:#00d;font-weight:bold">0</span>]
+</code></pre></div><div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#080;font-weight:bold">class</span> <span style="color:#b06;font-weight:bold">Solution</span> {
+<span style="color:#080;font-weight:bold">public</span><span style="color:#333">:</span>
+	<span style="color:#339;font-weight:bold">int</span> kthSmallest(<span style="color:#080;font-weight:bold">const</span> std<span style="color:#333">::</span>vector<span style="color:#333">&lt;</span>std<span style="color:#333">::</span>vector<span style="color:#333">&lt;</span><span style="color:#339;font-weight:bold">int</span><span style="color:#333">&gt;&gt;</span> <span style="color:#333">&amp;</span> matrix, <span style="color:#339;font-weight:bold">int</span> k)
+	{
+		<span style="color:#080;font-weight:bold">if</span> (k <span style="color:#333">==</span> <span style="color:#00d;font-weight:bold">1</span>) <span style="color:#888">// guard for 1x1 matrix
+</span><span style="color:#888"></span>		{
+			<span style="color:#080;font-weight:bold">return</span> matrix.front().front();
+		}
 
-<pre><code class="language-cpp">class Solution {
-public:
-    int kthSmallest(const std::vector&lt;std::vector&lt;int&gt;&gt; &amp; matrix, int k)
-    {
-        if (k == 1) // guard for 1x1 matrix
-        {
-            return matrix.front().front();
-        }
+		size_t n <span style="color:#333">=</span> matrix.size();
+		std<span style="color:#333">::</span>vector<span style="color:#333">&lt;</span>size_t<span style="color:#333">&gt;</span> indices(n);
+		std<span style="color:#333">::</span>iota(indices.begin(), indices.end(), <span style="color:#00d;font-weight:bold">0</span>);
+		std<span style="color:#333">::</span>array<span style="color:#333">&lt;</span>size_t, <span style="color:#00d;font-weight:bold">2</span><span style="color:#333">&gt;</span> ks <span style="color:#333">=</span> { k <span style="color:#333">-</span> <span style="color:#00d;font-weight:bold">1</span>, k <span style="color:#333">-</span> <span style="color:#00d;font-weight:bold">1</span> }; <span style="color:#888">// use zero-based indices
+</span><span style="color:#888"></span>		std<span style="color:#333">::</span>array<span style="color:#333">&lt;</span><span style="color:#339;font-weight:bold">int</span>, <span style="color:#00d;font-weight:bold">2</span><span style="color:#333">&gt;</span> results <span style="color:#333">=</span> biSelect(matrix, indices, ks);
+		<span style="color:#080;font-weight:bold">return</span> results[<span style="color:#00d;font-weight:bold">0</span>];
+	}
 
-        size_t n = matrix.size();
-        std::vector&lt;size_t&gt; indices(n);
-        std::iota(indices.begin(), indices.end(), 0);
-        std::array&lt;size_t, 2&gt; ks = { k - 1, k - 1 }; // use zero-based indices
-        std::array&lt;int, 2&gt; results = biSelect(matrix, indices, ks);
-        return results[0];
-    }
+<span style="color:#080;font-weight:bold">private</span><span style="color:#333">:</span>
+	<span style="color:#888">// select two elements from four elements, recursively
+</span><span style="color:#888"></span>	std<span style="color:#333">::</span>array<span style="color:#333">&lt;</span><span style="color:#339;font-weight:bold">int</span>, <span style="color:#00d;font-weight:bold">2</span><span style="color:#333">&gt;</span> biSelect(
+		<span style="color:#080;font-weight:bold">const</span> std<span style="color:#333">::</span>vector<span style="color:#333">&lt;</span>std<span style="color:#333">::</span>vector<span style="color:#333">&lt;</span><span style="color:#339;font-weight:bold">int</span><span style="color:#333">&gt;&gt;</span> <span style="color:#333">&amp;</span> matrix,
+		<span style="color:#080;font-weight:bold">const</span> std<span style="color:#333">::</span>vector<span style="color:#333">&lt;</span>size_t<span style="color:#333">&gt;</span> <span style="color:#333">&amp;</span> indices,
+		<span style="color:#080;font-weight:bold">const</span> std<span style="color:#333">::</span>array<span style="color:#333">&lt;</span>size_t, <span style="color:#00d;font-weight:bold">2</span><span style="color:#333">&gt;</span> <span style="color:#333">&amp;</span> ks)
+	<span style="color:#888">// Select both ks[0]-th element and ks[1]-th element in the matrix,
+</span><span style="color:#888"></span>	<span style="color:#888">// where k0 = ks[0] and k1 = ks[1] and n = indices.size() satisfie
+</span><span style="color:#888"></span>	<span style="color:#888">// 0 &lt;= k0 &lt;= k1 &lt; n*n  and  k1 - k0 &lt;= 4n-4 = O(n)   and  n&gt;=2
+</span><span style="color:#888"></span>	{
+		size_t n <span style="color:#333">=</span> indices.size();		
+		<span style="color:#080;font-weight:bold">if</span> (n <span style="color:#333">==</span> <span style="color:#00d;font-weight:bold">2u</span>) <span style="color:#888">// base case of resursion
+</span><span style="color:#888"></span>		{			
+			<span style="color:#080;font-weight:bold">return</span> <span style="color:#06b;font-weight:bold">biSelectNative</span>(matrix, indices, ks);
+		}
+		
+		<span style="color:#888">// update indices
+</span><span style="color:#888"></span>		std<span style="color:#333">::</span>vector<span style="color:#333">&lt;</span>size_t<span style="color:#333">&gt;</span> indices_;
+		<span style="color:#080;font-weight:bold">for</span> (size_t idx <span style="color:#333">=</span> <span style="color:#00d;font-weight:bold">0</span>; idx <span style="color:#333">&lt;</span> n; idx <span style="color:#333">+=</span> <span style="color:#00d;font-weight:bold">2</span>)
+		{
+			indices_.push_back(indices[idx]);
+		}
+		<span style="color:#080;font-weight:bold">if</span> (n <span style="color:#333">%</span> <span style="color:#00d;font-weight:bold">2</span> <span style="color:#333">==</span> <span style="color:#00d;font-weight:bold">0</span>) <span style="color:#888">// ensure the last indice is included
+</span><span style="color:#888"></span>		{
+			indices_.push_back(indices.back());
+		}
 
-private:
-    // select two elements from four elements, recursively
-    std::array&lt;int, 2&gt; biSelect(
-        const std::vector&lt;std::vector&lt;int&gt;&gt; &amp; matrix,
-        const std::vector&lt;size_t&gt; &amp; indices,
-        const std::array&lt;size_t, 2&gt; &amp; ks)
-    // Select both ks[0]-th element and ks[1]-th element in the matrix,
-    // where k0 = ks[0] and k1 = ks[1] and n = indices.size() satisfie
-    // 0 &lt;= k0 &lt;= k1 &lt; n*n  and  k1 - k0 &lt;= 4n-4 = O(n)   and  n&gt;=2
-    {
-        size_t n = indices.size();      
-        if (n == 2u) // base case of resursion
-        {           
-            return biSelectNative(matrix, indices, ks);
-        }
-        
-        // update indices
-        std::vector&lt;size_t&gt; indices_;
-        for (size_t idx = 0; idx &lt; n; idx += 2)
-        {
-            indices_.push_back(indices[idx]);
-        }
-        if (n % 2 == 0) // ensure the last indice is included
-        {
-            indices_.push_back(indices.back());
-        }
+		<span style="color:#888">// update ks
+</span><span style="color:#888"></span>		<span style="color:#888">// the new interval [xs_[0], xs_[1]] should contain [xs[0], xs[1]]
+</span><span style="color:#888"></span>		<span style="color:#888">// but the length of the new interval should be as small as possible
+</span><span style="color:#888"></span>		<span style="color:#888">// therefore, ks_[0] is the largest possible index to ensure xs_[0] &lt;= xs[0]
+</span><span style="color:#888"></span>		<span style="color:#888">// ks_[1] is the smallest possible index to ensure xs_[1] &gt;= xs[1]
+</span><span style="color:#888"></span>		std<span style="color:#333">::</span>array<span style="color:#333">&lt;</span>size_t, <span style="color:#00d;font-weight:bold">2</span><span style="color:#333">&gt;</span> ks_ <span style="color:#333">=</span> { ks[<span style="color:#00d;font-weight:bold">0</span>] <span style="color:#333">/</span> <span style="color:#00d;font-weight:bold">4</span>, <span style="color:#00d;font-weight:bold">0</span> };
+		<span style="color:#080;font-weight:bold">if</span> (n <span style="color:#333">%</span> <span style="color:#00d;font-weight:bold">2</span> <span style="color:#333">==</span> <span style="color:#00d;font-weight:bold">0</span>) <span style="color:#888">// even
+</span><span style="color:#888"></span>		{
+			ks_[<span style="color:#00d;font-weight:bold">1</span>] <span style="color:#333">=</span> ks[<span style="color:#00d;font-weight:bold">1</span>] <span style="color:#333">/</span> <span style="color:#00d;font-weight:bold">4</span> <span style="color:#333">+</span> n <span style="color:#333">+</span> <span style="color:#00d;font-weight:bold">1</span>;
+		}
+		<span style="color:#080;font-weight:bold">else</span> <span style="color:#888">// odd
+</span><span style="color:#888"></span>		{
+			ks_[<span style="color:#00d;font-weight:bold">1</span>] <span style="color:#333">=</span> (ks[<span style="color:#00d;font-weight:bold">1</span>] <span style="color:#333">+</span> <span style="color:#00d;font-weight:bold">2</span> <span style="color:#333">*</span> n <span style="color:#333">+</span> <span style="color:#00d;font-weight:bold">1</span>) <span style="color:#333">/</span> <span style="color:#00d;font-weight:bold">4</span>;
+		}
 
-        // update ks
-        // the new interval [xs_[0], xs_[1]] should contain [xs[0], xs[1]]
-        // but the length of the new interval should be as small as possible
-        // therefore, ks_[0] is the largest possible index to ensure xs_[0] &lt;= xs[0]
-        // ks_[1] is the smallest possible index to ensure xs_[1] &gt;= xs[1]
-        std::array&lt;size_t, 2&gt; ks_ = { ks[0] / 4, 0 };
-        if (n % 2 == 0) // even
-        {
-            ks_[1] = ks[1] / 4 + n + 1;
-        }
-        else // odd
-        {
-            ks_[1] = (ks[1] + 2 * n + 1) / 4;
-        }
+		<span style="color:#888">// call recursively
+</span><span style="color:#888"></span>		std<span style="color:#333">::</span>array<span style="color:#333">&lt;</span><span style="color:#339;font-weight:bold">int</span>, <span style="color:#00d;font-weight:bold">2</span><span style="color:#333">&gt;</span> xs_ <span style="color:#333">=</span> biSelect(matrix, indices_, ks_);
 
-        // call recursively
-        std::array&lt;int, 2&gt; xs_ = biSelect(matrix, indices_, ks_);
+		<span style="color:#888">// Now we partipate all elements into three parts:
+</span><span style="color:#888"></span>		<span style="color:#888">// Part 1: {e : e &lt; xs_[0]}.  For this part, we only record its cardinality
+</span><span style="color:#888"></span>		<span style="color:#888">// Part 2: {e : xs_[0] &lt;= e &lt; xs_[1]}. We store the set elementsBetween
+</span><span style="color:#888"></span>		<span style="color:#888">// Part 3: {e : x &gt;= xs_[1]}. No use. Discard.
+</span><span style="color:#888"></span>		std<span style="color:#333">::</span>array<span style="color:#333">&lt;</span><span style="color:#339;font-weight:bold">int</span>, <span style="color:#00d;font-weight:bold">2</span><span style="color:#333">&gt;</span> numbersOfElementsLessThanX <span style="color:#333">=</span> { <span style="color:#00d;font-weight:bold">0</span>, <span style="color:#00d;font-weight:bold">0</span> };
+		std<span style="color:#333">::</span>vector<span style="color:#333">&lt;</span><span style="color:#339;font-weight:bold">int</span><span style="color:#333">&gt;</span> elementsBetween; <span style="color:#888">// [xs_[0], xs_[1])
+</span><span style="color:#888"></span>
+		std<span style="color:#333">::</span>array<span style="color:#333">&lt;</span>size_t, <span style="color:#00d;font-weight:bold">2</span><span style="color:#333">&gt;</span> cols <span style="color:#333">=</span> { n, n }; <span style="color:#888">// column index such that elem &gt;= x
+</span><span style="color:#888"></span>		 <span style="color:#888">// the first column where matrix(r, c) &gt; b
+</span><span style="color:#888"></span>		 <span style="color:#888">// the first column where matrix(r, c) &gt;= a
+</span><span style="color:#888"></span>		<span style="color:#080;font-weight:bold">for</span> (size_t row <span style="color:#333">=</span> <span style="color:#00d;font-weight:bold">0</span>; row <span style="color:#333">&lt;</span> n; <span style="color:#333">++</span>row)
+		{
+			size_t row_indice <span style="color:#333">=</span> indices[row];
+			<span style="color:#080;font-weight:bold">for</span> (size_t <span style="color:#970;font-weight:bold">idx</span> : {<span style="color:#00d;font-weight:bold">0</span>, <span style="color:#00d;font-weight:bold">1</span>})
+			{
+				<span style="color:#080;font-weight:bold">while</span> ((cols[idx] <span style="color:#333">&gt;</span> <span style="color:#00d;font-weight:bold">0</span>)
+					<span style="color:#333">&amp;&amp;</span> (matrix[row_indice][indices[cols[idx] <span style="color:#333">-</span> <span style="color:#00d;font-weight:bold">1</span>]] <span style="color:#333">&gt;=</span> xs_[idx]))
+				{
+					<span style="color:#333">--</span>cols[idx];
+				}
+				numbersOfElementsLessThanX[idx] <span style="color:#333">+=</span> cols[idx];
+			}
+			<span style="color:#080;font-weight:bold">for</span> (size_t col <span style="color:#333">=</span> cols[<span style="color:#00d;font-weight:bold">0</span>]; col <span style="color:#333">&lt;</span> cols[<span style="color:#00d;font-weight:bold">1</span>]; <span style="color:#333">++</span>col)
+			{
+				elementsBetween.push_back(matrix[row_indice][indices[col]]);
+			}
+		}
 
-        // Now we partipate all elements into three parts:
-        // Part 1: {e : e &lt; xs_[0]}.  For this part, we only record its cardinality
-        // Part 2: {e : xs_[0] &lt;= e &lt; xs_[1]}. We store the set elementsBetween
-        // Part 3: {e : x &gt;= xs_[1]}. No use. Discard.
-        std::array&lt;int, 2&gt; numbersOfElementsLessThanX = { 0, 0 };
-        std::vector&lt;int&gt; elementsBetween; // [xs_[0], xs_[1])
+		std<span style="color:#333">::</span>array<span style="color:#333">&lt;</span><span style="color:#339;font-weight:bold">int</span>, <span style="color:#00d;font-weight:bold">2</span><span style="color:#333">&gt;</span> xs; <span style="color:#888">// the return value
+</span><span style="color:#888"></span>		<span style="color:#080;font-weight:bold">for</span> (size_t <span style="color:#970;font-weight:bold">idx</span> : {<span style="color:#00d;font-weight:bold">0</span>, <span style="color:#00d;font-weight:bold">1</span>})
+		{
+			size_t k <span style="color:#333">=</span> ks[idx];
+			<span style="color:#080;font-weight:bold">if</span> (k <span style="color:#333">&lt;</span> numbersOfElementsLessThanX[<span style="color:#00d;font-weight:bold">0</span>]) <span style="color:#888">// in the Part 1
+</span><span style="color:#888"></span>			{
+				xs[idx] <span style="color:#333">=</span> xs_[<span style="color:#00d;font-weight:bold">0</span>];
+			}
+			<span style="color:#080;font-weight:bold">else</span> <span style="color:#06b;font-weight:bold">if</span> (k <span style="color:#333">&lt;</span> numbersOfElementsLessThanX[<span style="color:#00d;font-weight:bold">1</span>]) <span style="color:#888">// in the Part 2
+</span><span style="color:#888"></span>			{
+				size_t offset <span style="color:#333">=</span> k <span style="color:#333">-</span> numbersOfElementsLessThanX[<span style="color:#00d;font-weight:bold">0</span>];
+				std<span style="color:#333">::</span>vector<span style="color:#333">&lt;</span><span style="color:#339;font-weight:bold">int</span><span style="color:#333">&gt;::</span>iterator nth <span style="color:#333">=</span> std<span style="color:#333">::</span>next(elementsBetween.begin(), offset);
+				std<span style="color:#333">::</span>nth_element(elementsBetween.begin(), nth, elementsBetween.end());
+				xs[idx] <span style="color:#333">=</span> (<span style="color:#333">*</span>nth);
+			}
+			<span style="color:#080;font-weight:bold">else</span> <span style="color:#888">// in the Part 3
+</span><span style="color:#888"></span>			{
+				xs[idx] <span style="color:#333">=</span> xs_[<span style="color:#00d;font-weight:bold">1</span>];
+			}
+		}
+		<span style="color:#080;font-weight:bold">return</span> xs;
+	}
 
-        std::array&lt;size_t, 2&gt; cols = { n, n }; // column index such that elem &gt;= x
-         // the first column where matrix(r, c) &gt; b
-         // the first column where matrix(r, c) &gt;= a
-        for (size_t row = 0; row &lt; n; ++row)
-        {
-            size_t row_indice = indices[row];
-            for (size_t idx : {0, 1})
-            {
-                while ((cols[idx] &gt; 0)
-                    &amp;&amp; (matrix[row_indice][indices[cols[idx] - 1]] &gt;= xs_[idx]))
-                {
-                    --cols[idx];
-                }
-                numbersOfElementsLessThanX[idx] += cols[idx];
-            }
-            for (size_t col = cols[0]; col &lt; cols[1]; ++col)
-            {
-                elementsBetween.push_back(matrix[row_indice][indices[col]]);
-            }
-        }
-
-        std::array&lt;int, 2&gt; xs; // the return value
-        for (size_t idx : {0, 1})
-        {
-            size_t k = ks[idx];
-            if (k &lt; numbersOfElementsLessThanX[0]) // in the Part 1
-            {
-                xs[idx] = xs_[0];
-            }
-            else if (k &lt; numbersOfElementsLessThanX[1]) // in the Part 2
-            {
-                size_t offset = k - numbersOfElementsLessThanX[0];
-                std::vector&lt;int&gt;::iterator nth = std::next(elementsBetween.begin(), offset);
-                std::nth_element(elementsBetween.begin(), nth, elementsBetween.end());
-                xs[idx] = (*nth);
-            }
-            else // in the Part 3
-            {
-                xs[idx] = xs_[1];
-            }
-        }
-        return xs;
-    }
-
-    // select two elements from four elements, using native way
-    std::array&lt;int, 2&gt; biSelectNative(
-        const std::vector&lt;std::vector&lt;int&gt;&gt; &amp; matrix,
-        const std::vector&lt;size_t&gt; &amp; indices,
-        const std::array&lt;size_t, 2&gt; &amp; ks)
-    {
-        std::vector&lt;int&gt; allElements;
-        for (size_t r : indices)
-        {
-            for (size_t c : indices)
-            {
-                allElements.push_back(matrix[r][c]);
-            }
-        }
-        std::sort(allElements.begin(), allElements.end());
-        std::array&lt;int, 2&gt; results;
-        for (size_t idx : {0, 1})
-        {
-            results[idx] = allElements[ks[idx]];
-        }
-        return results;
-    }
+	<span style="color:#888">// select two elements from four elements, using native way
+</span><span style="color:#888"></span>	std<span style="color:#333">::</span>array<span style="color:#333">&lt;</span><span style="color:#339;font-weight:bold">int</span>, <span style="color:#00d;font-weight:bold">2</span><span style="color:#333">&gt;</span> biSelectNative(
+		<span style="color:#080;font-weight:bold">const</span> std<span style="color:#333">::</span>vector<span style="color:#333">&lt;</span>std<span style="color:#333">::</span>vector<span style="color:#333">&lt;</span><span style="color:#339;font-weight:bold">int</span><span style="color:#333">&gt;&gt;</span> <span style="color:#333">&amp;</span> matrix,
+		<span style="color:#080;font-weight:bold">const</span> std<span style="color:#333">::</span>vector<span style="color:#333">&lt;</span>size_t<span style="color:#333">&gt;</span> <span style="color:#333">&amp;</span> indices,
+		<span style="color:#080;font-weight:bold">const</span> std<span style="color:#333">::</span>array<span style="color:#333">&lt;</span>size_t, <span style="color:#00d;font-weight:bold">2</span><span style="color:#333">&gt;</span> <span style="color:#333">&amp;</span> ks)
+	{
+		std<span style="color:#333">::</span>vector<span style="color:#333">&lt;</span><span style="color:#339;font-weight:bold">int</span><span style="color:#333">&gt;</span> allElements;
+		<span style="color:#080;font-weight:bold">for</span> (size_t <span style="color:#970;font-weight:bold">r</span> : indices)
+		{
+			<span style="color:#080;font-weight:bold">for</span> (size_t <span style="color:#970;font-weight:bold">c</span> : indices)
+			{
+				allElements.push_back(matrix[r][c]);
+			}
+		}
+		std<span style="color:#333">::</span>sort(allElements.begin(), allElements.end());
+		std<span style="color:#333">::</span>array<span style="color:#333">&lt;</span><span style="color:#339;font-weight:bold">int</span>, <span style="color:#00d;font-weight:bold">2</span><span style="color:#333">&gt;</span> results;
+		<span style="color:#080;font-weight:bold">for</span> (size_t <span style="color:#970;font-weight:bold">idx</span> : {<span style="color:#00d;font-weight:bold">0</span>, <span style="color:#00d;font-weight:bold">1</span>})
+		{
+			results[idx] <span style="color:#333">=</span> allElements[ks[idx]];
+		}
+		<span style="color:#080;font-weight:bold">return</span> results;
+	}
 };
-</code></pre>
+</code></pre></div><h3 id="min-heap-oklgn-算法">Min-Heap O(klgn) 算法</h3>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#080;font-weight:bold">class</span> <span style="color:#b06;font-weight:bold">Solution</span> {
+    <span style="color:#080;font-weight:bold">struct</span> <span style="color:#b06;font-weight:bold">Tuple</span> {
+        <span style="color:#339;font-weight:bold">int</span> x, y, val;
+        Tuple(<span style="color:#339;font-weight:bold">int</span> x, <span style="color:#339;font-weight:bold">int</span> y, <span style="color:#339;font-weight:bold">int</span> val) <span style="color:#333">:</span> x(x), y(y), val(val) {}
 
-<h3 id="min-heap-o-klgn-算法">Min-Heap O(klgn) 算法</h3>
-
-<pre><code class="language-cpp">class Solution {
-    struct Tuple {
-        int x, y, val;
-        Tuple(int x, int y, int val) : x(x), y(y), val(val) {}
-
-        bool operator&lt;(const Tuple&amp; other) const { return val &lt; other.val; }
-        bool operator&gt;(const Tuple&amp; other) const { return val &gt; other.val; }
+        <span style="color:#339;font-weight:bold">bool</span> <span style="color:#080;font-weight:bold">operator</span><span style="color:#333">&lt;</span>(<span style="color:#080;font-weight:bold">const</span> Tuple<span style="color:#333">&amp;</span> other) <span style="color:#080;font-weight:bold">const</span> { <span style="color:#080;font-weight:bold">return</span> val <span style="color:#333">&lt;</span> other.val; }
+        <span style="color:#339;font-weight:bold">bool</span> <span style="color:#080;font-weight:bold">operator</span><span style="color:#333">&gt;</span>(<span style="color:#080;font-weight:bold">const</span> Tuple<span style="color:#333">&amp;</span> other) <span style="color:#080;font-weight:bold">const</span> { <span style="color:#080;font-weight:bold">return</span> val <span style="color:#333">&gt;</span> other.val; }
     };
 
-public:
-    int kthSmallest(vector&lt;vector&lt;int&gt;&gt;&amp; matrix, int k) {
-        priority_queue&lt;Tuple, vector&lt;Tuple&gt;, std::greater&lt;Tuple&gt;&gt; min_heap;
-        int n = matrix.size();
-        for (int i = 0; i &lt; n; ++i) min_heap.push(Tuple(0, i, matrix[0][i]));
+<span style="color:#080;font-weight:bold">public</span><span style="color:#333">:</span>
+    <span style="color:#339;font-weight:bold">int</span> kthSmallest(vector<span style="color:#333">&lt;</span>vector<span style="color:#333">&lt;</span><span style="color:#339;font-weight:bold">int</span><span style="color:#333">&gt;&gt;&amp;</span> matrix, <span style="color:#339;font-weight:bold">int</span> k) {
+        priority_queue<span style="color:#333">&lt;</span>Tuple, vector<span style="color:#333">&lt;</span>Tuple<span style="color:#333">&gt;</span>, std<span style="color:#333">::</span>greater<span style="color:#333">&lt;</span>Tuple<span style="color:#333">&gt;&gt;</span> min_heap;
+        <span style="color:#339;font-weight:bold">int</span> n <span style="color:#333">=</span> matrix.size();
+        <span style="color:#080;font-weight:bold">for</span> (<span style="color:#339;font-weight:bold">int</span> i <span style="color:#333">=</span> <span style="color:#00d;font-weight:bold">0</span>; i <span style="color:#333">&lt;</span> n; <span style="color:#333">++</span>i) min_heap.push(Tuple(<span style="color:#00d;font-weight:bold">0</span>, i, matrix[<span style="color:#00d;font-weight:bold">0</span>][i]));
 
-        for (int i = 0; i &lt; k - 1; ++i) {
-            auto t = min_heap.top();
+        <span style="color:#080;font-weight:bold">for</span> (<span style="color:#339;font-weight:bold">int</span> i <span style="color:#333">=</span> <span style="color:#00d;font-weight:bold">0</span>; i <span style="color:#333">&lt;</span> k <span style="color:#333">-</span> <span style="color:#00d;font-weight:bold">1</span>; <span style="color:#333">++</span>i) {
+            <span style="color:#080;font-weight:bold">auto</span> t <span style="color:#333">=</span> min_heap.top();
             min_heap.pop();
-            if (t.x == n - 1) continue;
-            min_heap.push(Tuple(t.x + 1, t.y, matrix[t.x + 1][t.y]));
+            <span style="color:#080;font-weight:bold">if</span> (t.x <span style="color:#333">==</span> n <span style="color:#333">-</span> <span style="color:#00d;font-weight:bold">1</span>) <span style="color:#080;font-weight:bold">continue</span>;
+            min_heap.push(Tuple(t.x <span style="color:#333">+</span> <span style="color:#00d;font-weight:bold">1</span>, t.y, matrix[t.x <span style="color:#333">+</span> <span style="color:#00d;font-weight:bold">1</span>][t.y]));
         }
 
-        return min_heap.top().val;
+        <span style="color:#080;font-weight:bold">return</span> min_heap.top().val;
     }
 };
-</code></pre>
+</code></pre></div>
       </div>
     </section>
     
     <section class="pagination clearfix">
       
-      <a class="btn previous " href="https://blog.crazyark.me/posts/dynamic_proxy/"> Dynamic Proxy in Java </a> 
+      <a class="btn previous " href="https://blog.crazyark.xyz/posts/dynamic_proxy/"> Dynamic Proxy in Java </a> 
        
       
-      <a class="btn next " href="https://blog.crazyark.me/posts/monotonic_queue/"> 滑动窗口中的最大值 (Sliding Window Maximum / Monotonic Queue) </a> 
+      <a class="btn next " href="https://blog.crazyark.xyz/posts/monotonic_queue/"> 滑动窗口中的最大值 (Sliding Window Maximum / Monotonic Queue) </a> 
       
     </section>
     
@@ -351,7 +331,7 @@ public:
 <section id="disqus_thread" class='disqus'></section>
 <script>
   var disqus_config = function () {
-    this.page.url = "https://blog.crazyark.me/posts/selection_in_x_plus_y_and_matrices_with_sorted_rows_and_columns/";
+    this.page.url = "https://blog.crazyark.xyz/posts/selection_in_x_plus_y_and_matrices_with_sorted_rows_and_columns/";
     
   };
   (function() {
@@ -370,13 +350,14 @@ public:
     <p>
       <a href="mailto:arkbriar@gmail.com?subject="><i class="far fa-envelope"></i> arkbriar@gmail.com </a>
       {
-        <a href="https://gohugo.io/" title="Hugo :: A fast and modern static website engine">Hugo 0.46</a>,
+        <a href="https://gohugo.io/" title="Hugo :: A fast and modern static website engine">Hugo 0.87.0</a>,
         <a href="https://github.com/IvanChou/yii.im" title="vec">Vec</a> 
       }
       {<a href="http://creativecommons.org/licenses/by-nc-nd/3.0/" title="CC BY-NC-ND 3.0">CC BY-NC-ND 3.0</a>}
     </p>
   </div>
 </footer>
+
 
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
@@ -417,7 +398,7 @@ MathJax.Hub.Config({
 </script>
 
   
-  <script src="https://blog.crazyark.me/js/highlight.min.js"></script>
+  <script src="https://blog.crazyark.xyz/js/highlight.min.js"></script>
   <script>
     hljs.initHighlightingOnLoad();
   </script>

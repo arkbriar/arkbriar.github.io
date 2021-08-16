@@ -1,22 +1,18 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Dubbo on crazy.ark</title>
-    <link>https://blog.crazyark.me/categories/dubbo/</link>
-    <description>Recent content in Dubbo on crazy.ark</description>
+    <title>dubbo on crazy.ark</title>
+    <link>https://blog.crazyark.xyz/categories/dubbo/</link>
+    <description>Recent content in dubbo on crazy.ark</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 01 Aug 2018 19:59:45 +0800</lastBuildDate>
-    
-	<atom:link href="https://blog.crazyark.me/categories/dubbo/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Wed, 01 Aug 2018 19:59:45 +0800</lastBuildDate><atom:link href="https://blog.crazyark.xyz/categories/dubbo/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>第四届天池中间件性能挑战赛感想</title>
-      <link>https://blog.crazyark.me/posts/awrace2018/</link>
+      <link>https://blog.crazyark.xyz/posts/awrace2018/</link>
       <pubDate>Wed, 01 Aug 2018 19:59:45 +0800</pubDate>
       
-      <guid>https://blog.crazyark.me/posts/awrace2018/</guid>
+      <guid>https://blog.crazyark.xyz/posts/awrace2018/</guid>
       <description>从报名比赛开始到现在将近四个月了，终于告一段落，最终拿到了季军也很开心。这三个月中我学到了很多有用的工程知识，顺便把 C++ 又摸熟了。初赛代码实在</description>
     </item>
     

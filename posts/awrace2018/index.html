@@ -6,11 +6,11 @@
   
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-<meta name="generator" content="Hugo 0.46" />
+<meta name="generator" content="Hugo 0.87.0" />
 
 
-<link rel="stylesheet" href="https://blog.crazyark.me/css/vec.css">
-<link rel="stylesheet" href="https://blog.crazyark.me/css/github.css">
+<link rel="stylesheet" href="https://blog.crazyark.xyz/css/vec.css">
+<link rel="stylesheet" href="https://blog.crazyark.xyz/css/github.css">
 
 
 <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
@@ -28,7 +28,7 @@
       
       
       <li class="pull-left ">
-        <a href="https://blog.crazyark.me/">/home/crazy.ark</a>
+        <a href="https://blog.crazyark.xyz/">/home/crazy.ark</a>
       </li>
       
       
@@ -56,59 +56,43 @@
     </ul>
   </nav>
 </header>
+
   <div class="content toc">
     <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#初赛部分">初赛部分</a>
-<ul>
-<li><a href="#赛题背景分析及理解">赛题背景分析及理解</a></li>
-<li><a href="#核心思路">核心思路</a></li>
-<li><a href="#关键代码">关键代码</a></li>
-</ul></li>
-<li><a href="#复赛部分">复赛部分</a>
-<ul>
-<li><a href="#赛题背景分析及理解-1">赛题背景分析及理解</a></li>
-<li><a href="#核心思路-1">核心思路</a>
-<ul>
-<li><a href="#存储设计-页式存储">存储设计：页式存储</a></li>
-<li><a href="#io-ssd-优化-块读块写">IO/SSD 优化：块读块写</a></li>
-<li><a href="#内存规划-精打细算">内存规划：精打细算</a></li>
-<li><a href="#整体架构">整体架构</a></li>
-<li><a href="#put-get-流程">Put/Get 流程</a></li>
-</ul></li>
-<li><a href="#关键代码-1">关键代码</a></li>
-<li><a href="#最终成绩">最终成绩</a></li>
-<li><a href="#工程价值与健壮性">工程价值与健壮性</a></li>
-</ul></li>
-<li><a href="#总结与感想">总结与感想</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#初赛部分">初赛部分</a>
+      <ul>
+        <li><a href="#赛题背景分析及理解">赛题背景分析及理解</a></li>
+        <li><a href="#核心思路">核心思路</a></li>
+        <li><a href="#关键代码">关键代码</a></li>
+      </ul>
+    </li>
+    <li><a href="#复赛部分">复赛部分</a>
+      <ul>
+        <li><a href="#赛题背景分析及理解-1">赛题背景分析及理解</a></li>
+        <li><a href="#核心思路-1">核心思路</a></li>
+        <li><a href="#关键代码-1">关键代码</a></li>
+        <li><a href="#最终成绩">最终成绩</a></li>
+        <li><a href="#工程价值与健壮性">工程价值与健壮性</a></li>
+      </ul>
+    </li>
+    <li><a href="#总结与感想">总结与感想</a></li>
+  </ul>
 </nav>
     
     <section class="post">
-      <h1 class="post-title"><a href="https://blog.crazyark.me/posts/awrace2018/">第四届天池中间件性能挑战赛感想</a></h1>
+      <h1 class="post-title"><a href="https://blog.crazyark.xyz/posts/awrace2018/">第四届天池中间件性能挑战赛感想</a></h1>
       <span class="post-date">Aug 1, 2018 </span>
       <div class="post-content">
-        
-
-<p>从报名比赛开始到现在将近四个月了，终于告一段落，最终拿到了季军也很开心。这三个月中我学到了很多有用的工程知识，顺便把 C++ 又摸熟了。初赛代码实在写太丑就不放出来了，复赛的代码托管在 github 上：</p>
-
+        <p>从报名比赛开始到现在将近四个月了，终于告一段落，最终拿到了季军也很开心。这三个月中我学到了很多有用的工程知识，顺便把 C++ 又摸熟了。初赛代码实在写太丑就不放出来了，复赛的代码托管在 github 上：</p>
 <p><a href="https://github.com/arkbriar/awrace2018_messagestore">https://github.com/arkbriar/awrace2018_messagestore</a></p>
-
 <p>下面是本次大赛初赛和复赛部分的思考过程和最终方案。</p>
-
 <h2 id="初赛部分">初赛部分</h2>
-
 <h3 id="赛题背景分析及理解">赛题背景分析及理解</h3>
-
 <blockquote>
 <p>实现一个高性能的 Service Mesh Agent 组件，并包含如下一些功能：1.  服务注册与发现, 2.  协议转换, 3.  负载均衡</p>
 </blockquote>
-
 <p>本题要求我们能够尽可能的<strong>高性能</strong>，我们首先对场景和大致思路进行了一个重述：</p>
-
 <ul>
 <li>Consumer 将接受超过 500 个连接：想到使用 IO multiplex</li>
 <li>Http = TCP 连接：禁用 Nagle 算法</li>
@@ -116,57 +100,37 @@
 <li>线上网络性能 (pps) 较差：批量发送 request/response，使用 UDP 进行 Agent 间通信</li>
 <li>Consumer 性能较差：将协议转换等放到 provider agent 上去做</li>
 </ul>
-
 <h3 id="核心思路">核心思路</h3>
-
 <p>为了减少系统开销，我们在 agent 之间都只保持一个 udp 信道，在 PA (Provider Agent) 和 Provider 之间也只保持一个 tcp 信道。</p>
-
 <p>整体的架构图如下所示：</p>
-
-<p><img src="/img/15321002017148.jpg" alt="" /></p>
-
+<p><img src="/img/15321002017148.jpg" alt=""></p>
 <p>其中，CA (Consumer Agent) 端使用一个 epoll 的 eventloop，loop 的大致流程如下图：</p>
-
-<p><img src="/img/15321002990709.jpg" alt="" />
+<p><img src="/img/15321002990709.jpg" alt="">
 1. 首先接起所有的新的连接，在接到连接的时候，根据 provider 的权重直接分配一个 provider 处理后续该连接的所有请求</p>
-
 <p>2. 读所有的能读的 socket</p>
-
 <ul>
 <li>如果读到完整的请求，那么将它<strong>放入到请求队列</strong></li>
 <li>如果读到完整的回复，直接通过阻塞写的方式写回</li>
 </ul>
-
 <p>3. 所有事件处理完成以后，批量发送所有的请求队列 (此处使用 writev)</p>
-
 <p>在请求发送和获取回复的过程中，我们始终有一个 id 附在请求中，这个 id 是 consumer 端唯一的，这保证了我们只在 consumer 端有一个 map 来确定回复的归宿，在这里我们的 id 是 handler 的编号。</p>
-
 <h3 id="关键代码">关键代码</h3>
-
 <p>批量发送请求代码大致如下：</p>
-
-<pre><code class="language-cpp">epoll_event events[LOWER_LOAD_EVENT_SIZE];
-while (_event_group.wait_and_handle(events, LOWER_LOAD_EVENT_SIZE, -1)) {
-    // check pending write queue, and block write all
-    for (auto&amp; entry : _pending_data) {
-        // write all requests to provider agent
-        // ... 
-    }
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp">epoll_event events[LOWER_LOAD_EVENT_SIZE];
+<span style="color:#080;font-weight:bold">while</span> (_event_group.wait_and_handle(events, LOWER_LOAD_EVENT_SIZE, <span style="color:#333">-</span><span style="color:#00d;font-weight:bold">1</span>)) {
+    <span style="color:#888">// check pending write queue, and block write all
+</span><span style="color:#888"></span>    <span style="color:#080;font-weight:bold">for</span> (<span style="color:#080;font-weight:bold">auto</span><span style="color:#333">&amp;</span> <span style="color:#970;font-weight:bold">entry</span> : _pending_data) {
+        <span style="color:#888">// write all requests to provider agent
+</span><span style="color:#888"></span>        <span style="color:#888">// ... 
+</span><span style="color:#888"></span>    }
 }
-</code></pre>
-
-<p>其余代码在 <a href="https://code.aliyun.com/arkbriar/dubbo-agent-cxx">https://code.aliyun.com/arkbriar/dubbo-agent-cxx</a> 中。</p>
-
+</code></pre></div><p>其余代码在 <a href="https://code.aliyun.com/arkbriar/dubbo-agent-cxx">https://code.aliyun.com/arkbriar/dubbo-agent-cxx</a> 中。</p>
 <h2 id="复赛部分">复赛部分</h2>
-
 <h3 id="赛题背景分析及理解-1">赛题背景分析及理解</h3>
-
 <blockquote>
 <p>实现 Queue Store 的接口 put/get，要求支持单机百万队列和百G数据。</p>
 </blockquote>
-
 <p>在对题目稍微了解过后，我们得到了以下的几个信息：</p>
-
 <ul>
 <li>消息条数大约为 2g，消息大小大约为 64 byte，但是可能会有长为 1024 byte 的消息</li>
 <li>线上的机器是 4c8g 带 ssd，iops 1w 左右，顺序 4k 读写性能大约为 200m/s 左右</li>
@@ -174,133 +138,86 @@ while (_event_group.wait_and_handle(events, LOWER_LOAD_EVENT_SIZE, -1)) {
 <li>对同一个队列，get 可能是并发的</li>
 <li>不存在删除队列和消息，也不存在 put 与 get 同时进行</li>
 </ul>
-
 <p>而评测程序的空跑 put TPS 大约在 600w 左右，性能也不是很高；而在不压缩的情况下，写打满写 100g 数据最少耗时 500s。因此本题要求选手能够尽可能的保证 put 阶段的无阻塞，以及能够设计出一个良好的数据结构，保证 get 阶段能够利用缓存和局部性。</p>
-
 <h3 id="核心思路-1">核心思路</h3>
-
 <p>为了实现高性能的接口，我们必须要解决以下三个问题：</p>
-
 <ol>
 <li>存储设计问题，要求能够支持顺序写与随机读</li>
 <li>IO/SSD 优化问题，能尽可能的使 IO 做到极限</li>
 <li>内存规划问题，由于评测环境内存比较有限，需要紧凑的规划和使用</li>
 </ol>
-
-<h4 id="存储设计-页式存储">存储设计：页式存储</h4>
-
+<h4 id="存储设计页式存储">存储设计：页式存储</h4>
 <p>首先我们研究了一个比较类似的产品，Kafka：</p>
-
-<p><img src="/img/15321022399044.jpg" alt="" /></p>
-
-<p><img src="/img/15321022432192.jpg" alt="" /></p>
-
+<p><img src="/img/15321022399044.jpg" alt=""></p>
+<p><img src="/img/15321022432192.jpg" alt=""></p>
 <p>Kafka 的大致存储模型如上图所示，这里并不展开叙述，有兴趣的同学可以到这个网站继续学习 <a href="https://thehoard.blog/how-kafkas-storage-internals-work-3a29b02e026">https://thehoard.blog/how-kafkas-storage-internals-work-3a29b02e026</a></p>
-
 <p>但是对于我们来说，照搬它有很多问题：</p>
-
 <ol>
 <li>100w 个队列，至少有 200w 个文件，这对文件系统形成了巨大的负担</li>
 <li>Kafka 使用全量索引，而 2g 消息的全量索引根本放不进内存，至少做两级索引，这加重了读的负担</li>
 <li>2g 消息的全量索引的磁盘 overhead 太大</li>
 <li>队列的主要场景是顺序读，全量索引优势完全没有发挥 (随机读)</li>
 </ol>
-
 <p>所以我们借鉴了一个常见的文件切分模式，也就是分页，并以页为最小单位进行操作和建立索引。这就是我们的存储模式：页式存储。</p>
-
 <p>通过这个存储方式，</p>
-
 <ul>
 <li>可以有效的减少文件的数目</li>
 <li>并且由于顺序写的性质，我们并不需要考虑脏页的问题</li>
 <li>同时由于页是最小单位，同属一个队列的连续消息尽可能的在一个页中，保证了顺序读能够利用缓存和局部性</li>
 <li>最后，我们对页建立索引，此时的索引已经完全可以放入内存了</li>
 </ul>
-
 <p>为了兼顾内存，页大小设置为 4k。</p>
-
-<h4 id="io-ssd-优化-块读块写">IO/SSD 优化：块读块写</h4>
-
+<h4 id="iossd-优化块读块写">IO/SSD 优化：块读块写</h4>
 <p>对于现有的大多数存储设备来说，无论是 HDD 还是 SSD 也好，顺序读写永远都是最优的。</p>
-
 <p>但是，SSD 有区别的一点在于，由于 SSD 的特性 “内置并发”，对齐于 Clustered Block 的读写将完全不输于顺序读写。</p>
-
 <p>如果要理解内置并发这个事情，我们可能需要去了解一些 SSD 的原理，下面这个网站提供了更多的细节，在这里只叙述一部分的东西。</p>
-
 <p><a href="http://codecapsule.com/2014/02/12/coding-for-ssds-part-3-pages-blocks-and-the-flash-translation-layer/">http://codecapsule.com/2014/02/12/coding-for-ssds-part-3-pages-blocks-and-the-flash-translation-layer/</a></p>
-
-<p><img src="/img/15321031573324.jpg" alt="" /></p>
-
+<p><img src="/img/15321031573324.jpg" alt=""></p>
 <p>SSD 的读写都是以页 (NAND-flash page) 为单位的，即使只读/写一个 bit，也会同时读/写一个页。相邻的页组成一个块，块大小通常在 256k 到 4m 之间。SSD 的还有些原理会导致一个写放大和 GC 的问题，这里不再展开，有兴趣的同学自行了解。</p>
-
 <p>SSD 的内置并发指的是，图示上面的不同 channel/package/chip/plane 的访问都是可以并发进行的，不同的 plane 上的 block 组成的访问单位叫做聚簇块 (Clustered Block)，如图示中黄色框中的部分。可以看到，读写聚簇块就能充分地并发访问，而我们接下来要讲的读写模式就是，对齐聚簇块随机读写，性能将完全不输顺序读写。这里额外提一句，通常聚簇块大小为 32/64m。</p>
-
 <p>这是一张随机写与顺序写的吞吐对比，在 32M/64M 下，随机写已经能够全线等同顺序写。
-<img src="/img/15321036720838.jpg" alt="" /></p>
-
+<img src="/img/15321036720838.jpg" alt=""></p>
 <p>而我们也做了一个小测试，测试 4g 大小的文件读写，单位都是秒：</p>
-
-<p><img src="/img/15321037598597.jpg" alt="" /></p>
-
+<p><img src="/img/15321037598597.jpg" alt=""></p>
 <p>其中 concurrent pseudo sequential write 是指多个线程从同一个 atomic int 上获取下一个写 offset。实验结果证明了这个模式的有效性。</p>
-
 <p>所以我们最后的读写模式为块读块写：</p>
-
 <ul>
 <li>大块 (64m) 写，甚至可以不用顺序写</li>
 <li>有效地提高了并发读写性能</li>
 <li>顺序读时充分利用缓存和预读</li>
 </ul>
-
-<h4 id="内存规划-精打细算">内存规划：精打细算</h4>
-
+<h4 id="内存规划精打细算">内存规划：精打细算</h4>
 <p>在结合上述两个设计的基础上，我们对内存有个精确的规划：</p>
-
 <ul>
 <li>每个队列有自己的 4k 页缓存，对应于当前正在写的页</li>
 <li>每个 put 线程有自己的双 64m 写缓冲，缓冲永远对应某个文件的一个区间</li>
 <li>总计加起来缓存共占用 4k * 1m + 64m * 2 ≈ 5.2g</li>
 </ul>
-
 <h4 id="整体架构">整体架构</h4>
-
 <p>Queue 与文件的关系如下图：</p>
-
-<p><img src="/img/15321040869218.jpg" alt="" />
+<p><img src="/img/15321040869218.jpg" alt="">
 页与消息的结构如下图：</p>
-
-<p><img src="/img/15321040994886.jpg" alt="" />Size 的计算采用变长编码：</p>
-
+<p><img src="/img/15321040994886.jpg" alt="">Size 的计算采用变长编码：</p>
 <ul>
 <li>Size &lt; 128，使用一个 byte 存储，第一个 bit 为 0</li>
 <li>Size &gt;= 128 并且 &lt; 32768，使用两个 byte 存储，但是由于第一个 bit 也为 0，所以存储 size | 0x8000</li>
 </ul>
-
 <p>针对每个页的索引大致如下：</p>
-
-<p><img src="/img/15321041984763.jpg" alt="" /></p>
-
+<p><img src="/img/15321041984763.jpg" alt=""></p>
 <p>每个页存储页编号、文件编号、页内消息数和之前所有页消息数这四项，这样我们在 get 时二分查找就可以获取到对应消息所在的页。所有的索引总量大约为 12byte * 25m = 300m，完全可以放于内存。</p>
-
-<h4 id="put-get-流程">Put/Get 流程</h4>
-
+<h4 id="putget-流程">Put/Get 流程</h4>
 <p>这两个流程相对简单，首先是 put 流程：</p>
-
-<p><img src="/img/15321043391182.jpg" alt="" /></p>
-
+<p><img src="/img/15321043391182.jpg" alt=""></p>
 <ul>
 <li>检查内存中的页还有没有空间
-
 <ul>
 <li>有，直接写入</li>
 <li>没有，将当前页写出，更新索引，然后写入消息</li>
-</ul></li>
 </ul>
-
+</li>
+</ul>
 <p>页写出时会提交到当前 put 线程的写缓冲，并反馈修改索引。当写缓冲满的时候，与后备的缓冲交换继续写入缓冲，并起新的线程刷盘，这样尽可能不阻塞 put 线程。</p>
-
 <p>在所有 get 发生前，我们会强制所有缓冲落盘，接下来的 get 流程也相对简单：</p>
-
 <ul>
 <li>二分查找第一页和最后一页</li>
 <li>顺序<strong>阻塞读</strong>对应的文件页</li>
@@ -308,147 +225,116 @@ while (_event_group.wait_and_handle(events, LOWER_LOAD_EVENT_SIZE, -1)) {
 <li>如果请求的最后一页剩余消息数小于某个阈值 (e.g. 15)，使用 readahead 预读下一页</li>
 <li>返回请求的消息</li>
 </ul>
-
 <p>我们在 get 的过程中保持两个理念：</p>
-
 <ol>
 <li>全力使用 OS 的页缓存</li>
 <li>尽可能预读，以期望减少顺序读的时间</li>
 </ol>
-
 <p>全力使用 OS 的页缓存主要是考虑到</p>
-
 <ol>
 <li>实现 Concurrent LRU cache 比较麻烦</li>
 <li>如果实现队列的一个顺序读缓冲，类似于链表结构，一旦发生多线程同时顺序读，缓冲会一直失效；即使实现 thread local 缓冲，如果出现单线程不同偏移量顺序读同一个队列 (e.g. 完整读两次)，缓冲也会不断失效</li>
 </ol>
-
 <p>所以不如直接使用页缓存。</p>
-
 <h3 id="关键代码-1">关键代码</h3>
-
 <p>队列映射我们使用了 tbb 的 concurrent hash map，最终证明这是最大的 cpu 瓶颈，而我们的 put 完全卡在了 cpu 上。</p>
-
-<pre><code class="language-cpp">template &lt;class K, class V, class C = tbb::tbb_hash_compare&lt;K&gt;,
-          class A = tbb::cache_aligned_allocator&lt;std::pair&lt;const K, V&gt;&gt;&gt;
-class ConcurrentHashMapProxy : public tbb::concurrent_hash_map&lt;K, V, C, A&gt; {
-public:
-    ConcurrentHashMapProxy(size_t n) : tbb::concurrent_hash_map&lt;K, V, C, A&gt;(n) {}
-    ~ConcurrentHashMapProxy() {
-        this-&gt;tbb::concurrent_hash_map&lt;K, V, C, A&gt;::~concurrent_hash_map&lt;K, V, C, A&gt;();
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#080;font-weight:bold">template</span> <span style="color:#333">&lt;</span><span style="color:#080;font-weight:bold">class</span> <span style="color:#b06;font-weight:bold">K</span>, <span style="color:#080;font-weight:bold">class</span> <span style="color:#b06;font-weight:bold">V</span>, <span style="color:#080;font-weight:bold">class</span> <span style="color:#b06;font-weight:bold">C</span> <span style="color:#333">=</span> tbb<span style="color:#333">::</span>tbb_hash_compare<span style="color:#333">&lt;</span>K<span style="color:#333">&gt;</span>,
+          <span style="color:#080;font-weight:bold">class</span> <span style="color:#b06;font-weight:bold">A</span> <span style="color:#333">=</span> tbb<span style="color:#333">::</span>cache_aligned_allocator<span style="color:#333">&lt;</span>std<span style="color:#333">::</span>pair<span style="color:#333">&lt;</span><span style="color:#080;font-weight:bold">const</span> K, V<span style="color:#333">&gt;&gt;&gt;</span>
+<span style="color:#080;font-weight:bold">class</span> <span style="color:#b06;font-weight:bold">ConcurrentHashMapProxy</span> <span style="color:#333">:</span> <span style="color:#080;font-weight:bold">public</span> tbb<span style="color:#333">::</span>concurrent_hash_map<span style="color:#333">&lt;</span>K, V, C, A<span style="color:#333">&gt;</span> {
+<span style="color:#080;font-weight:bold">public</span><span style="color:#333">:</span>
+    ConcurrentHashMapProxy(size_t n) <span style="color:#333">:</span> tbb<span style="color:#333">::</span>concurrent_hash_map<span style="color:#333">&lt;</span>K, V, C, A<span style="color:#333">&gt;</span>(n) {}
+    <span style="color:#333">~</span>ConcurrentHashMapProxy() {
+        <span style="color:#080;font-weight:bold">this</span><span style="color:#333">-&gt;</span>tbb<span style="color:#333">::</span>concurrent_hash_map<span style="color:#333">&lt;</span>K, V, C, A<span style="color:#333">&gt;::~</span>concurrent_hash_map<span style="color:#333">&lt;</span>K, V, C, A<span style="color:#333">&gt;</span>();
     }
-    typename tbb::concurrent_hash_map&lt;K, V, C, A&gt;::const_pointer fast_find(const K&amp; key) const {
-        return this-&gt;internal_fast_find(key);
+    <span style="color:#080;font-weight:bold">typename</span> tbb<span style="color:#333">::</span>concurrent_hash_map<span style="color:#333">&lt;</span>K, V, C, A<span style="color:#333">&gt;::</span>const_pointer fast_find(<span style="color:#080;font-weight:bold">const</span> K<span style="color:#333">&amp;</span> key) <span style="color:#080;font-weight:bold">const</span> {
+        <span style="color:#080;font-weight:bold">return</span> <span style="color:#080;font-weight:bold">this</span><span style="color:#333">-&gt;</span>internal_fast_find(key);
     }
 };
 
-MessageQueue* QueueStore::find_or_create_queue(const String&amp; queue_name) {
-    auto q_ptr = queues_.fast_find(queue_name);
-    if (q_ptr) return q_ptr-&gt;second;
+MessageQueue<span style="color:#333">*</span> QueueStore<span style="color:#333">::</span>find_or_create_queue(<span style="color:#080;font-weight:bold">const</span> String<span style="color:#333">&amp;</span> queue_name) {
+    <span style="color:#080;font-weight:bold">auto</span> q_ptr <span style="color:#333">=</span> queues_.fast_find(queue_name);
+    <span style="color:#080;font-weight:bold">if</span> (q_ptr) <span style="color:#080;font-weight:bold">return</span> q_ptr<span style="color:#333">-&gt;</span>second;
 
-    decltype(queues_)::const_accessor ac;
+    <span style="color:#080;font-weight:bold">decltype</span>(queues_)<span style="color:#333">::</span>const_accessor ac;
     queues_.find(ac, queue_name);
-    if (ac.empty()) {
-        uint32_t queue_id = next_queue_id_.next();
-        auto queue_ptr = new MessageQueue(queue_id, this);
-        queues_.insert(ac, std::make_pair(queue_name, queue_ptr));
-        DLOG(&quot;Created a new queue, id: %d, name: %s&quot;, q-&gt;get_queue_id(),
-             q-&gt;get_queue_name().c_str());
+    <span style="color:#080;font-weight:bold">if</span> (ac.empty()) {
+        <span style="color:#339;font-weight:bold">uint32_t</span> queue_id <span style="color:#333">=</span> next_queue_id_.next();
+        <span style="color:#080;font-weight:bold">auto</span> queue_ptr <span style="color:#333">=</span> <span style="color:#080;font-weight:bold">new</span> MessageQueue(queue_id, <span style="color:#080;font-weight:bold">this</span>);
+        queues_.insert(ac, std<span style="color:#333">::</span>make_pair(queue_name, queue_ptr));
+        DLOG(<span style="background-color:#fff0f0">&#34;Created a new queue, id: %d, name: %s&#34;</span>, q<span style="color:#333">-&gt;</span>get_queue_id(),
+             q<span style="color:#333">-&gt;</span>get_queue_name().c_str());
     }
-    return ac-&gt;second;
+    <span style="color:#080;font-weight:bold">return</span> ac<span style="color:#333">-&gt;</span>second;
 }
 
-MessageQueue* QueueStore::find_queue(const String&amp; queue_name) const {
-    auto q_ptr = queues_.fast_find(queue_name);
-    return q_ptr ? q_ptr-&gt;second : nullptr;
+MessageQueue<span style="color:#333">*</span> QueueStore<span style="color:#333">::</span>find_queue(<span style="color:#080;font-weight:bold">const</span> String<span style="color:#333">&amp;</span> queue_name) <span style="color:#080;font-weight:bold">const</span> {
+    <span style="color:#080;font-weight:bold">auto</span> q_ptr <span style="color:#333">=</span> queues_.fast_find(queue_name);
+    <span style="color:#080;font-weight:bold">return</span> q_ptr <span style="color:#333">?</span> q_ptr<span style="color:#333">-&gt;</span><span style="color:#970;font-weight:bold">second</span> : <span style="color:#080;font-weight:bold">nullptr</span>;
 
-    decltype(queues_)::const_accessor ac;
+    <span style="color:#080;font-weight:bold">decltype</span>(queues_)<span style="color:#333">::</span>const_accessor ac;
     queues_.find(ac, queue_name);
-    return ac.empty() ? nullptr : ac-&gt;second;
+    <span style="color:#080;font-weight:bold">return</span> ac.empty() <span style="color:#333">?</span> <span style="color:#080;font-weight:bold">nullptr</span> <span style="color:#333">:</span> ac<span style="color:#333">-&gt;</span>second;
 }
 
-void QueueStore::put(const String&amp; queue_name, const MemBlock&amp; message) {
-    if (!message.ptr) return;
-    auto q_ptr = find_or_create_queue(queue_name);
-    q_ptr-&gt;put(message);
+<span style="color:#339;font-weight:bold">void</span> QueueStore<span style="color:#333">::</span>put(<span style="color:#080;font-weight:bold">const</span> String<span style="color:#333">&amp;</span> queue_name, <span style="color:#080;font-weight:bold">const</span> MemBlock<span style="color:#333">&amp;</span> message) {
+    <span style="color:#080;font-weight:bold">if</span> (<span style="color:#333">!</span>message.ptr) <span style="color:#080;font-weight:bold">return</span>;
+    <span style="color:#080;font-weight:bold">auto</span> q_ptr <span style="color:#333">=</span> find_or_create_queue(queue_name);
+    q_ptr<span style="color:#333">-&gt;</span>put(message);
 }
 
-Vector&lt;MemBlock&gt; QueueStore::get(const String&amp; queue_name, long offset, long size) {
-    if (!flushed) flush_all_before_read();
+Vector<span style="color:#333">&lt;</span>MemBlock<span style="color:#333">&gt;</span> QueueStore<span style="color:#333">::</span>get(<span style="color:#080;font-weight:bold">const</span> String<span style="color:#333">&amp;</span> queue_name, <span style="color:#339;font-weight:bold">long</span> offset, <span style="color:#339;font-weight:bold">long</span> size) {
+    <span style="color:#080;font-weight:bold">if</span> (<span style="color:#333">!</span>flushed) flush_all_before_read();
 
-    auto q_ptr = find_queue(queue_name);
-    if (q_ptr) return q_ptr-&gt;get(offset, size);
-    // return empty list when queue is not found
-    return Vector&lt;MemBlock&gt;();
+    <span style="color:#080;font-weight:bold">auto</span> q_ptr <span style="color:#333">=</span> find_queue(queue_name);
+    <span style="color:#080;font-weight:bold">if</span> (q_ptr) <span style="color:#080;font-weight:bold">return</span> q_ptr<span style="color:#333">-&gt;</span>get(offset, size);
+    <span style="color:#888">// return empty list when queue is not found
+</span><span style="color:#888"></span>    <span style="color:#080;font-weight:bold">return</span> Vector<span style="color:#333">&lt;</span>MemBlock<span style="color:#333">&gt;</span>();
 }
-</code></pre>
-
-<p>然后是我们的主要数据结构 FilePage：</p>
-
-<pre><code class="language-cpp">// File page header
-struct __attribute__((__packed__)) FilePageHeader {
-    uint64_t offset = NEGATIVE_OFFSET;
+</code></pre></div><p>然后是我们的主要数据结构 FilePage：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#888">// File page header
+</span><span style="color:#888"></span><span style="color:#080;font-weight:bold">struct</span> <span style="color:#06b;font-weight:bold">__attribute__</span>((__packed__)) FilePageHeader {
+    <span style="color:#339;font-weight:bold">uint64_t</span> offset <span style="color:#333">=</span> NEGATIVE_OFFSET;
 };
 
-#define FILE_PAGE_HEADER_SIZE sizeof(FilePageHeader)
-#define FILE_PAGE_AVAILABLE_SIZE (FILE_PAGE_SIZE - FILE_PAGE_HEADER_SIZE)
-
-// File page
-struct __attribute__((__packed__)) FilePage {
+<span style="color:#579">#define FILE_PAGE_HEADER_SIZE sizeof(FilePageHeader)
+</span><span style="color:#579">#define FILE_PAGE_AVAILABLE_SIZE (FILE_PAGE_SIZE - FILE_PAGE_HEADER_SIZE)
+</span><span style="color:#579"></span>
+<span style="color:#888">// File page
+</span><span style="color:#888"></span><span style="color:#080;font-weight:bold">struct</span> <span style="color:#06b;font-weight:bold">__attribute__</span>((__packed__)) FilePage {
     FilePageHeader header;
-    char content[FILE_PAGE_AVAILABLE_SIZE];
+    <span style="color:#339;font-weight:bold">char</span> content[FILE_PAGE_AVAILABLE_SIZE];
 };
-</code></pre>
-
-<p>双写缓冲有个交换上的同步，我们使用 mutex 去进行这个同步：</p>
-
-<pre><code class="language-cpp">// buffer is full, switch to back
-{
-    // spin wait until back buf is not in scheduled status
-    while (back_buf_status-&gt;load() == BACK_BUF_FLUSH_SCHEDULED)
+</code></pre></div><p>双写缓冲有个交换上的同步，我们使用 mutex 去进行这个同步：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#888">// buffer is full, switch to back
+</span><span style="color:#888"></span>{
+    <span style="color:#888">// spin wait until back buf is not in scheduled status
+</span><span style="color:#888"></span>    <span style="color:#080;font-weight:bold">while</span> (back_buf_status<span style="color:#333">-&gt;</span>load() <span style="color:#333">==</span> BACK_BUF_FLUSH_SCHEDULED)
         ;
-    // try swap active and back buffer
-    std::unique_lock&lt;std::mutex&gt; lock(*back_buf_mutex);
-    std::swap(active_buf, back_buf);
-    assert(back_buf_status-&gt;load() == BACK_BUF_FREE);
-    uint32_t exp = BACK_BUF_FREE;
-    back_buf_status-&gt;compare_exchange_strong(exp, BACK_BUF_FLUSH_SCHEDULED);
+    <span style="color:#888">// try swap active and back buffer
+</span><span style="color:#888"></span>    std<span style="color:#333">::</span>unique_lock<span style="color:#333">&lt;</span>std<span style="color:#333">::</span>mutex<span style="color:#333">&gt;</span> lock(<span style="color:#333">*</span>back_buf_mutex);
+    std<span style="color:#333">::</span>swap(active_buf, back_buf);
+    assert(back_buf_status<span style="color:#333">-&gt;</span>load() <span style="color:#333">==</span> BACK_BUF_FREE);
+    <span style="color:#339;font-weight:bold">uint32_t</span> exp <span style="color:#333">=</span> BACK_BUF_FREE;
+    back_buf_status<span style="color:#333">-&gt;</span>compare_exchange_strong(exp, BACK_BUF_FLUSH_SCHEDULED);
 }
-</code></pre>
-
-<p>为了使得 OS 充分的跑起来，get 阶段需要释放掉所有无用的内存，然而 tcmalloc 是不会主动释放的，所以需要强制释放：</p>
-
-<pre><code class="language-cpp">// release free memory back to os
-MallocExtension::instance()-&gt;ReleaseFreeMemory();
-</code></pre>
-
-<p>由于线上的写入太过于均匀，到了刷盘的时候就是所有页缓存一起刷盘，这会造成所有 put 线程都阻塞并等待的状况，为了缓解这个情况，我们让某些队列的第一页快速写出：</p>
-
-<pre><code class="language-cpp">// first page will hold at most (queue_id / DATA_FILE_SPLITS) % 64 + 1 messages, this make write
-// more average. This leads to 64 timepoints of first flush. I call it flush fast.
-bool flush_fast =
-    paged_message_indices_.size() == 1 &amp;&amp;
-    paged_message_indices_.back().msg_size &gt;= ((queue_id_ / DATA_FILE_SPLITS) &amp; 0x3f) + 1;
-</code></pre>
-
-<p>其余代码放在 <a href="https://code.aliyun.com/arkbriar/queue-race-2018-cpp">https://code.aliyun.com/arkbriar/queue-race-2018-cpp</a> 中。</p>
-
+</code></pre></div><p>为了使得 OS 充分的跑起来，get 阶段需要释放掉所有无用的内存，然而 tcmalloc 是不会主动释放的，所以需要强制释放：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#888">// release free memory back to os
+</span><span style="color:#888"></span>MallocExtension<span style="color:#333">::</span>instance()<span style="color:#333">-&gt;</span>ReleaseFreeMemory();
+</code></pre></div><p>由于线上的写入太过于均匀，到了刷盘的时候就是所有页缓存一起刷盘，这会造成所有 put 线程都阻塞并等待的状况，为了缓解这个情况，我们让某些队列的第一页快速写出：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#888">// first page will hold at most (queue_id / DATA_FILE_SPLITS) % 64 + 1 messages, this make write
+</span><span style="color:#888">// more average. This leads to 64 timepoints of first flush. I call it flush fast.
+</span><span style="color:#888"></span><span style="color:#339;font-weight:bold">bool</span> flush_fast <span style="color:#333">=</span>
+    paged_message_indices_.size() <span style="color:#333">==</span> <span style="color:#00d;font-weight:bold">1</span> <span style="color:#333">&amp;&amp;</span>
+    paged_message_indices_.back().msg_size <span style="color:#333">&gt;=</span> ((queue_id_ <span style="color:#333">/</span> DATA_FILE_SPLITS) <span style="color:#333">&amp;</span> <span style="color:#058;font-weight:bold">0x3f</span>) <span style="color:#333">+</span> <span style="color:#00d;font-weight:bold">1</span>;
+</code></pre></div><p>其余代码放在 <a href="https://code.aliyun.com/arkbriar/queue-race-2018-cpp">https://code.aliyun.com/arkbriar/queue-race-2018-cpp</a> 中。</p>
 <h3 id="最终成绩">最终成绩</h3>
-
 <p>最快写入时间大约 690s，最终缓存落盘 20s，随机校验 120s，顺序校验 140s，总计 970s+。</p>
-
 <p>期间从 1.9 开始的提升全在压缩 cpu 开销，没有动过读写结构。</p>
-
 <h3 id="工程价值与健壮性">工程价值与健壮性</h3>
-
 <p>在存储设计过程中，我们充分考虑到了长消息的存在；虽然在比赛代码的实现中，我们最长支持也就是 4k 多一点的长度，但是却可以很轻易的支持跨页消息来去掉这个限制。</p>
-
 <p>在 put 的设计过程中，我们充分利用了 SSD 的特性，使得即使是随机写也能达到最大的磁盘吞吐。遗憾的是，最终我们深陷 cpu 瓶颈从来没有跑出过最大吞吐。</p>
-
 <p>虽然考虑到场景下没有边读边写的情况，但是通过在队列映射上加读写锁，或者在更细粒度的内存页上加锁，并在读时考虑内存中未落盘的数据，则立刻可以支持边读边写。</p>
-
 <h2 id="总结与感想">总结与感想</h2>
-
 <p>对各种知识的理解和运用是解决实际问题的关键，在与各位选手的交流与竞争中，我们学到了很多知识，相信大家通过这次比赛也能收获很多。</p>
 
       </div>
@@ -456,10 +342,10 @@ bool flush_fast =
     
     <section class="pagination clearfix">
       
-      <a class="btn previous " href="https://blog.crazyark.me/posts/epoll/"> Linux IO 多路复用 —— Epoll </a> 
+      <a class="btn previous " href="https://blog.crazyark.xyz/posts/epoll/"> Linux IO 多路复用 —— Epoll </a> 
        
       
-      <a class="btn next " href="https://blog.crazyark.me/posts/hash_table_collision/"> 哈希表 -- 哈希冲突 </a> 
+      <a class="btn next " href="https://blog.crazyark.xyz/posts/hash_table_collision/"> 哈希表 -- 哈希冲突 </a> 
       
     </section>
     
@@ -467,7 +353,7 @@ bool flush_fast =
 <section id="disqus_thread" class='disqus'></section>
 <script>
   var disqus_config = function () {
-    this.page.url = "https://blog.crazyark.me/posts/awrace2018/";
+    this.page.url = "https://blog.crazyark.xyz/posts/awrace2018/";
     
   };
   (function() {
@@ -486,13 +372,14 @@ bool flush_fast =
     <p>
       <a href="mailto:arkbriar@gmail.com?subject="><i class="far fa-envelope"></i> arkbriar@gmail.com </a>
       {
-        <a href="https://gohugo.io/" title="Hugo :: A fast and modern static website engine">Hugo 0.46</a>,
+        <a href="https://gohugo.io/" title="Hugo :: A fast and modern static website engine">Hugo 0.87.0</a>,
         <a href="https://github.com/IvanChou/yii.im" title="vec">Vec</a> 
       }
       {<a href="http://creativecommons.org/licenses/by-nc-nd/3.0/" title="CC BY-NC-ND 3.0">CC BY-NC-ND 3.0</a>}
     </p>
   </div>
 </footer>
+
 
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
@@ -533,7 +420,7 @@ MathJax.Hub.Config({
 </script>
 
   
-  <script src="https://blog.crazyark.me/js/highlight.min.js"></script>
+  <script src="https://blog.crazyark.xyz/js/highlight.min.js"></script>
   <script>
     hljs.initHighlightingOnLoad();
   </script>

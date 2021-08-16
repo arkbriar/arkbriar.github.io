@@ -1,166 +1,162 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Categories on crazy.ark</title>
-    <link>https://blog.crazyark.me/categories/</link>
+    <link>https://blog.crazyark.xyz/categories/</link>
     <description>Recent content in Categories on crazy.ark</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 13 Apr 2018 01:50:51 +0800</lastBuildDate>
-    
-	<atom:link href="https://blog.crazyark.me/categories/index.xml" rel="self" type="application/rss+xml" />
-    
-    
-    <item>
-      <title>Algorithm</title>
-      <link>https://blog.crazyark.me/categories/algorithm/</link>
-      <pubDate>Fri, 13 Apr 2018 01:50:51 +0800</pubDate>
-      
-      <guid>https://blog.crazyark.me/categories/algorithm/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Assembly</title>
-      <link>https://blog.crazyark.me/categories/assembly/</link>
-      <pubDate>Sun, 27 Aug 2017 17:38:37 +0800</pubDate>
-      
-      <guid>https://blog.crazyark.me/categories/assembly/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Awrace</title>
-      <link>https://blog.crazyark.me/categories/awrace/</link>
-      <pubDate>Wed, 01 Aug 2018 19:59:45 +0800</pubDate>
-      
-      <guid>https://blog.crazyark.me/categories/awrace/</guid>
-      <description></description>
-    </item>
-    
+    <lastBuildDate>Thu, 16 Aug 2018 14:55:23 +0800</lastBuildDate><atom:link href="https://blog.crazyark.xyz/categories/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Computer Science</title>
-      <link>https://blog.crazyark.me/categories/computer-science/</link>
+      <link>https://blog.crazyark.xyz/categories/computer-science/</link>
       <pubDate>Thu, 16 Aug 2018 14:55:23 +0800</pubDate>
       
-      <guid>https://blog.crazyark.me/categories/computer-science/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Data Structure</title>
-      <link>https://blog.crazyark.me/categories/data-structure/</link>
-      <pubDate>Mon, 16 Apr 2018 13:02:27 +0800</pubDate>
-      
-      <guid>https://blog.crazyark.me/categories/data-structure/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Development</title>
-      <link>https://blog.crazyark.me/categories/development/</link>
-      <pubDate>Mon, 16 Apr 2018 19:51:21 +0800</pubDate>
-      
-      <guid>https://blog.crazyark.me/categories/development/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Dubbo</title>
-      <link>https://blog.crazyark.me/categories/dubbo/</link>
-      <pubDate>Wed, 01 Aug 2018 19:59:45 +0800</pubDate>
-      
-      <guid>https://blog.crazyark.me/categories/dubbo/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Game Theory</title>
-      <link>https://blog.crazyark.me/categories/game-theory/</link>
-      <pubDate>Wed, 11 Oct 2017 00:40:08 +0800</pubDate>
-      
-      <guid>https://blog.crazyark.me/categories/game-theory/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Graph Theory</title>
-      <link>https://blog.crazyark.me/categories/graph-theory/</link>
-      <pubDate>Tue, 26 Sep 2017 22:26:08 +0800</pubDate>
-      
-      <guid>https://blog.crazyark.me/categories/graph-theory/</guid>
+      <guid>https://blog.crazyark.xyz/categories/computer-science/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Hash Table</title>
-      <link>https://blog.crazyark.me/categories/hash-table/</link>
+      <link>https://blog.crazyark.xyz/categories/hash-table/</link>
       <pubDate>Thu, 16 Aug 2018 14:55:23 +0800</pubDate>
       
-      <guid>https://blog.crazyark.me/categories/hash-table/</guid>
+      <guid>https://blog.crazyark.xyz/categories/hash-table/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>Io Multiplex</title>
-      <link>https://blog.crazyark.me/categories/io-multiplex/</link>
+      <title>awrace</title>
+      <link>https://blog.crazyark.xyz/categories/awrace/</link>
+      <pubDate>Wed, 01 Aug 2018 19:59:45 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/categories/awrace/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>dubbo</title>
+      <link>https://blog.crazyark.xyz/categories/dubbo/</link>
+      <pubDate>Wed, 01 Aug 2018 19:59:45 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/categories/dubbo/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>rocketmq</title>
+      <link>https://blog.crazyark.xyz/categories/rocketmq/</link>
+      <pubDate>Wed, 01 Aug 2018 19:59:45 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/categories/rocketmq/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Development</title>
+      <link>https://blog.crazyark.xyz/categories/development/</link>
       <pubDate>Mon, 16 Apr 2018 19:51:21 +0800</pubDate>
       
-      <guid>https://blog.crazyark.me/categories/io-multiplex/</guid>
+      <guid>https://blog.crazyark.xyz/categories/development/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>Kits</title>
-      <link>https://blog.crazyark.me/categories/kits/</link>
-      <pubDate>Wed, 01 Nov 2017 18:34:30 +0800</pubDate>
+      <title>IO Multiplex</title>
+      <link>https://blog.crazyark.xyz/categories/io-multiplex/</link>
+      <pubDate>Mon, 16 Apr 2018 19:51:21 +0800</pubDate>
       
-      <guid>https://blog.crazyark.me/categories/kits/</guid>
+      <guid>https://blog.crazyark.xyz/categories/io-multiplex/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Linux</title>
-      <link>https://blog.crazyark.me/categories/linux/</link>
+      <link>https://blog.crazyark.xyz/categories/linux/</link>
       <pubDate>Mon, 16 Apr 2018 19:51:21 +0800</pubDate>
       
-      <guid>https://blog.crazyark.me/categories/linux/</guid>
+      <guid>https://blog.crazyark.xyz/categories/linux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Data Structure</title>
+      <link>https://blog.crazyark.xyz/categories/data-structure/</link>
+      <pubDate>Mon, 16 Apr 2018 13:02:27 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/categories/data-structure/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Algorithm</title>
+      <link>https://blog.crazyark.xyz/categories/algorithm/</link>
+      <pubDate>Fri, 13 Apr 2018 01:50:51 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/categories/algorithm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Kits</title>
+      <link>https://blog.crazyark.xyz/categories/kits/</link>
+      <pubDate>Wed, 01 Nov 2017 18:34:30 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/categories/kits/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Game Theory</title>
+      <link>https://blog.crazyark.xyz/categories/game-theory/</link>
+      <pubDate>Wed, 11 Oct 2017 00:40:08 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/categories/game-theory/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Mathematics</title>
-      <link>https://blog.crazyark.me/categories/mathematics/</link>
+      <link>https://blog.crazyark.xyz/categories/mathematics/</link>
       <pubDate>Wed, 11 Oct 2017 00:40:08 +0800</pubDate>
       
-      <guid>https://blog.crazyark.me/categories/mathematics/</guid>
+      <guid>https://blog.crazyark.xyz/categories/mathematics/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>Programming Language</title>
-      <link>https://blog.crazyark.me/categories/programming-language/</link>
-      <pubDate>Sat, 29 Jul 2017 22:44:24 +0800</pubDate>
+      <title>Graph Theory</title>
+      <link>https://blog.crazyark.xyz/categories/graph-theory/</link>
+      <pubDate>Tue, 26 Sep 2017 22:26:08 +0800</pubDate>
       
-      <guid>https://blog.crazyark.me/categories/programming-language/</guid>
+      <guid>https://blog.crazyark.xyz/categories/graph-theory/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Assembly</title>
+      <link>https://blog.crazyark.xyz/categories/assembly/</link>
+      <pubDate>Sun, 27 Aug 2017 17:38:37 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/categories/assembly/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Project Euler</title>
-      <link>https://blog.crazyark.me/categories/project-euler/</link>
+      <link>https://blog.crazyark.xyz/categories/project-euler/</link>
       <pubDate>Fri, 25 Aug 2017 21:32:26 +0800</pubDate>
       
-      <guid>https://blog.crazyark.me/categories/project-euler/</guid>
+      <guid>https://blog.crazyark.xyz/categories/project-euler/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>Rocketmq</title>
-      <link>https://blog.crazyark.me/categories/rocketmq/</link>
-      <pubDate>Wed, 01 Aug 2018 19:59:45 +0800</pubDate>
+      <title>Programming Language</title>
+      <link>https://blog.crazyark.xyz/categories/programming-language/</link>
+      <pubDate>Sat, 29 Jul 2017 22:44:24 +0800</pubDate>
       
-      <guid>https://blog.crazyark.me/categories/rocketmq/</guid>
+      <guid>https://blog.crazyark.xyz/categories/programming-language/</guid>
       <description></description>
     </item>
     

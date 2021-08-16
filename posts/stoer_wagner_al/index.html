@@ -6,11 +6,11 @@
   
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-<meta name="generator" content="Hugo 0.46" />
+<meta name="generator" content="Hugo 0.87.0" />
 
 
-<link rel="stylesheet" href="https://blog.crazyark.me/css/vec.css">
-<link rel="stylesheet" href="https://blog.crazyark.me/css/github.css">
+<link rel="stylesheet" href="https://blog.crazyark.xyz/css/vec.css">
+<link rel="stylesheet" href="https://blog.crazyark.xyz/css/github.css">
 
 
 <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
@@ -28,7 +28,7 @@
       
       
       <li class="pull-left ">
-        <a href="https://blog.crazyark.me/">/home/crazy.ark</a>
+        <a href="https://blog.crazyark.xyz/">/home/crazy.ark</a>
       </li>
       
       
@@ -56,75 +56,54 @@
     </ul>
   </nav>
 </header>
+
   <div class="content toc">
     <nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#stoer-wagner-algorithm">Stoer-Wagner Algorithm</a>
-<ul>
-<li><a href="#算法流程">算法流程</a></li>
-<li><a href="#正确性证明">正确性证明</a></li>
-<li><a href="#时间复杂度">时间复杂度</a></li>
-</ul></li>
-<li><a href="#references">References</a></li>
-</ul></li>
-</ul>
+  <ul>
+    <li><a href="#stoer-wagner-algorithm">Stoer-Wagner Algorithm</a>
+      <ul>
+        <li><a href="#算法流程">算法流程</a></li>
+        <li><a href="#正确性证明">正确性证明</a></li>
+        <li><a href="#时间复杂度">时间复杂度</a></li>
+      </ul>
+    </li>
+    <li><a href="#references">References</a></li>
+  </ul>
 </nav>
     
     <section class="post">
-      <h1 class="post-title"><a href="https://blog.crazyark.me/posts/stoer_wagner_al/">无向带权图图全局最小割 Stoer-Wagner 算法 (Stoer-Wagner Algorithm -- Global Min-Cut in Undirected Weighted Graphs)</a></h1>
+      <h1 class="post-title"><a href="https://blog.crazyark.xyz/posts/stoer_wagner_al/">无向带权图图全局最小割 Stoer-Wagner 算法 (Stoer-Wagner Algorithm -- Global Min-Cut in Undirected Weighted Graphs)</a></h1>
       <span class="post-date">Aug 5, 2017 </span>
       <div class="post-content">
         <p>最近碰到一道题目，求一个图的全局最小割，可惜图论博主学的不太好，至今只记得一个求s-t最大流/最小割的 ford-fulkerson。想了想总不能做<code>$n^2$</code>次最大流吧，最终还是求助了维基百科 🤣</p>
-
-<p></p>
-
 <h2 id="stoer-wagner-algorithm">Stoer-Wagner Algorithm</h2>
-
 <p>Stoer-Wagner 算法是一个求<strong>带非负权无向图</strong>中全局最小割的算法，它是在1995年由 Mechthild Stoer 和 Frank Wagner 提出的。</p>
-
 <p>算法的核心思想是通过不断的合并某个s-t最小割的顶点来缩小图的规模，直到图里只剩下两个合并剩下的顶点。</p>
-
 <h3 id="算法流程">算法流程</h3>
-
 <p>在图G中，假设G的全局最小割为C = {S, T}，那么对于任何一对G上的顶点(s, t)来说</p>
-
 <ol>
 <li>要么s和t<strong>分属</strong>S和T</li>
 <li>要么s和t<strong>同属</strong>S或T</li>
 </ol>
-
 <p>Stoer-Wagner首先找到一个s-t最小割，然后将s和t合并：</p>
-
 <ol>
 <li>删除s和t之间的边</li>
 <li>对于任何和s、t相邻的顶点v，与新顶点链接的权重为 w(v, s) + w(v, t)（假设不相邻为0权重）</li>
 </ol>
-
 <p>显然，对于任何s、t在同一个集合的割，合并s、t并不影响割的权重。</p>
-
 <p>上述流程（找到一个最小割、合并）为一个阶段，在进行 |V| - 1 次这样的阶段之后，G中只剩下两个点，那么全局最小割一定为<strong>每个阶段的s-t最小割</strong>以及<strong>最后两个点的割</strong>中的最小值，如此算法即完成了。</p>
-
 <p>同学们一定发现了，如何找到一个s-t最小割才是算法能够高效执行的关键，Stoer-Wagner 算法的巧妙之处就在于此。</p>
-
 <p>因为算法对于s-t最小割的起点和终点没有任何要求，所以找到任何一个最小割就行，过程如下：</p>
-
 <ol>
 <li>图G上任意一个顶点<code>$u$</code>，放入集合<code>$A$</code>中</li>
 <li>选取一个<code>$V - A$</code>中的点<code>$v$</code>，使得<code>$w(A,v)$</code>最大，将它放入<code>$A$</code>中；其中 <code>$w(A,v) = \sum_\limits{u \in A}w(u,v)$</code></li>
 <li>重复执行 <strong>步骤2</strong>，直到<code>$V = A$</code></li>
 <li>假设最后加入$A$的两个顶点是$s$和$t$, 合并它们</li>
 </ol>
-
 <p>上述过程中 <code>$\left(A - \{s\}, \{t\}\right)$</code> 是一个s-t最小割。</p>
-
 <h3 id="正确性证明">正确性证明</h3>
-
 <p>要证明算法的正确性，只需要证明阶段中找到的一定是一个s-t最小割。</p>
-
 <p><strong>符号定义</strong></p>
-
 <ol>
 <li>图<code>$G(V,E,W)$</code></li>
 <li><code>$s$</code>,<code>$t$</code> 是最后加入集合<code>$A$</code>的两个顶点</li>
@@ -132,51 +111,33 @@
 <li><code>$A_v$</code>为在顶点<code>$v$</code>加入<code>$A$</code>之前的集合</li>
 <li><code>$C_v$</code>是在由顶点<code>$A_v \cup \{v\}$</code>构成的<code>$G$</code>的子图上，由割<code>$C$</code>导出的割</li>
 </ol>
-
 <p>所以，我们有<code>$C_v = C$</code>，即只<strong>需要证明</strong> <code>$w(A_t, t) \le w(C ) = w(C_t)$</code>。</p>
-
 <p>下面我们将归纳证明 <code>$\forall u \in X$，$w(A_u, u) \le w(C_u)$</code>。</p>
-
 <p>设<code>$u_0$</code>是<code>$X$</code>中第一个被放入<code>$A$</code>中的顶点，那么由定义，有 <code>$w(A_{u_0}, u) = w(C_{u_0})$</code></p>
-
 <p>假设对于两个连续被放入<code>$A$</code>中、并且同属于<code>$X$</code>的顶点<code>$u, v$</code>，归纳假设有 <code>$w(A_u,u) \le w(C_u)$</code></p>
-
 <p>首先，我们有 <code>$w(A_v, v) = w(A_u, v) + w(A_v - A_u, v)$</code></p>
-
 <p>因为<code>$u$</code>优先于<code>$v$</code>被选取，所以<code>$w(A_u, u) \ge w(A_u, v)$</code>，所以上式有</p>
-
 <p><code>$w(A_v, v) \le w(A_u, u) + w(A_v - A_u, v) \le w(C_u) + w(A_v - A_u, v)$</code></p>
-
 <p>而由于<code>$(A_v - A_u) \cap X = \{u\}$</code>，所以 <code>$W(C_u) + w(A_v - A_u, v) = w(C_v)$</code></p>
-
 <p>所以有 <code>$w(A_u, u) \le w(C_u)$</code>，证毕。</p>
-
 <p>故而我们知道，算法每个阶段都能找到一个s-t最小割。</p>
-
 <h3 id="时间复杂度">时间复杂度</h3>
-
 <p>每次计算最大的<code>$w(A, u)$</code>的时间为<code>$O(|V|^2)$</code>，最后合并的时间为 <code>$O(|E|)$</code>，所以每一个阶段时间复杂度为 <code>$O(|E| + |V|^2)$</code>；</p>
-
 <p>一共执行 <code>$|V|-1$</code>次，算法总计时间复杂度为 <code>$O(|V||E| + |V|^3)$</code>。</p>
-
 <p>其中每次选择最大的<code>$w(A, u)$</code>可以通过堆进行优化，将时间优化到<code>$O(lg|V|)$</code>，总计时间复杂度可以降为 <code>$O(|V||E| + |V|^2lg|V|)$</code>。</p>
-
 <p>这里顺便一提，Stoer-Wagner 算法适用的堆需要支持动态 update，常用的堆为斐波那契堆，在 C++ 的标准 stl 里并没有实现，替代方案可以使用 <code>std::multiset</code>。在 boost 中，对 Stoer-Wagner 算法有直接支持。</p>
-
 <h2 id="references">References</h2>
-
 <p>[1] <a href="https://en.wikipedia.org/wiki/Stoer%E2%80%93Wagner_algorithm">https://en.wikipedia.org/wiki/Stoer%E2%80%93Wagner_algorithm</a></p>
-
 <p>[2] <a href="http://www.boost.org/doc/libs/1_64_0/libs/graph/doc/stoer_wagner_min_cut.html">http://www.boost.org/doc/libs/1_64_0/libs/graph/doc/stoer_wagner_min_cut.html</a></p>
       </div>
     </section>
     
     <section class="pagination clearfix">
       
-      <a class="btn previous " href="https://blog.crazyark.me/posts/ford_johnson_algorithm/"> 优化比较次数的排序算法 (Ford Johnson Algorithm) </a> 
+      <a class="btn previous " href="https://blog.crazyark.xyz/posts/ford_johnson_algorithm/"> 优化比较次数的排序算法 (Ford Johnson Algorithm) </a> 
        
       
-      <a class="btn next " href="https://blog.crazyark.me/posts/transaction_certificates/"> 多项式哈希及Theu-Morse序列 (Polynomial Hash and Theu-Morse Sequence) </a> 
+      <a class="btn next " href="https://blog.crazyark.xyz/posts/transaction_certificates/"> 多项式哈希及Theu-Morse序列 (Polynomial Hash and Theu-Morse Sequence) </a> 
       
     </section>
     
@@ -184,7 +145,7 @@
 <section id="disqus_thread" class='disqus'></section>
 <script>
   var disqus_config = function () {
-    this.page.url = "https://blog.crazyark.me/posts/stoer_wagner_al/";
+    this.page.url = "https://blog.crazyark.xyz/posts/stoer_wagner_al/";
     
   };
   (function() {
@@ -203,13 +164,14 @@
     <p>
       <a href="mailto:arkbriar@gmail.com?subject="><i class="far fa-envelope"></i> arkbriar@gmail.com </a>
       {
-        <a href="https://gohugo.io/" title="Hugo :: A fast and modern static website engine">Hugo 0.46</a>,
+        <a href="https://gohugo.io/" title="Hugo :: A fast and modern static website engine">Hugo 0.87.0</a>,
         <a href="https://github.com/IvanChou/yii.im" title="vec">Vec</a> 
       }
       {<a href="http://creativecommons.org/licenses/by-nc-nd/3.0/" title="CC BY-NC-ND 3.0">CC BY-NC-ND 3.0</a>}
     </p>
   </div>
 </footer>
+
 
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
@@ -250,7 +212,7 @@ MathJax.Hub.Config({
 </script>
 
   
-  <script src="https://blog.crazyark.me/js/highlight.min.js"></script>
+  <script src="https://blog.crazyark.xyz/js/highlight.min.js"></script>
   <script>
     hljs.initHighlightingOnLoad();
   </script>
