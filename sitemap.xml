@@ -3,18 +3,36 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://blog.crazyark.xyz/categories/</loc>
-    <lastmod>2018-08-24T16:34:42+08:00</lastmod>
+    <lastmod>2021-08-18T14:47:16+08:00</lastmod>
+  </url><url>
+    <loc>https://blog.crazyark.xyz/categories/consensus/</loc>
+    <lastmod>2021-08-18T14:47:16+08:00</lastmod>
+  </url><url>
+    <loc>https://blog.crazyark.xyz/</loc>
+    <lastmod>2021-08-18T14:47:16+08:00</lastmod>
+  </url><url>
+    <loc>https://blog.crazyark.xyz/categories/database/</loc>
+    <lastmod>2021-08-18T14:47:16+08:00</lastmod>
+  </url><url>
+    <loc>https://blog.crazyark.xyz/posts/</loc>
+    <lastmod>2021-08-18T14:47:16+08:00</lastmod>
+  </url><url>
+    <loc>https://blog.crazyark.xyz/tags/raft/</loc>
+    <lastmod>2021-08-18T14:47:16+08:00</lastmod>
+  </url><url>
+    <loc>https://blog.crazyark.xyz/posts/raft_and_wal/</loc>
+    <lastmod>2021-08-18T14:47:16+08:00</lastmod>
+  </url><url>
+    <loc>https://blog.crazyark.xyz/tags/</loc>
+    <lastmod>2021-08-18T14:47:16+08:00</lastmod>
+  </url><url>
+    <loc>https://blog.crazyark.xyz/tags/write-ahead-log/</loc>
+    <lastmod>2021-08-18T14:47:16+08:00</lastmod>
   </url><url>
     <loc>https://blog.crazyark.xyz/categories/computer-science/</loc>
     <lastmod>2018-08-24T16:34:42+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/</loc>
-    <lastmod>2018-08-24T16:34:42+08:00</lastmod>
-  </url><url>
     <loc>https://blog.crazyark.xyz/categories/hash-table/</loc>
-    <lastmod>2018-08-24T16:34:42+08:00</lastmod>
-  </url><url>
-    <loc>https://blog.crazyark.xyz/posts/</loc>
     <lastmod>2018-08-24T16:34:42+08:00</lastmod>
   </url><url>
     <loc>https://blog.crazyark.xyz/posts/hash_table_collision/</loc>
@@ -33,9 +51,6 @@
     <lastmod>2018-08-24T16:34:42+08:00</lastmod>
   </url><url>
     <loc>https://blog.crazyark.xyz/categories/rocketmq/</loc>
-    <lastmod>2018-08-24T16:34:42+08:00</lastmod>
-  </url><url>
-    <loc>https://blog.crazyark.xyz/tags/</loc>
     <lastmod>2018-08-24T16:34:42+08:00</lastmod>
   </url><url>
     <loc>https://blog.crazyark.xyz/posts/awrace2018/</loc>

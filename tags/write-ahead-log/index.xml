@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>write-ahead-log on crazy.ark</title>
+    <link>https://blog.crazyark.xyz/tags/write-ahead-log/</link>
+    <description>Recent content in write-ahead-log on crazy.ark</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 17 Aug 2021 10:44:38 +0800</lastBuildDate><atom:link href="https://blog.crazyark.xyz/tags/write-ahead-log/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Raft on RocksDB -- 共享日志</title>
+      <link>https://blog.crazyark.xyz/posts/raft_and_wal/</link>
+      <pubDate>Tue, 17 Aug 2021 10:44:38 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/posts/raft_and_wal/</guid>
+      <description>自上次更新博客起已经有三年时间了，这期间经历了留学、毕业、工作等很多事情，个中滋味只有自己知道。博客重开，希望文笔和思路上能比以前进步一点点</description>
+    </item>
+    
+  </channel>
+</rss>
