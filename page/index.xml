@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Pages on 石沉溪洞 -- Ark&#39;s Blog</title>
+    <link>https://blog.crazyark.xyz/page/</link>
+    <description>Recent content in Pages on 石沉溪洞 -- Ark&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Tue, 28 May 2019 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.crazyark.xyz/page/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Archives</title>
+      <link>https://blog.crazyark.xyz/archives/</link>
+      <pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/archives/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>About</title>
+      <link>https://blog.crazyark.xyz/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/about/</guid>
+      <description>普通码农一名，从事代码搬运工作两年。
+在数据库相关 team 工作但并不写数据库内核。
+靠写 Kubernetes 上的控制器吃饭，社区爱好度 1 🙃。
+偶尔打打比赛。
+PL 倾向（最近）：Rust &amp;gt;= C++/C &amp;gt; Go &amp;gt; Java &amp;gt; Python &amp;gt; Others。
+偶尔会看一些分布式、存储、数据库相关论文，欢迎大佬前来指教。
+联系方式：
+ Email: arkbriar@gmail.com Github: https://github.com/arkbriar WeChat: Ding_Shunjie Twitter: ImperiusDs  </description>
+    </item>
+    
+    <item>
+      <title>Search</title>
+      <link>https://blog.crazyark.xyz/search/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/search/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

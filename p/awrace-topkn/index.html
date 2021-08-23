@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='今年阿里中间件比赛的时候不巧博主心情不好，外加要准备期末考试，并没有参加，非常遗憾。不过好在好基友 Eric Fu 参加并获得了冠军！今年的主题是分布式数据库，如果想了解详情及复赛的解题思路请读者前往 Eric 的博客。
+博主没有参加甚是遗憾，外加看到题目手痒难耐，遂问基友讨了最后的24h极客赛来玩一玩。
+24h TOPKN 题目是分布式数据库上的分页排序，对应的SQL执行为 order by id limit k，n；主要的技术挑战为&amp;quot;分布式&amp;quot;的策略，赛题中使用多个文件模拟多个数据分片。
+简称 top(k, n)。
+'><title>2017 Alibaba Middleware 24h Final (Just for Fun 😀)</title>
+
+<link rel='canonical' href='https://blog.crazyark.xyz/p/awrace-topkn/'>
+
+<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='2017 Alibaba Middleware 24h Final (Just for Fun 😀)'>
+<meta property='og:description' content='今年阿里中间件比赛的时候不巧博主心情不好，外加要准备期末考试，并没有参加，非常遗憾。不过好在好基友 Eric Fu 参加并获得了冠军！今年的主题是分布式数据库，如果想了解详情及复赛的解题思路请读者前往 Eric 的博客。
+博主没有参加甚是遗憾，外加看到题目手痒难耐，遂问基友讨了最后的24h极客赛来玩一玩。
+24h TOPKN 题目是分布式数据库上的分页排序，对应的SQL执行为 order by id limit k，n；主要的技术挑战为&amp;quot;分布式&amp;quot;的策略，赛题中使用多个文件模拟多个数据分片。
+简称 top(k, n)。
+'>
+<meta property='og:url' content='https://blog.crazyark.xyz/p/awrace-topkn/'>
+<meta property='og:site_name' content='石沉溪洞 -- Ark&#39;s Blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='java' /><meta property='article:tag' content='distributed system' /><meta property='article:tag' content='parallel computing' /><meta property='article:published_time' content='2017-07-26T16:59:26&#43;08:00'/><meta property='article:modified_time' content='2017-07-26T16:59:26&#43;08:00'/>
+<meta name="twitter:site" content="@ImperiusDs">
+    <meta name="twitter:creator" content="@ImperiusDs"><meta name="twitter:title" content="2017 Alibaba Middleware 24h Final (Just for Fun 😀)">
+<meta name="twitter:description" content="今年阿里中间件比赛的时候不巧博主心情不好，外加要准备期末考试，并没有参加，非常遗憾。不过好在好基友 Eric Fu 参加并获得了冠军！今年的主题是分布式数据库，如果想了解详情及复赛的解题思路请读者前往 Eric 的博客。
+博主没有参加甚是遗憾，外加看到题目手痒难耐，遂问基友讨了最后的24h极客赛来玩一玩。
+24h TOPKN 题目是分布式数据库上的分页排序，对应的SQL执行为 order by id limit k，n；主要的技术挑战为&amp;quot;分布式&amp;quot;的策略，赛题中使用多个文件模拟多个数据分片。
+简称 top(k, n)。
+">
+    </head>
+    <body class="
+    article-page has-toc
+">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex 
+    
+        extended
+    
+">
+    
+        <div id="article-toolbar">
+            <a href="https://blog.crazyark.xyz" class="back-home">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="15 6 9 12 15 18" />
+</svg>
+
+
+
+                <span>返回</span>
+            </a>
+        </div>
+    
+<main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/database/" style="background-color: #2a9d8f; color: #fff;">
+                Database
+            </a>
+        
+            <a href="/categories/contest/" >
+                Contest
+            </a>
+        
+    </header>
+    
+
+    <h2 class="article-title">
+        <a href="/p/awrace-topkn/">2017 Alibaba Middleware 24h Final (Just for Fun 😀)</a>
+    </h2>
+
+    
+
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jul 26, 2017</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 4 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+</div>
+</header>
+
+    <section class="article-content">
+    <p>今年阿里中间件比赛的时候不巧博主心情不好，外加要准备期末考试，并没有参加，非常遗憾。不过好在好基友 <a class="link" href="https://ericfu.me"  target="_blank" rel="noopener"
+    >Eric Fu</a> 参加并获得了冠军！今年的主题是分布式数据库，如果想了解详情及复赛的解题思路请读者前往 Eric 的博客。</p>
+<p>博主没有参加甚是遗憾，外加看到题目手痒难耐，遂问基友讨了最后的24h极客赛来玩一玩。</p>
+<h2 id="24h-topkn">24h TOPKN</h2>
+<p>题目是分布式数据库上的分页排序，对应的SQL执行为 order by id limit k，n；主要的技术挑战为&quot;分布式&quot;的策略，赛题中使用多个文件模拟多个数据分片。</p>
+<p>简称 top(k, n)。</p>
+<blockquote>
+<p>给定一批数据，求解按顺序从小到大，顺序排名从第k下标序号之后连续的n个数据 (类似于数据库的order by asc + limit k,n语义)</p>
+</blockquote>
+<blockquote>
+<p>top(k,3)代表获取排名序号为k+1,k+2,k+3的内容,例:top(10,3)代表序号为11、12、13的内容,top(0,3)代表序号为1、2、3的内容
+需要考虑k值几种情况，k值比较小或者特别大的情况，比如k=1,000,000,000
+对应k,n取值范围： 0 &lt;= k &lt; 2^63 和 0 &lt; n &lt; 100
+数据全部是文本和数字结合的数据，排序的时候按照整个字符串的长度来排序。例如一个有序的排序如下(相同长度情况下ascii码小的排在前面)：
+例： a ab abc def abc123</p>
+</blockquote>
+<blockquote>
+<p>例如给定的k,n为(2,2)，则上面的数据需要的答案为: abc def</p>
+</blockquote>
+<p>原题目在 <a class="link" href="https://code.aliyun.com/wanshao/topkn_final"  target="_blank" rel="noopener"
+    >https://code.aliyun.com/wanshao/topkn_final</a>。</p>
+<p>要求在24小时内完成，然而 &hellip;</p>
+<p>Codes 托管在 github 上 <a class="link" href="https://github.com/arkbriar/topKN"  target="_blank" rel="noopener"
+    >https://github.com/arkbriar/topKN</a>，这个版本从基友的版本轻度修改而来 &hellip;</p>
+<h2 id="解题过程">解题过程</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:left"><strong>主要条件</strong></th>
+<th style="text-align:center"></th>
+<th style="text-align:left"><strong>主要限制</strong></th>
+</tr>
+</thead>
+</table>
+<ol>
+<li>3台机器: 2台worker，1台master <!-- raw HTML omitted --> 2. 输出在master上 | |1. Timeout: 5min <!-- raw HTML omitted --> 2. JVM heap size: 3G <!-- raw HTML omitted --> 3. 不允许使用堆外内存(FileChannel)</li>
+</ol>
+<p><!-- raw HTML omitted -->
+题目中一共有大约160000000条数据(字符串)，并分布在两台机器上，要进行 top(k, n)，首先 brute force 一定是不行的。</p>
+<p>如果要对160000000条数据全排序JVM，第一内存太小，第二时间不够。对 10000000 条数据进行排序大约耗时为 1min13s，参考自 <a class="link" href="https://codereview.stackexchange.com/questions/67387/quicksort-implementation-seems-too-slow-with-large-data"  target="_blank" rel="noopener"
+    >https://codereview.stackexchange.com/questions/67387/quicksort-implementation-seems-too-slow-with-large-data</a>；如果要进行外排序，磁盘读写导致耗时更长；以及还有最后要输出到master上，还有网络开销。</p>
+<p>稍微了解一些数据库的同学都知道，数据库里有个叫索引(Index)的东西，是用来加速查询的。那我们首先来看一下 MySQL 的索引。</p>
+<h3 id="mysql-的索引">MySQL 的索引</h3>
+<p>索引对查询的速度有至关重要的影响，理解索引也是进行数据库性能调优的起点。假设数据库中一个表有100000条记录，DBMS的页面大小为4K，并存储100条记录。如果没有索引，查询将对整个表进行扫描，最坏的情况下，如果所有数据页都不在内存，需要读取10000个页面，如果这10000个页面在磁盘上随机分布，需要进行10000次I/O，假设磁盘每次I/O时间为10ms，则总共需要100s(实际远不止)。但是如果建立 B+ 树索引，则只需要进行 $log_{100}1000000 = 3$ 次页面读取，最坏情况下耗时30ms，这就是索引带来的效果。</p>
+<p>MySQL 有两种索引的类型：B+树和Hash索引。</p>
+<p>参考自 <a class="link" href="http://www.cnblogs.com/hustcat/archive/2009/10/28/1591648.html"  target="_blank" rel="noopener"
+    >http://www.cnblogs.com/hustcat/archive/2009/10/28/1591648.html</a></p>
+<h3 id="bb-树">B/B+ 树</h3>
+<p>我们都知道RB-Tree和AVL-Tree是都是自平衡的二叉查找树，在这样的树上进行插入，删除和查询操作最坏情况都能在 $O(log_{2}n)$ 的时间内完成。</p>
+<p>B树是1972年由 Rudolf Bayer 和 Edward M.McCreight 提出的，它是一种泛化的自平衡树，每个节点可以有多于两个的子节点。与自平衡二叉查找树不同的是，B树为系统大块数据的读写操作做了优化。B树减少定位记录时所经历的中间过程，从而加快存取速度。所以B树常被应用于数据库和文件系统的实现。</p>
+<p>假设B树每个节点下有b个子节点(b个分块)，那么查找可以在约为logbN的磁盘读取开销下完成。</p>
+<p>关于 B/B+ 树的其他特征在维基和其他资料上有详细讲解，在此不再赘述。</p>
+<p>由于时间限定的缘故，实现 B/B+ 树的索引显得不太现实，所以我们将考虑一种退化的方式 —— 桶排序。</p>
+<p>参考自</p>
+<ol>
+<li><a class="link" href="https://zh.wikipedia.org/wiki/B%E6%A0%91"  target="_blank" rel="noopener"
+    >https://zh.wikipedia.org/wiki/B%E6%A0%91</a></li>
+<li><a class="link" href="https://zh.wikipedia.org/wiki/B%2B%E6%A0%91"  target="_blank" rel="noopener"
+    >https://zh.wikipedia.org/wiki/B%2B%E6%A0%91</a></li>
+</ol>
+<h3 id="桶排序">桶排序</h3>
+<p>先来看一下数据的分布情况：</p>
+<blockquote>
+<p>每一行字符串的长度为 [1,128] （数字在Long值范围内均匀分布）</p>
+</blockquote>
+<p>显然以字符串长来标识桶是可行的，但是我们有160000000条字符串，128个桶每个桶还是有1250000条，这样的桶粒度还是太粗。</p>
+<p>由于我们手里没有其他分布情况，以及字符串大小在同长度下是字典序，所以以字符串长度+前2-3个字符作为桶的标识就可以了。</p>
+<p>在本题中，由于只进行5轮query，并且写开销非常大，故仅对桶内字符串的数目进行统计。</p>
+<h3 id="基本思路">基本思路</h3>
+<ol>
+<li>Worker 分别扫描并建立所有桶的计数</li>
+<li>Master 汇总所有桶，并建立全局桶</li>
+<li>Master 通过二分查找，找到(k, n)所在的几个桶</li>
+<li>Master 向 Worker 请求获得这些桶内的所有字符串</li>
+<li>Master 对这些字符串进行排序，并输出最终结果</li>
+</ol>
+<h2 id="实现过程">实现过程</h2>
+<p>本题实现的最大难点在于 I/O 和 GC 调优，还有充分调动 CPU。</p>
+<ol>
+<li>GC 调优我们通过使用固定的 buffer 来进行操作，基本避免出现 GC。</li>
+<li>通过多线程处理来保证 CPU 调动。</li>
+<li>网络开销在上述算法下基本忽略了</li>
+</ol>
+<p>然而，剩下的 I/O 调优让人非常头大，并伴随着可能存在的同步问题 (读和处理)</p>
+<p>我们来看一下硬件条件：</p>
+<ol>
+<li>CPU: 24 core, 2.2GHz</li>
+<li>内存: 3G heap memory</li>
+<li>数据磁盘：内存文件系统</li>
+<li>临时、结果磁盘：SSD</li>
+</ol>
+<h3 id="top-1-的最终结果">Top 1 的最终结果</h3>
+<p>从基友那得知，top 1 的实现5轮总耗时(JVM启动、暂停，以及计算)共11s多，用来推算自己离最优还有多远。</p>
+<p>(我实在没想通第一名怎么跑到11s的，大概是我内存文件系统开的不对？)</p>
+<h3 id="不稳定的io实现">不稳定的I/O实现</h3>
+<p>每个文件单线程读，固定4线程处理，通过预先分配的 buffer 避免出现 GC。</p>
+<p>封装文件操作并行，5个文件并行总共占用 25 core。</p>
+<p>实现下来由于读和操作无法有效平衡，很难做到读完就操作，大量时间花费在等待读线程新产出一个buffer或是处理线程处理完一个buffer。</p>
+<p>在清理系统cache的情况下，大约8s处理完所有字符串，不清理大约为4s。</p>
+<p>这种实现无法调优，等待的时间完全看 OS 心情。</p>
+<h3 id="稳定的io实现">稳定的I/O实现</h3>
+<p>其实之前提到过，单线程读并不是一个很好的思路，而且上述的处理架构存在着不稳定的等待问题。</p>
+<p>那么如何使得在保持多线程读的同时能够多线程处理，并且不浪费时间在等待上呢？</p>
+<p>答案是<strong>每一个线程在读完一份数据后，直接进行处理，然后读取下一份</strong>。</p>
+<p>但是如何安排每一个线程的那份数据，保证线程之间不会有重复读取，也不会有漏读的数据块？</p>
+<p>这里采用 Eric 在复赛里的实现: FileSegment, 通过将一个文件分割为一个一个 Segment，让每一个线程自己请求下一个 Segment，并通过 RandomAccessFile 进行读取。(由于不许用 FileChannel)</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">FileSegment</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="n">File</span> <span class="n">file</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="kt">long</span> <span class="n">offset</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="kt">long</span> <span class="n">size</span><span class="o">;</span>
+    <span class="o">...</span>
+<span class="o">}</span>
+</code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">BufferedFileSegmentReadProcessor</span> <span class="kd">implements</span> <span class="n">Runnable</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">bufferMargin</span> <span class="o">=</span> <span class="n">1024</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">FileSegmentLoader</span> <span class="n">fileSegmentLoader</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">bufferSize</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kt">byte</span><span class="o">[]</span> <span class="n">readBuffer</span><span class="o">;</span>
+
+    <span class="c1">// Here bufferSize must be greater than segments&#39; size got from fileSegmentLoader, 
+</span><span class="c1"></span>    <span class="c1">// otherwise segment will not be fully read/processed!
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">BufferedFileSegmentReadProcessor</span><span class="o">(</span><span class="n">FileSegmentLoader</span> <span class="n">fileSegmentLoader</span><span class="o">,</span> <span class="kt">int</span> <span class="n">bufferSize</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">bufferSize</span> <span class="o">=</span> <span class="n">bufferSize</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">fileSegmentLoader</span> <span class="o">=</span> <span class="n">fileSegmentLoader</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kt">int</span> <span class="nf">readSegment</span><span class="o">(</span><span class="n">FileSegment</span> <span class="n">segment</span><span class="o">,</span> <span class="kt">byte</span><span class="o">[]</span> <span class="n">readBuffer</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+        <span class="kt">int</span> <span class="n">limit</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+        <span class="k">try</span> <span class="o">(</span><span class="n">RandomAccessFile</span> <span class="n">randomAccessFile</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RandomAccessFile</span><span class="o">(</span><span class="n">segment</span><span class="o">.</span><span class="na">getFile</span><span class="o">(),</span> <span class="s">&#34;r&#34;</span><span class="o">))</span> <span class="o">{</span>
+            <span class="n">randomAccessFile</span><span class="o">.</span><span class="na">seek</span><span class="o">(</span><span class="n">segment</span><span class="o">.</span><span class="na">getOffset</span><span class="o">());</span>
+            <span class="n">limit</span> <span class="o">=</span> <span class="n">randomAccessFile</span><span class="o">.</span><span class="na">read</span><span class="o">(</span><span class="n">readBuffer</span><span class="o">,</span> <span class="n">0</span><span class="o">,</span> <span class="n">readBuffer</span><span class="o">.</span><span class="na">length</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">limit</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">protected</span> <span class="kd">abstract</span> <span class="kt">void</span> <span class="nf">processSegment</span><span class="o">(</span><span class="n">FileSegment</span> <span class="n">segment</span><span class="o">,</span> <span class="kt">byte</span><span class="o">[]</span> <span class="n">readBuffer</span><span class="o">,</span> <span class="kt">int</span> <span class="n">limit</span><span class="o">);</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">readBuffer</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="n">bufferSize</span> <span class="o">+</span> <span class="n">bufferMargin</span><span class="o">];</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">FileSegment</span> <span class="n">segment</span><span class="o">;</span>
+            <span class="k">while</span> <span class="o">((</span><span class="n">segment</span> <span class="o">=</span> <span class="n">fileSegmentLoader</span><span class="o">.</span><span class="na">nextFileSegment</span><span class="o">())</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                <span class="kt">int</span> <span class="n">limit</span> <span class="o">=</span> <span class="n">readSegment</span><span class="o">(</span><span class="n">segment</span><span class="o">,</span> <span class="n">readBuffer</span><span class="o">);</span>
+                <span class="n">processSegment</span><span class="o">(</span><span class="n">segment</span><span class="o">,</span> <span class="n">readBuffer</span><span class="o">,</span> <span class="n">limit</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><p>这样每一个线程都在读和处理之间循环，先完成的线程会请求下一个 Segment，保证以最短的时间完成调用所有 Core 进行一遍数据处理。</p>
+<p>这个方法保证能够十分稳定的进行读取和处理，并且不需要等待 Reader 和 Processor 通信，在我的实验环境中基本存着cache 3-4s能扫描一遍，清理cache也在 7-8s。</p>
+<p>其实到这里本题已经差不多了，我记得 Eric 在这种处理下比赛的最终结果是 14s 多。</p>
+<h3 id="top-1-的优化">Top 1 的优化</h3>
+<ol>
+<li>在建立桶的时候，同时将每个文件上第i条字符串对应的offset、桶序号存入两个数组，并将桶信息以及这两个数组一起存储到本地，这样构成了一个可以快速查询桶内所有字符串的索引</li>
+<li>这些信息总计大约 1G 左右，通过建立这样的索引，每次仅讲索引信息读入，并进行有限次的读取，就可以获取到所有需要的字符串</li>
+</ol>
+<p>对比之下，之前的方式是从内存文件系统读取5G的文件，现在是从SSD读取1G左右文件，只要并发读速度差距不在5倍以上，这样的优化是能节省不少时间！</p>
+<h2 id="测试">测试</h2>
+<p>仅测试了建 Index</p>
+<h3 id="清理-cache">清理 cache</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash">$ sysctl -w vm.drop_caches<span class="o">=</span><span class="m">3</span>
+vm.drop_caches <span class="o">=</span> <span class="m">3</span>
+$ <span class="nb">time</span> java <span class="si">${</span><span class="nv">JAVA_OPTS</span><span class="si">}</span> -cp /exp/topkn/topkn.jar com.alibaba.middleware.topkn.TopknWorker localhost <span class="m">5527</span> .
+<span class="o">[</span>2017-07-27 14:24:27.512<span class="o">]</span> INFO com.alibaba.middleware.topkn.TopknWorker Connecting to master at localhost:5527
+<span class="o">[</span>2017-07-27 14:24:27.519<span class="o">]</span> INFO com.alibaba.middleware.topkn.TopknWorker Building index ...
+0.673: <span class="o">[</span>GC <span class="o">(</span>Allocation Failure<span class="o">)</span> 0.673: <span class="o">[</span>ParNew: 809135K-&gt;99738K<span class="o">(</span>943744K<span class="o">)</span>, 0.1759305 secs<span class="o">]</span> 809135K-&gt;542134K<span class="o">(</span>3040896K<span class="o">)</span>, 0.1761763 secs<span class="o">]</span> <span class="o">[</span>Times: <span class="nv">user</span><span class="o">=</span>3.15 <span class="nv">sys</span><span class="o">=</span>0.69, <span class="nv">real</span><span class="o">=</span>0.17 secs<span class="o">]</span>
+<span class="o">[</span>2017-07-27 14:24:32.330<span class="o">]</span> INFO com.alibaba.middleware.topkn.TopknWorker Index built.
+Heap
+ par new generation   total 943744K, used 903716K <span class="o">[</span>0x0000000700000000, 0x0000000740000000, 0x0000000740000000<span class="o">)</span>
+  eden space 838912K,  95% used <span class="o">[</span>0x0000000700000000, 0x00000007311225e0, 0x0000000733340000<span class="o">)</span>
+  from space 104832K,  95% used <span class="o">[</span>0x00000007399a0000, 0x000000073fb06b38, 0x0000000740000000<span class="o">)</span>
+  to   space 104832K,   0% used <span class="o">[</span>0x0000000733340000, 0x0000000733340000, 0x00000007399a0000<span class="o">)</span>
+ concurrent mark-sweep generation total 2097152K, used 442395K <span class="o">[</span>0x0000000740000000, 0x00000007c0000000, 0x00000007c0000000<span class="o">)</span>
+ Metaspace       used 3980K, capacity 4638K, committed 4864K, reserved 1056768K
+  class space    used 434K, capacity 462K, committed 512K, reserved 1048576K
+
+real    0m5.238s
+user    1m11.980s
+sys     0m26.324s
+</code></pre></div><h3 id="不清理-cache">不清理 cache</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash">$ <span class="nb">time</span> java <span class="si">${</span><span class="nv">JAVA_OPTS</span><span class="si">}</span> -cp /exp/topkn/topkn.jar com.alibaba.middleware.topkn.TopknWorker localhost <span class="m">5527</span> .
+<span class="o">[</span>2017-07-27 14:25:39.986<span class="o">]</span> INFO com.alibaba.middleware.topkn.TopknWorker Connecting to master at localhost:5527
+<span class="o">[</span>2017-07-27 14:25:39.992<span class="o">]</span> INFO com.alibaba.middleware.topkn.TopknWorker Building index ...
+0.590: <span class="o">[</span>GC <span class="o">(</span>Allocation Failure<span class="o">)</span> 0.590: <span class="o">[</span>ParNew: 838912K-&gt;99751K<span class="o">(</span>943744K<span class="o">)</span>, 0.1851592 secs<span class="o">]</span> 838912K-&gt;591302K<span class="o">(</span>3040896K<span class="o">)</span>, 0.1855308 secs<span class="o">]</span> <span class="o">[</span>Times: <span class="nv">user</span><span class="o">=</span>3.03 <span class="nv">sys</span><span class="o">=</span>0.88, <span class="nv">real</span><span class="o">=</span>0.19 secs<span class="o">]</span>
+<span class="o">[</span>2017-07-27 14:25:44.449<span class="o">]</span> INFO com.alibaba.middleware.topkn.TopknWorker Index built.
+Heap
+ par new generation   total 943744K, used 863664K <span class="o">[</span>0x0000000700000000, 0x0000000740000000, 0x0000000740000000<span class="o">)</span>
+  eden space 838912K,  91% used <span class="o">[</span>0x0000000700000000, 0x000000072ea02318, 0x0000000733340000<span class="o">)</span>
+  from space 104832K,  95% used <span class="o">[</span>0x00000007399a0000, 0x000000073fb09e00, 0x0000000740000000<span class="o">)</span>
+  to   space 104832K,   0% used <span class="o">[</span>0x0000000733340000, 0x0000000733340000, 0x00000007399a0000<span class="o">)</span>
+ concurrent mark-sweep generation total 2097152K, used 491550K <span class="o">[</span>0x0000000740000000, 0x00000007c0000000, 0x00000007c0000000<span class="o">)</span>
+ Metaspace       used 3980K, capacity 4638K, committed 4864K, reserved 1056768K
+  class space    used 434K, capacity 462K, committed 512K, reserved 1048576K
+
+real    0m4.754s
+user    0m57.144s
+sys     0m30.568s
+</code></pre></div><p><strong>UPDATE</strong></p>
+<p>在我的8核小物理机上，跑一边内存文件系统里的数据不要1s&hellip; 看来是机器的问题，云服务器还是不给力啊 🤣</p>
+<h2 id="总结">总结</h2>
+<p>今年的中间件比赛是在很有意思，这个题目对参赛选手有比较高的要求，解题中涉及到多线程并发读写、分布式排序、索引、Socket编程、JVM 调优等多个方面，我这种上来直接挑的果断挂了两个版本的代码，东看西看左问右问终于把最终形式给弄清楚了。</p>
+<p>说是我做的不如说是我在学如何做，在此过程中发现了很多有意义的技术点，正准备接下来继续学习。</p>
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/java/">java</a>
+        
+            <a href="/tags/distributed-system/">distributed system</a>
+        
+            <a href="/tags/parallel-computing/">parallel computing</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    <aside class="related-contents--wrapper">
+    
+    
+        <h2 class="section-title">相关文章</h2>
+        <div class="related-contents">
+            <div class="flex article-list--tile">
+                
+                    
+<article class="has-image">
+    <a href="/p/raft-and-share-log/">
+        
+        
+            <div class="article-image">
+                <img src="/p/raft-and-share-log/img/raft.b808dfc886e92301ed8eea9ff84ea20d_hu789963ccc359d12cda0ae24ab10587a7_341224_250x150_fill_q75_box_smart1.jpg" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy" 
+                        data-key="raft-and-share-log" 
+                        data-hash="md5-uAjfyIbpIwHtjuqf&#43;E6iDQ==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Raft on RocksDB -- 共享日志</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="">
+    <a href="/p/awrace-2018/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">第四届天池中间件性能挑战赛感想</h2>
+        </div>
+    </a>
+</article>
+                
+            </div>
+        </div>
+    
+</aside>
+
+     
+     
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "crazyark" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (DISQUS) {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2018 - 
+        
+        2021 石沉溪洞 -- Ark&#39;s Blog
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.1.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+            >
+
+            </main>
+    
+        <aside class="sidebar right-sidebar sticky">
+            <section class="widget archives">
+                <div class="widget-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+                </div>
+                <h2 class="widget-title section-title">目录</h2>
+                
+                <div class="widget--toc">
+                    <nav id="TableOfContents">
+  <ol>
+    <li><a href="#24h-topkn">24h TOPKN</a></li>
+    <li><a href="#解题过程">解题过程</a>
+      <ol>
+        <li><a href="#mysql-的索引">MySQL 的索引</a></li>
+        <li><a href="#bb-树">B/B+ 树</a></li>
+        <li><a href="#桶排序">桶排序</a></li>
+        <li><a href="#基本思路">基本思路</a></li>
+      </ol>
+    </li>
+    <li><a href="#实现过程">实现过程</a>
+      <ol>
+        <li><a href="#top-1-的最终结果">Top 1 的最终结果</a></li>
+        <li><a href="#不稳定的io实现">不稳定的I/O实现</a></li>
+        <li><a href="#稳定的io实现">稳定的I/O实现</a></li>
+        <li><a href="#top-1-的优化">Top 1 的优化</a></li>
+      </ol>
+    </li>
+    <li><a href="#测试">测试</a>
+      <ol>
+        <li><a href="#清理-cache">清理 cache</a></li>
+        <li><a href="#不清理-cache">不清理 cache</a></li>
+      </ol>
+    </li>
+    <li><a href="#总结">总结</a></li>
+  </ol>
+</nav>
+                </div>
+            </section>
+        </aside>
+    
+
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

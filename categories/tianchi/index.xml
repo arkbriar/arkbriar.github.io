@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tianchi on 石沉溪洞 -- Ark&#39;s Blog</title>
+    <link>https://blog.crazyark.xyz/categories/tianchi/</link>
+    <description>Recent content in Tianchi on 石沉溪洞 -- Ark&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Wed, 01 Aug 2018 19:59:45 +0800</lastBuildDate><atom:link href="https://blog.crazyark.xyz/categories/tianchi/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>第四届天池中间件性能挑战赛感想</title>
+      <link>https://blog.crazyark.xyz/p/awrace-2018/</link>
+      <pubDate>Wed, 01 Aug 2018 19:59:45 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/p/awrace-2018/</guid>
+      <description>从报名比赛开始到现在将近四个月了，终于告一段落，最终拿到了季军也很开心。这三个月中我学到了很多有用的工程知识，顺便把 C++ 又摸熟了。初赛代码实在写太丑就不放出来了，复赛的代码托管在 github 上：
+https://github.com/arkbriar/awrace2018_messagestore
+下面是本次大赛初赛和复赛部分的思考过程和最终方案。
+初赛部分 赛题背景分析及理解  实现一个高性能的 Service Mesh Agent 组件，并包含如下一些功能：1. 服务注册与发现, 2. 协议转换, 3. 负载均衡
+ 本题要求我们能够尽可能的高性能，我们首先对场景和大致思路进行了一个重述：
+ Consumer 将接受超过 500 个连接：想到使用 IO multiplex Http = TCP 连接：禁用 Nagle 算法 Dubbo provider 只有 200 个处理线程，超过 200 个并发请求会快速失败： 负载均衡尽量避免 provider 过载 线上网络性能 (pps) 较差：批量发送 request/response，使用 UDP 进行 Agent 间通信 Consumer 性能较差：将协议转换等放到 provider agent 上去做  核心思路 为了减少系统开销，我们在 agent 之间都只保持一个 udp 信道，在 PA (Provider Agent) 和 Provider 之间也只保持一个 tcp 信道。</description>
+    </item>
+    
+  </channel>
+</rss>

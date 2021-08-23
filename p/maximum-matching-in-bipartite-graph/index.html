@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='上几篇博文主要是关于范围更新和范围查询的几个数据结构，接下去的主题是图论和图算法，希望能够学习和回忆起大部分图算法。
+今天遇到一个问题，可以转化成二部图(bipartite graph)上的完美匹配的存在性问题，我们先来看一下完美匹配的理论，Hall&amp;rsquo;s Marriage theorem；然后介绍两个算法，用于解决完美匹配的超集——最大匹配问题。
+'><title>二部图的最大匹配 (Maximum Matching in Bipartite Graph)</title>
+
+<link rel='canonical' href='https://blog.crazyark.xyz/p/maximum-matching-in-bipartite-graph/'>
+
+<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='二部图的最大匹配 (Maximum Matching in Bipartite Graph)'>
+<meta property='og:description' content='上几篇博文主要是关于范围更新和范围查询的几个数据结构，接下去的主题是图论和图算法，希望能够学习和回忆起大部分图算法。
+今天遇到一个问题，可以转化成二部图(bipartite graph)上的完美匹配的存在性问题，我们先来看一下完美匹配的理论，Hall&amp;rsquo;s Marriage theorem；然后介绍两个算法，用于解决完美匹配的超集——最大匹配问题。
+'>
+<meta property='og:url' content='https://blog.crazyark.xyz/p/maximum-matching-in-bipartite-graph/'>
+<meta property='og:site_name' content='石沉溪洞 -- Ark&#39;s Blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='maximum matching' /><meta property='article:tag' content='graph' /><meta property='article:tag' content='hungarian algorithm' /><meta property='article:tag' content='hopcraft-karp algorithm' /><meta property='article:tag' content='hall&#39;s marriage theorem' /><meta property='article:tag' content='bipartite graph' /><meta property='article:published_time' content='2017-09-26T22:26:08&#43;08:00'/><meta property='article:modified_time' content='2017-09-26T22:26:08&#43;08:00'/>
+<meta name="twitter:site" content="@ImperiusDs">
+    <meta name="twitter:creator" content="@ImperiusDs"><meta name="twitter:title" content="二部图的最大匹配 (Maximum Matching in Bipartite Graph)">
+<meta name="twitter:description" content="上几篇博文主要是关于范围更新和范围查询的几个数据结构，接下去的主题是图论和图算法，希望能够学习和回忆起大部分图算法。
+今天遇到一个问题，可以转化成二部图(bipartite graph)上的完美匹配的存在性问题，我们先来看一下完美匹配的理论，Hall&amp;rsquo;s Marriage theorem；然后介绍两个算法，用于解决完美匹配的超集——最大匹配问题。
+">
+    </head>
+    <body class="
+    article-page has-toc
+">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex 
+    
+        extended
+    
+">
+    
+        <div id="article-toolbar">
+            <a href="https://blog.crazyark.xyz" class="back-home">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="15 6 9 12 15 18" />
+</svg>
+
+
+
+                <span>返回</span>
+            </a>
+        </div>
+    
+<main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/algorithm/" >
+                Algorithm
+            </a>
+        
+            <a href="/categories/graph-theory/" >
+                Graph Theory
+            </a>
+        
+    </header>
+    
+
+    <h2 class="article-title">
+        <a href="/p/maximum-matching-in-bipartite-graph/">二部图的最大匹配 (Maximum Matching in Bipartite Graph)</a>
+    </h2>
+
+    
+
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Sep 26, 2017</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 8 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+</div>
+</header>
+
+    <section class="article-content">
+    <p>上几篇博文主要是关于范围更新和范围查询的几个数据结构，接下去的主题是图论和图算法，希望能够学习和回忆起大部分图算法。</p>
+<p>今天遇到一个问题，可以转化成二部图(bipartite graph)上的完美匹配的存在性问题，我们先来看一下完美匹配的理论，Hall&rsquo;s Marriage theorem；然后介绍两个算法，用于解决完美匹配的超集——最大匹配问题。</p>
+<h3 id="halls-marriage-theorem">Hall&rsquo;s Marriage Theorem</h3>
+<p>令 $G$ 表示一个二部图，左部和右部分别为 $X$ 和 $Y$。令 $W \subset X$, $N_G(W)$ 为 $W$ 在 $Y$ 中的相邻点的集合。</p>
+<p>那么如果存在一个匹配方式覆盖整个 $X$ 当且仅当</p>
+<p>$\forall W \subset X, |W| \le |N_G(W)|$，也就是说每个 $X$ 的子集都有足够的邻居做匹配。</p>
+<h4 id="deduction-1-1">Deduction 1 [1]</h4>
+<p>加入一个二部图 $G(X + Y, E)$，$|X| = |Y|$，$G$ 是连通图，且每个 $X$ 中的点的度数都不相同，那么 $G$ 上一定存在完美匹配。</p>
+<p>证明：</p>
+<p>首先，因为 $G$ 是连通图，所以 $\forall u \in X, deg(u) &gt;= 1$。
+那么 $\forall W \subset X$， $\max\limits_{u \in W}{deg(u)} \ge |S|$，满足 Hall&rsquo;s Marriage Theorem，得证。</p>
+<h3 id="hungarian-algorithm">Hungarian Algorithm</h3>
+<p>事实上，我对照着找了半天，并没有找到一个叫匈牙利算法 (Hungarian Algorithm) 的用于二部图最大匹配的算法，唯一找到的 Hungarian Algorithm 是用于任务分配问题 (Assignment Problem)，也就是带权二部图的最大匹配。</p>
+<p>由于最大匹配问题与最大流问题能够很容易的互相转换，所以同时我也找到了许多思想类似甚至一致的算法，如 Ford-Fulkerson Algorihtm，Edmonds-Karp Algorithm 等。</p>
+<p>至于匈牙利算法这个名字是哪本书上提出的，我已经记不太清了 &hellip; 应该是某本学习过的图论书，在此主要讲一下它的具体思想和证明。</p>
+<h4 id="alternating-path--augmenting-path">Alternating Path &amp; Augmenting Path</h4>
+<p>假设我们有一个二部图 $G(U + V, E)$，现在有一个匹配 $M \subset E$，此时如果 $M$ 中的边上的点集中不存在一个点，我们就说该点是未匹配的，未匹配边的定义类似。</p>
+<p>交替路径 (alternating path)：从一个未匹配点出发，经过未匹配边、匹配边、未匹配边&hellip;这样交替的路径叫做交替路径。
+增广路径 (augmenting path)：从 $U$ 中一个未匹配点出发，到达 $V$ 中一个未匹配点的<strong>交替路</strong>叫做增广路径。</p>
+<p>显然，由增广路径的定义，可以知道增广路径上未匹配边比匹配边要多一条，并且将这条路径上所有未匹配边改为匹配边，匹配边改为未匹配边，则修改后的匹配 $M'$ 比原来大1。</p>
+<h4 id="theorem-of-augmenting-path">Theorem of Augmenting Path</h4>
+<p>一个匹配 $M$ 是最大匹配当且仅当那么在图 $G$ 上不存在增广路径。</p>
+<p>证明如下：</p>
+<p>假设存在一条增广路径，$M$ 显然不是最大的。所以我们只需要证明当不存在增广路径时，$M$ 是最大的。</p>
+<p>假设存在一个匹配 $M$，不存在增广路径并且 $M$ 不是最大匹配，我们令 $M^<em>$ 为 $G$ 上的一个最大匹配，显然 $|M^</em>| &gt; |M|$。</p>
+<p>所以同时有 $|M^* - M| &gt; |M - M^*|$。</p>
+<p>考察所有在 $M^<em>$ 和 $M$ 对称差 ($M^</em> \cup M - M^* \cap M$) 中的边，令 $G'$ 是由点 $U + V$ 和上述边构成的图。</p>
+<p>因为 $G'$ 中的边是来自两个匹配，所以 $G'$ 上任意一个点最多与两条边相连。</p>
+<p>因此，对于 $G'$ 上的任意联通分支，只可能是一条路或者一个环，并且边的数目是偶数，并且路或者环上对于 $M^* - M$ 或者 $M - M^*$ 一定构成交替路。</p>
+<p>因为 $|M^* - M| &gt; |M - M^*|$ 并且环都是偶数条边，所以一定有一条路，它的边，它的起点和终点都在 $M^* - M$ 中，且 $M^* - M$ 和 $M - M^*$ 交替构成，显然这条路对于 $M$ 构成增广路径，矛盾！</p>
+<p>得证。</p>
+<h4 id="pseudocode">Pseudocode</h4>
+<p>匈牙利算法有两种实现，分别基于 DFS 和 BFS，时间复杂度都是 $\mathcal{O}(|V||E|)$。</p>
+<p>下面是 BFS 版本的伪代码：</p>
+<pre><code class="language-pascal" data-lang="pascal">Algorithm MaximumBigartiteMatching(G)
+    initialize set M of edges // can be the empty set
+    initialize queue Q with all the free vertices in V
+    while not Empty(Q) do
+        w ← Front(Q)
+        if w ε V then
+            for every vertex u adjacent to w do // u must be in U
+                if u is free then // augment
+                    M ← M union (w, u)
+                    v ← w
+                    while v is labeled do // follow the augmenting path
+                        u ← label of v
+                        M ← M - (v, u)  // (v, u) was in previous M
+                        v ← label of u
+                        M ← M union (v, u) // add the edge to the path
+                    // start over
+                    remove all vertex labels
+                    reinitialize Q with all the free vertices in V
+                    break // exit the for loop
+                else // u is matched
+                    if (w, u) not in M and u is unlabeled then
+                    label u with w // represents an edge in E-M
+                    Enqueue(Q, u)
+                    // only way for a U vertex to enter the queue
+         
+        else // w ε U and therefore is matched with v
+            v  ←  w's mate // (w, v) is in M
+            label v with w // represents in M
+            Enqueue(Q, v) // only way for a mated v to enter Q
+</code></pre><p>相比于 BFS，DFS 版本的匈牙利算法更容易实现，它 C++ 代码可以参考附录。</p>
+<h3 id="hopcroft-karp-algorithm">Hopcroft-Karp Algorithm</h3>
+<p>Hopcroft-Karp 算法是一个专用于解二部图最大匹配问题的算法，它最差情况的时间复杂度为 $\mathcal{O}(|E|\sqrt{|V|})$，最差情况下的空间开销为 $\mathcal{O}(|V|)$。</p>
+<p>Hopcroft-Karp 算法是在1973年由 Hohn Hopcroft 和 Richard Karp 两位计算机学者发现的。</p>
+<p>和匈牙利算法一样，Hopcroft-Karp 算法同样是不断地通过寻找增广路径，来增大部分匹配。不同的是，匈牙利算法每次只找到一条增广路径，而该算法则每次找增广路径的一个最大集合，从而我们只需要进行 $\mathcal{O}(\sqrt{|V|})$ 次迭代。</p>
+<p>Hopcroft-Karp 算法循环以下两个阶段：</p>
+<ol>
+<li>用 BFS 寻找下一个长度的增广路径，并且能遍历该长度下所有增广路径 (也就是上面所说的最大集合)。</li>
+<li>如果存在更长的增广路径，对每个可能的起点 u，用 DFS 寻找并记录增广路径</li>
+</ol>
+<p>每一次循环，BFS 所找到的最短增广路径的长度至少增加1，所以在 $\sqrt{|V|}$ 次循环以后，能找到的最短增广路径长度至少为 $\sqrt{|V|}$。假设当前的部分匹配集合为 $M$ (边集)，$M$ 和最大匹配的对称差组成了一组点不相交的增广路径和交替环。如果这个集合内所有的路径的长度都至少为 $\sqrt{|V|}$，那么最多只有 $\sqrt{|V|}$ 条路径，那么最大匹配的大小与 $|M|$ 最多为 $\sqrt{|V|}$。而每次循环至少将匹配大小增加1，所以直到算法结束最多还有 $\sqrt{|V|}$ 次循环。</p>
+<p>每次循环中，BFS 最多遍历图中每条边，DFS 也是最多遍历每条边，所以每一轮循环的时间复杂度为 $\mathcal{O}({|E|})$，总时间复杂度为 $\mathcal{O}({|E|\sqrt{|V|}})$。</p>
+<h4 id="pseudocode-1">Pseudocode</h4>
+<pre><code class="language-pascal" data-lang="pascal">/* 
+ G = U ∪ V ∪ {NIL}
+ where U and V are partition of graph and NIL is a special null vertex
+*/
+  
+function BFS ()
+    for each u in U
+        if Pair_U[u] == NIL
+            Dist[u] = 0
+            Enqueue(Q,u)
+        else
+            Dist[u] = ∞
+    Dist[NIL] = ∞
+    while Empty(Q) == false
+        u = Dequeue(Q)
+        if Dist[u] &lt; Dist[NIL] 
+            for each v in Adj[u]
+                if Dist[ Pair_V[v] ] == ∞
+                    Dist[ Pair_V[v] ] = Dist[u] + 1
+                    Enqueue(Q,Pair_V[v])
+    return Dist[NIL] != ∞
+
+function DFS (u)
+    if u != NIL
+        for each v in Adj[u]
+            if Dist[ Pair_V[v] ] == Dist[u] + 1
+                if DFS(Pair_V[v]) == true
+                    Pair_V[v] = u
+                    Pair_U[u] = v
+                    return true
+        Dist[u] = ∞
+        return false
+    return true
+
+function Hopcroft-Karp
+    for each u in U
+        Pair_U[u] = NIL
+    for each v in V
+        Pair_V[v] = NIL
+    matching = 0
+    while BFS() == true
+        for each u in U
+            if Pair_U[u] == NIL
+                if DFS(u) == true
+                    matching = matching + 1
+    return matching
+</code></pre><h3 id="a-problem">A Problem</h3>
+<p>一个可以转换成做完美匹配的题目，题目大意：</p>
+<blockquote>
+<p>二维平面上一共 n 个人和 n 个防空洞，现在你需要将 n 个人分配到防空洞中，使得每个防空洞仅容纳一个人，并且所有人进入防空洞的时间最短，即最晚进入防空洞的人的时间最短。一个人从 (X, Y) 移动到 (X1, Y1) 所需时间为 |X - X1| + |Y - Y1|。
+1 &lt;= n &lt;= 100</p>
+</blockquote>
+<p>这道题直接做我没有想到什么好办法，但是观察到可能解一定为某个人移动到某个防空洞的时间，所以我们将所有人移动到所有防空洞的时间全部计算出来并排序。</p>
+<p>对于某个人移动到某个防空洞，假设耗时为 T，那么所有耗时小于等于 T 的移动操作是可行的。我们建立一张二部图，左边是人的集合，右边是防空洞的集合，对于所有可行操作，我们在二部图上添加一条对应的边。那么如果此时存在一种分配方式满足上述条件，它在图上一定是一个完美匹配，而目标就是找到这样最小的一个T。</p>
+<p>对于我们的二部图，最差情况为完全二部图，对于匈牙利算法判定完美匹配的时间复杂度为 $\mathcal{O}(n^3)$，Hopcroft-Karp 算法为 $\mathcal{O}(n^2\sqrt{n})$，所以判定复杂度还是比较高的。</p>
+<p>假如我们一条一条添加，也就是按照耗时顺序添加，那么最坏情况一共要判定 $n^2$ 次，这太高了，这里数据比较小还可以，但是万一n大到1000就难说了。</p>
+<p>还记得之前我们提过的减小判定次数的方式嘛？对，二分查找，一共判定 $2\log n$ 次。</p>
+<p>在这里，我们同时也存在模拟复杂度，这里模拟为构造对应的二部图，每次构造的最坏时间复杂度为 $n^2$，所以总计时间复杂度为 $\mathcal{O}(n^3\log n)$ 或者 $\mathcal{O}(n^2\sqrt{n}\log n)$。</p>
+<p>代码实现在附录中。</p>
+<h3 id="references">References</h3>
+<p>[1] <a class="link" href="https://en.wikipedia.org/wiki/Hall%27s_marriage_theorem"  target="_blank" rel="noopener"
+    >https://en.wikipedia.org/wiki/Hall%27s_marriage_theorem</a></p>
+<p>[2] <a class="link" href="https://math.stackexchange.com/questions/1204270/bipartite-graph-has-perfect-matching"  target="_blank" rel="noopener"
+    >https://math.stackexchange.com/questions/1204270/bipartite-graph-has-perfect-matching</a></p>
+<p>[3] <a class="link" href="https://en.wikipedia.org/wiki/Matching_%28graph_theory%29"  target="_blank" rel="noopener"
+    >https://en.wikipedia.org/wiki/Matching_(graph_theory)</a></p>
+<p>[4] <a class="link" href="https://en.wikipedia.org/wiki/Hopcroft%E2%80%93Karp_algorithm"  target="_blank" rel="noopener"
+    >https://en.wikipedia.org/wiki/Hopcroft%E2%80%93Karp_algorithm</a></p>
+<p>[5] <a class="link" href="https://www.topcoder.com/community/data-science/data-science-tutorials/maximum-flow-augmenting-path-algorithms-comparison/"  target="_blank" rel="noopener"
+    >https://www.topcoder.com/community/data-science/data-science-tutorials/maximum-flow-augmenting-path-algorithms-comparison/</a></p>
+<p>[6] <a class="link" href="http://www.csl.mtu.edu/cs4321/www/Lectures/Lecture%2022%20-%20Maximum%20Matching%20in%20Bipartite%20Graph.htm"  target="_blank" rel="noopener"
+    >http://www.csl.mtu.edu/cs4321/www/Lectures/Lecture%2022%20-%20Maximum%20Matching%20in%20Bipartite%20Graph.htm</a></p>
+<h3 id="appendix">Appendix</h3>
+<h4 id="air-defense-exercise">Air Defense Exercise</h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cp">#include</span> <span class="cpf">&lt;cstdio&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;cstdlib&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;algorithm&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;vector&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;string&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;stack&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;cmath&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;deque&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;queue&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;map&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;bitset&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;set&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;list&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;unordered_map&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;unordered_set&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;sstream&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;numeric&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;climits&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;utility&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;iomanip&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;cassert&gt;</span><span class="cp">
+</span><span class="cp"></span>
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+
+<span class="k">using</span> <span class="n">ll</span> <span class="o">=</span> <span class="kt">long</span> <span class="kt">long</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">ii</span> <span class="o">=</span> <span class="n">pair</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="k">using</span> <span class="n">iii</span> <span class="o">=</span> <span class="n">pair</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="n">ii</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span> <span class="nc">T</span><span class="o">&gt;</span>
+<span class="k">using</span> <span class="n">vv</span> <span class="o">=</span> <span class="n">vector</span><span class="o">&lt;</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span><span class="p">;</span>
+
+<span class="cp">#define rep(i, b) for (int i = 0; i &lt; int(b); ++i)
+</span><span class="cp">#define reps(i, a, b) for (int i = int(a); i &lt; int(b); ++i)
+</span><span class="cp">#define rrep(i, b) for (int i = int(b) - 1; i &gt;= 0; --i)
+</span><span class="cp">#define rreps(i, a, b) for (int i = int(b) - 1; i &gt;= a; --i)
+</span><span class="cp">#define repe(i, b) for (int i = 0; i &lt;= int(b); ++i)
+</span><span class="cp">#define repse(i, a, b) for (int i = int(a); i &lt;= int(b); ++i)
+</span><span class="cp">#define rrepe(i, b) for (int i = int(b); i &gt;= 0; --i)
+</span><span class="cp">#define rrepse(i, a, b) for (int i = int(b); i &gt;= int(a); --i)
+</span><span class="cp"></span>
+<span class="cp">#define all(a) a.begin(), a.end()
+</span><span class="cp">#define rall(a) a.rbegin(), a.rend()
+</span><span class="cp">#define sz(a) int(a.size())
+</span><span class="cp">#define mp(a, b) make_pair(a, b)
+</span><span class="cp"></span>
+<span class="cp">#define inf (INT_MAX / 2)
+</span><span class="cp">#define infl (LONG_MAX / 2)
+</span><span class="cp">#define infll (LLONG_MAX / 2)
+</span><span class="cp"></span>
+<span class="cp">#define X first
+</span><span class="cp">#define Y second
+</span><span class="cp">#define pb push_back
+</span><span class="cp">#define eb emplace_back
+</span><span class="cp"></span>
+<span class="c1">// tools for pair&lt;int, int&gt; &amp; graph
+</span><span class="c1"></span><span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span> <span class="nc">T</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">M</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">N</span><span class="o">&gt;</span>
+<span class="k">class</span> <span class="nc">graph_delegate_t</span> <span class="p">{</span>
+    <span class="n">T</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">f</span><span class="p">)[</span><span class="n">M</span><span class="p">][</span><span class="n">N</span><span class="p">];</span>
+
+<span class="k">public</span><span class="o">:</span>
+    <span class="n">graph_delegate_t</span><span class="p">(</span><span class="n">T</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">f</span><span class="p">)[</span><span class="n">M</span><span class="p">][</span><span class="n">N</span><span class="p">])</span> <span class="o">:</span> <span class="n">f</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="p">{}</span>
+    <span class="n">T</span><span class="o">&amp;</span> <span class="k">operator</span><span class="p">[](</span><span class="k">const</span> <span class="n">ii</span><span class="o">&amp;</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">f</span><span class="p">[</span><span class="n">s</span><span class="p">.</span><span class="n">first</span><span class="p">][</span><span class="n">s</span><span class="p">.</span><span class="n">second</span><span class="p">];</span> <span class="p">}</span>
+    <span class="k">const</span> <span class="n">T</span><span class="o">&amp;</span> <span class="k">operator</span><span class="p">[](</span><span class="k">const</span> <span class="n">ii</span><span class="o">&amp;</span> <span class="n">s</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">f</span><span class="p">[</span><span class="n">s</span><span class="p">.</span><span class="n">first</span><span class="p">][</span><span class="n">s</span><span class="p">.</span><span class="n">second</span><span class="p">];</span> <span class="p">}</span>
+<span class="p">};</span>
+<span class="n">ii</span> <span class="k">operator</span><span class="o">+</span><span class="p">(</span><span class="k">const</span> <span class="n">ii</span><span class="o">&amp;</span> <span class="n">lhs</span><span class="p">,</span> <span class="k">const</span> <span class="n">ii</span><span class="o">&amp;</span> <span class="n">rhs</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nf">mp</span><span class="p">(</span><span class="n">lhs</span><span class="p">.</span><span class="n">first</span> <span class="o">+</span> <span class="n">rhs</span><span class="p">.</span><span class="n">first</span><span class="p">,</span> <span class="n">lhs</span><span class="p">.</span><span class="n">second</span> <span class="o">+</span> <span class="n">rhs</span><span class="p">.</span><span class="n">second</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// clang-format off
+</span><span class="c1"></span><span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span> <span class="nc">S</span><span class="p">,</span> <span class="k">class</span> <span class="nc">T</span><span class="o">&gt;</span> <span class="n">ostream</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">&lt;&lt;</span><span class="p">(</span><span class="n">ostream</span><span class="o">&amp;</span> <span class="n">os</span><span class="p">,</span> <span class="k">const</span> <span class="n">pair</span><span class="o">&lt;</span><span class="n">S</span><span class="p">,</span> <span class="n">T</span><span class="o">&gt;&amp;</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">os</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;(&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">t</span><span class="p">.</span><span class="n">first</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;,&#34;</span> <span class="o">&lt;&lt;</span> <span class="n">t</span><span class="p">.</span><span class="n">second</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;)&#34;</span><span class="p">;</span> <span class="p">}</span>
+<span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span> <span class="nc">T</span><span class="o">&gt;</span> <span class="n">ostream</span><span class="o">&amp;</span> <span class="k">operator</span><span class="o">&lt;&lt;</span><span class="p">(</span><span class="n">ostream</span><span class="o">&amp;</span> <span class="n">os</span><span class="p">,</span> <span class="k">const</span> <span class="n">vector</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&amp;</span> <span class="n">t</span><span class="p">)</span> <span class="p">{</span> <span class="n">os</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;{&#34;</span><span class="p">;</span> <span class="n">rep</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">t</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span> <span class="n">os</span> <span class="o">&lt;&lt;</span> <span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;,&#34;</span><span class="p">;</span> <span class="p">}</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">t</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span> <span class="n">os</span> <span class="o">&lt;&lt;</span> <span class="n">t</span><span class="p">.</span><span class="n">back</span><span class="p">();</span> <span class="n">os</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;}&#34;</span><span class="p">;</span> <span class="k">return</span> <span class="n">os</span><span class="p">;</span> <span class="p">}</span>
+<span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">__macro_split</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span><span class="o">&amp;</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span> <span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">v</span><span class="p">;</span> <span class="kt">int</span> <span class="n">d</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">f</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">string</span> <span class="n">t</span><span class="p">;</span> <span class="k">for</span> <span class="p">(</span><span class="kt">char</span> <span class="nl">c</span> <span class="p">:</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">d</span> <span class="o">&amp;&amp;</span> <span class="n">c</span> <span class="o">==</span> <span class="sc">&#39;,&#39;</span><span class="p">)</span> <span class="n">v</span><span class="p">.</span><span class="n">pb</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">t</span> <span class="o">=</span> <span class="s">&#34;&#34;</span><span class="p">;</span> <span class="k">else</span> <span class="n">t</span> <span class="o">+=</span> <span class="n">c</span><span class="p">;</span> <span class="k">if</span> <span class="p">(</span><span class="n">c</span> <span class="o">==</span> <span class="sc">&#39;\&#34;&#39;</span> <span class="o">||</span> <span class="n">c</span> <span class="o">==</span> <span class="sc">&#39;\&#39;&#39;</span><span class="p">)</span> <span class="n">f</span> <span class="o">^=</span> <span class="mi">1</span><span class="p">;</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">f</span> <span class="o">&amp;&amp;</span> <span class="n">c</span> <span class="o">==</span> <span class="sc">&#39;(&#39;</span><span class="p">)</span> <span class="o">++</span><span class="n">d</span><span class="p">;</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">f</span> <span class="o">&amp;&amp;</span> <span class="n">c</span> <span class="o">==</span> <span class="sc">&#39;)&#39;</span><span class="p">)</span> <span class="o">--</span><span class="n">d</span><span class="p">;</span> <span class="p">}</span> <span class="n">v</span><span class="p">.</span><span class="n">pb</span><span class="p">(</span><span class="n">t</span><span class="p">);</span> <span class="k">return</span> <span class="n">v</span><span class="p">;</span> <span class="p">}</span>
+<span class="kt">void</span> <span class="nf">__args_output</span><span class="p">(</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;::</span><span class="n">iterator</span><span class="p">,</span> <span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;::</span><span class="n">iterator</span><span class="p">)</span> <span class="p">{</span> <span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="p">}</span>
+<span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="p">,</span> <span class="k">typename</span><span class="p">...</span> <span class="n">Args</span><span class="o">&gt;</span>
+<span class="kt">void</span> <span class="n">__args_output</span><span class="p">(</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;::</span><span class="n">iterator</span> <span class="n">it</span><span class="p">,</span> <span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;::</span><span class="n">iterator</span> <span class="n">end</span><span class="p">,</span> <span class="n">T</span> <span class="n">a</span><span class="p">,</span> <span class="n">Args</span><span class="p">...</span> <span class="n">args</span><span class="p">)</span> <span class="p">{</span> <span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="n">it</span><span class="o">-&gt;</span><span class="n">substr</span><span class="p">((</span><span class="o">*</span><span class="n">it</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="sc">&#39; &#39;</span><span class="p">,</span> <span class="n">it</span><span class="o">-&gt;</span><span class="n">length</span><span class="p">())</span> <span class="o">&lt;&lt;</span> <span class="s">&#34; = &#34;</span> <span class="o">&lt;&lt;</span> <span class="n">a</span><span class="p">;</span> <span class="k">if</span> <span class="p">(</span><span class="o">++</span><span class="n">it</span> <span class="o">!=</span> <span class="n">end</span><span class="p">)</span> <span class="p">{</span> <span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">&#34;, &#34;</span><span class="p">;</span> <span class="p">}</span> <span class="n">__args_output</span><span class="p">(</span><span class="n">it</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">args</span><span class="p">...);</span> <span class="p">}</span>
+<span class="cp">#define out(args...) { vector&lt;string&gt; __args = __macro_split(#args); __args_output(__args.begin(), __args.end(), args); }
+</span><span class="cp"></span><span class="c1">// clang-format on
+</span><span class="c1"></span>
+<span class="k">const</span> <span class="kt">int</span> <span class="n">MAX_N</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">n</span><span class="p">;</span>
+<span class="n">ii</span> <span class="n">p</span><span class="p">[</span><span class="n">MAX_N</span><span class="p">],</span> <span class="n">h</span><span class="p">[</span><span class="n">MAX_N</span><span class="p">];</span>
+<span class="n">iii</span> <span class="n">d</span><span class="p">[</span><span class="n">MAX_N</span> <span class="o">*</span> <span class="n">MAX_N</span><span class="p">];</span>
+
+<span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">edges</span><span class="p">[</span><span class="n">MAX_N</span><span class="p">];</span>
+<span class="kt">int</span> <span class="n">match</span><span class="p">[</span><span class="n">MAX_N</span><span class="p">];</span>
+<span class="kt">bool</span> <span class="n">visited</span><span class="p">[</span><span class="n">MAX_N</span><span class="p">];</span>
+
+<span class="kt">void</span> <span class="nf">link</span><span class="p">(</span><span class="kt">int</span> <span class="n">u</span><span class="p">,</span> <span class="kt">int</span> <span class="n">v</span><span class="p">)</span> <span class="p">{</span> <span class="n">edges</span><span class="p">[</span><span class="n">u</span><span class="p">].</span><span class="n">push_back</span><span class="p">(</span><span class="n">v</span><span class="p">);</span> <span class="p">}</span>
+
+<span class="kt">bool</span> <span class="nf">dfs</span><span class="p">(</span><span class="kt">int</span> <span class="n">u</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="nl">v</span> <span class="p">:</span> <span class="n">edges</span><span class="p">[</span><span class="n">u</span><span class="p">])</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">visited</span><span class="p">[</span><span class="n">v</span><span class="p">])</span> <span class="k">continue</span><span class="p">;</span>
+        <span class="n">visited</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">match</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="o">||</span> <span class="n">dfs</span><span class="p">(</span><span class="n">match</span><span class="p">[</span><span class="n">v</span><span class="p">]))</span> <span class="p">{</span>
+            <span class="n">match</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">u</span><span class="p">;</span>
+            <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">bool</span> <span class="nf">hungarian</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">m</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">fill_n</span><span class="p">(</span><span class="n">match</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+    <span class="n">rep</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">fill_n</span><span class="p">(</span><span class="n">visited</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="nb">false</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">dfs</span><span class="p">(</span><span class="n">i</span><span class="p">))</span> <span class="o">++</span><span class="n">m</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">m</span> <span class="o">==</span> <span class="n">n</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="n">match_u</span><span class="p">[</span><span class="n">MAX_N</span><span class="p">],</span> <span class="n">match_v</span><span class="p">[</span><span class="n">MAX_N</span><span class="p">];</span>
+<span class="kt">int</span> <span class="n">dist</span><span class="p">[</span><span class="n">MAX_N</span><span class="p">];</span>
+<span class="kt">int</span> <span class="n">NIL</span> <span class="o">=</span> <span class="n">MAX_N</span><span class="p">;</span>
+
+<span class="kt">bool</span> <span class="nf">bfs</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">queue</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">q</span><span class="p">;</span>
+    <span class="n">rep</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">match_u</span><span class="p">[</span><span class="n">u</span><span class="p">]</span> <span class="o">==</span> <span class="n">NIL</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">dist</span><span class="p">[</span><span class="n">u</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+            <span class="n">q</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">u</span><span class="p">);</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="n">dist</span><span class="p">[</span><span class="n">u</span><span class="p">]</span> <span class="o">=</span> <span class="n">inf</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="n">dist</span><span class="p">[</span><span class="n">NIL</span><span class="p">]</span> <span class="o">=</span> <span class="n">inf</span><span class="p">;</span>
+    <span class="k">while</span> <span class="p">(</span><span class="o">!</span><span class="n">q</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span> <span class="p">{</span>
+        <span class="k">auto</span> <span class="n">u</span> <span class="o">=</span> <span class="n">q</span><span class="p">.</span><span class="n">front</span><span class="p">();</span>
+        <span class="n">q</span><span class="p">.</span><span class="n">pop</span><span class="p">();</span>
+        <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="nl">v</span> <span class="p">:</span> <span class="n">edges</span><span class="p">[</span><span class="n">u</span><span class="p">])</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">dist</span><span class="p">[</span><span class="n">match_v</span><span class="p">[</span><span class="n">v</span><span class="p">]]</span> <span class="o">==</span> <span class="n">inf</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">dist</span><span class="p">[</span><span class="n">match_v</span><span class="p">[</span><span class="n">v</span><span class="p">]]</span> <span class="o">=</span> <span class="n">dist</span><span class="p">[</span><span class="n">u</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">match_v</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">!=</span> <span class="n">NIL</span><span class="p">)</span> <span class="n">q</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">match_v</span><span class="p">[</span><span class="n">v</span><span class="p">]);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">dist</span><span class="p">[</span><span class="n">NIL</span><span class="p">]</span> <span class="o">!=</span> <span class="n">inf</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">bool</span> <span class="nf">dfs_h</span><span class="p">(</span><span class="kt">int</span> <span class="n">u</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">u</span> <span class="o">==</span> <span class="n">NIL</span><span class="p">)</span> <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+    <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="nl">v</span> <span class="p">:</span> <span class="n">edges</span><span class="p">[</span><span class="n">u</span><span class="p">])</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">dist</span><span class="p">[</span><span class="n">match_v</span><span class="p">[</span><span class="n">v</span><span class="p">]]</span> <span class="o">==</span> <span class="n">dist</span><span class="p">[</span><span class="n">u</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="n">dfs_h</span><span class="p">(</span><span class="n">match_v</span><span class="p">[</span><span class="n">v</span><span class="p">]))</span> <span class="p">{</span>
+            <span class="n">match_u</span><span class="p">[</span><span class="n">u</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="p">;</span>
+            <span class="n">match_v</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">u</span><span class="p">;</span>
+            <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="n">dist</span><span class="p">[</span><span class="n">u</span><span class="p">]</span> <span class="o">=</span> <span class="n">inf</span><span class="p">;</span>
+    <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">bool</span> <span class="nf">hopcraft_karp</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">m</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">fill_n</span><span class="p">(</span><span class="n">match_u</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">NIL</span><span class="p">);</span>
+    <span class="n">fill_n</span><span class="p">(</span><span class="n">match_v</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">NIL</span><span class="p">);</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">bfs</span><span class="p">())</span> <span class="p">{</span>
+        <span class="n">rep</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">match_u</span><span class="p">[</span><span class="n">u</span><span class="p">]</span> <span class="o">==</span> <span class="n">NIL</span> <span class="o">&amp;&amp;</span> <span class="n">dfs_h</span><span class="p">(</span><span class="n">u</span><span class="p">))</span> <span class="p">{</span>
+                <span class="o">++</span><span class="n">m</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">m</span> <span class="o">==</span> <span class="n">n</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">bool</span> <span class="nf">pfmatch</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">hopcraft_karp</span><span class="p">();</span> <span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">n</span><span class="p">;</span>
+    <span class="n">rep</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span> <span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">first</span> <span class="o">&gt;&gt;</span> <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">second</span><span class="p">;</span> <span class="p">}</span>
+    <span class="n">rep</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span> <span class="n">cin</span> <span class="o">&gt;&gt;</span> <span class="n">h</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">first</span> <span class="o">&gt;&gt;</span> <span class="n">h</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">second</span><span class="p">;</span> <span class="p">}</span>
+    <span class="n">rep</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">rep</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kt">int</span> <span class="n">idx</span> <span class="o">=</span> <span class="n">i</span> <span class="o">*</span> <span class="n">n</span> <span class="o">+</span> <span class="n">j</span><span class="p">;</span>
+            <span class="kt">int</span> <span class="n">dis</span> <span class="o">=</span> <span class="n">abs</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">X</span> <span class="o">-</span> <span class="n">h</span><span class="p">[</span><span class="n">j</span><span class="p">].</span><span class="n">X</span><span class="p">)</span> <span class="o">+</span> <span class="n">abs</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">Y</span> <span class="o">-</span> <span class="n">h</span><span class="p">[</span><span class="n">j</span><span class="p">].</span><span class="n">Y</span><span class="p">);</span>
+            <span class="n">d</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">dis</span><span class="p">,</span> <span class="p">{</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">}};</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="n">sort</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">d</span> <span class="o">+</span> <span class="n">n</span> <span class="o">*</span> <span class="n">n</span><span class="p">);</span>
+    <span class="kt">int</span> <span class="n">l</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">n</span> <span class="o">*</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="c1">// binary search
+</span><span class="c1"></span>    <span class="c1">// time complexity: O(n^3lgn) for hungarian,
+</span><span class="c1"></span>    <span class="c1">// O(n^2√n * lgn) for hopcroft-karp
+</span><span class="c1"></span>    <span class="k">while</span> <span class="p">(</span><span class="n">l</span> <span class="o">&lt;</span> <span class="n">r</span> <span class="o">&amp;&amp;</span> <span class="n">d</span><span class="p">[</span><span class="n">l</span><span class="p">].</span><span class="n">first</span> <span class="o">!=</span> <span class="n">d</span><span class="p">[</span><span class="n">r</span><span class="p">].</span><span class="n">first</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// replay
+</span><span class="c1"></span>        <span class="n">rep</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span> <span class="n">edges</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">clear</span><span class="p">();</span> <span class="p">}</span>
+        <span class="kt">int</span> <span class="n">mid</span> <span class="o">=</span> <span class="p">(</span><span class="n">l</span> <span class="o">+</span> <span class="n">r</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
+        <span class="n">repe</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">mid</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kt">int</span> <span class="n">pi</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">second</span><span class="p">.</span><span class="n">first</span><span class="p">,</span> <span class="n">hj</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">second</span><span class="p">.</span><span class="n">second</span><span class="p">;</span>
+            <span class="n">link</span><span class="p">(</span><span class="n">hj</span><span class="p">,</span> <span class="n">pi</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">pfmatch</span><span class="p">())</span> <span class="p">{</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">mid</span><span class="p">;</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="n">l</span> <span class="o">=</span> <span class="n">mid</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">d</span><span class="p">[</span><span class="n">l</span><span class="p">].</span><span class="n">first</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/maximum-matching/">maximum matching</a>
+        
+            <a href="/tags/graph/">graph</a>
+        
+            <a href="/tags/hungarian-algorithm/">hungarian algorithm</a>
+        
+            <a href="/tags/hopcraft-karp-algorithm/">hopcraft-karp algorithm</a>
+        
+            <a href="/tags/halls-marriage-theorem/">hall&#39;s marriage theorem</a>
+        
+            <a href="/tags/bipartite-graph/">bipartite graph</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.13.13/dist/katex.min.css"integrity="sha384-RZU/ijkSsFbcmivfdRBQDtwuwVqK7GMOw6IMvKyeWL2K5UAlyp6WonmB8m7Jd0Hn"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.13.13/dist/katex.min.js"integrity="sha384-pK1WpvzWVBQiP0/GjnvRxV4mOb0oxFuyRxJlk6vVw146n3egcN5C925NCP7a7BY8"crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.13.13/dist/contrib/auto-render.min.js"integrity="sha384-vZTG03m&#43;2yp6N6BNi5iM4rW4oIwk5DfcNdFfxkk9ZWpDriOkXX8voJBFrAO7MpVl"crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.querySelector(`.article-content`), {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ]
+        });})
+</script>
+    
+</article>
+
+    <aside class="related-contents--wrapper">
+    
+    
+        <h2 class="section-title">相关文章</h2>
+        <div class="related-contents">
+            <div class="flex article-list--tile">
+                
+                    
+<article class="">
+    <a href="/p/stoer-wagner-algorithm/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">无向带权图图全局最小割 Stoer-Wagner 算法 (Stoer-Wagner Algorithm -- Global Min-Cut in Undirected Weighted Graphs)</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="">
+    <a href="/p/manachers-algorithm/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">最长回文子串 Manacher 算法 (Longest Palindromic Substring -- Manacher&#39;s Algorithm)</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="">
+    <a href="/p/hourrank23/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">稀疏表和并行二分查找 (Sparse Table &amp; Parallel Binary Search)</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="">
+    <a href="/p/binary-indexed-tree/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">二叉索引树/树状数组 (Binary Indexed Tree)</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="">
+    <a href="/p/segment-tree/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">线段树 (Segment Tree)</h2>
+        </div>
+    </a>
+</article>
+                
+            </div>
+        </div>
+    
+</aside>
+
+     
+     
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "crazyark" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (DISQUS) {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2018 - 
+        
+        2021 石沉溪洞 -- Ark&#39;s Blog
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.1.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+            >
+
+            </main>
+    
+        <aside class="sidebar right-sidebar sticky">
+            <section class="widget archives">
+                <div class="widget-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+                </div>
+                <h2 class="widget-title section-title">目录</h2>
+                
+                <div class="widget--toc">
+                    <nav id="TableOfContents">
+  <ol>
+    <li>
+      <ol>
+        <li><a href="#halls-marriage-theorem">Hall&rsquo;s Marriage Theorem</a>
+          <ol>
+            <li><a href="#deduction-1-1">Deduction 1 [1]</a></li>
+          </ol>
+        </li>
+        <li><a href="#hungarian-algorithm">Hungarian Algorithm</a>
+          <ol>
+            <li><a href="#alternating-path--augmenting-path">Alternating Path &amp; Augmenting Path</a></li>
+            <li><a href="#theorem-of-augmenting-path">Theorem of Augmenting Path</a></li>
+            <li><a href="#pseudocode">Pseudocode</a></li>
+          </ol>
+        </li>
+        <li><a href="#hopcroft-karp-algorithm">Hopcroft-Karp Algorithm</a>
+          <ol>
+            <li><a href="#pseudocode-1">Pseudocode</a></li>
+          </ol>
+        </li>
+        <li><a href="#a-problem">A Problem</a></li>
+        <li><a href="#references">References</a></li>
+        <li><a href="#appendix">Appendix</a>
+          <ol>
+            <li><a href="#air-defense-exercise">Air Defense Exercise</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+                </div>
+            </section>
+        </aside>
+    
+
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

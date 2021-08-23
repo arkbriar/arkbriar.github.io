@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='刷leetcode时碰到的问题，本篇仅做简要描述，以及记录思考。
+参考自: https://gregable.com/2013/10/majority-vote-algorithm-find-majority.html，一篇写的非常好的博客
+问题描述：考虑你有一个长度为n的无序列表，现在你想知道列表中是否有一个值占据了列表的一半以上 (majority)，如果有的话找出这个数。
+这个问题的一个普遍的应用场景是在容错计算 (fault-tolerant computing) 中，在进行了多次冗余的计算后，输出最后多数计算得到的值。
+'><title>Boyer-Moore 投票算法 (Boyer-Moore Majority Voting Algorithm)</title>
+
+<link rel='canonical' href='https://blog.crazyark.xyz/p/majority-voting/'>
+
+<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='Boyer-Moore 投票算法 (Boyer-Moore Majority Voting Algorithm)'>
+<meta property='og:description' content='刷leetcode时碰到的问题，本篇仅做简要描述，以及记录思考。
+参考自: https://gregable.com/2013/10/majority-vote-algorithm-find-majority.html，一篇写的非常好的博客
+问题描述：考虑你有一个长度为n的无序列表，现在你想知道列表中是否有一个值占据了列表的一半以上 (majority)，如果有的话找出这个数。
+这个问题的一个普遍的应用场景是在容错计算 (fault-tolerant computing) 中，在进行了多次冗余的计算后，输出最后多数计算得到的值。
+'>
+<meta property='og:url' content='https://blog.crazyark.xyz/p/majority-voting/'>
+<meta property='og:site_name' content='石沉溪洞 -- Ark&#39;s Blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='algorithm' /><meta property='article:tag' content='boyer-moore' /><meta property='article:tag' content='majority vote' /><meta property='article:published_time' content='2017-07-28T21:08:02&#43;08:00'/><meta property='article:modified_time' content='2017-07-28T21:08:02&#43;08:00'/>
+<meta name="twitter:site" content="@ImperiusDs">
+    <meta name="twitter:creator" content="@ImperiusDs"><meta name="twitter:title" content="Boyer-Moore 投票算法 (Boyer-Moore Majority Voting Algorithm)">
+<meta name="twitter:description" content="刷leetcode时碰到的问题，本篇仅做简要描述，以及记录思考。
+参考自: https://gregable.com/2013/10/majority-vote-algorithm-find-majority.html，一篇写的非常好的博客
+问题描述：考虑你有一个长度为n的无序列表，现在你想知道列表中是否有一个值占据了列表的一半以上 (majority)，如果有的话找出这个数。
+这个问题的一个普遍的应用场景是在容错计算 (fault-tolerant computing) 中，在进行了多次冗余的计算后，输出最后多数计算得到的值。
+">
+    </head>
+    <body class="
+    article-page has-toc
+">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex 
+    
+        extended
+    
+">
+    
+        <div id="article-toolbar">
+            <a href="https://blog.crazyark.xyz" class="back-home">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="15 6 9 12 15 18" />
+</svg>
+
+
+
+                <span>返回</span>
+            </a>
+        </div>
+    
+<main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/algorithm/" >
+                Algorithm
+            </a>
+        
+    </header>
+    
+
+    <h2 class="article-title">
+        <a href="/p/majority-voting/">Boyer-Moore 投票算法 (Boyer-Moore Majority Voting Algorithm)</a>
+    </h2>
+
+    
+
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Jul 28, 2017</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 2 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+</div>
+</header>
+
+    <section class="article-content">
+    <p>刷leetcode时碰到的问题，本篇仅做简要描述，以及记录思考。</p>
+<p>参考自: <a class="link" href="https://gregable.com/2013/10/majority-vote-algorithm-find-majority.html"  target="_blank" rel="noopener"
+    >https://gregable.com/2013/10/majority-vote-algorithm-find-majority.html</a>，一篇写的非常好的博客</p>
+<p>问题描述：考虑你有一个长度为n的<strong>无序</strong>列表，现在你想知道列表中是否有一个值占据了列表的一半以上 (majority)，如果有的话找出这个数。</p>
+<p>这个问题的一个普遍的应用场景是在容错计算 (fault-tolerant computing) 中，在进行了多次冗余的计算后，输出最后多数计算得到的值。</p>
+<h2 id="显而易见的做法">显而易见的做法</h2>
+<p>先排序，然后遍历列表并计数就行。耗时为 O(nlgn)，不够快！实际上我们可以在 O(n) 的时间内给出结果。</p>
+<h2 id="boyer-moore-majority-algorithm">Boyer-Moore Majority Algorithm</h2>
+<p>论文依据：<a class="link" href="http://www.cs.rug.nl/~wim/pub/whh348.pdf"  target="_blank" rel="noopener"
+    >Boyer-Moore Majority Algorithm</a></p>
+<p>该算法时间开销为 O(2n), 空间开销为 O(1)，总共遍历两遍列表，思想非常简单。</p>
+<p>我们需要以下两个值:</p>
+<ol>
+<li>candidate，初始化为任意值</li>
+<li>count，初始化为0</li>
+</ol>
+<p>第一遍遍历，以 current 代表当前值：</p>
+<ol>
+<li>IF count == 0, THEN candidate = current</li>
+<li>IF candiadate == current THEN count += 1 ELSE count -= 1</li>
+</ol>
+<p>第二遍遍历，对上次结果中的 candidate 计数，超过一半则存在 majority 为 candidate，否则不存在</p>
+<p>来看一下Python版代码实现：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">boyer_moore_majority</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+    <span class="n">candidate</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">input</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">candidate</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">if</span> <span class="n">candidate</span> <span class="o">==</span> <span class="n">value</span>
+            <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">count</span> <span class="o">-=</span> <span class="mi">1</span>
+
+    <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">input</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">candidate</span> <span class="o">==</span> <span class="n">value</span><span class="p">:</span>
+            <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+    
+    <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">candidate</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span> <span class="c1"># any value represents NOT FOUND</span>
+</code></pre></div><h3 id="一个简单的证明">一个简单的证明</h3>
+<p>我们只需要考虑在原列表中有 majority 的情况，因为如果没有第二遍遍历会直接 reject。</p>
+<p>所以假设列表 L 中存在majority，记为 M。</p>
+<p>可以看到，上面 candidate 在 count 等于 0 的时候变更，其实将列表分成了一段一段，每一段有一个 candidate。</p>
+<p>每一段有一个重要的性质，即 candidate 在这一段中恰好占据了一半。</p>
+<p>我们归纳证明：在最后一段中 candidate == M</p>
+<p>那么当扫描到第一段S时，有两种情况：</p>
+<ol>
+<li>candidate == M，那么根据 M 是 majority，以及根据 count(M in S) = len(S) / 2，在子列表 L - S 中 M 还是 majority</li>
+<li>candidate != M，那么 count(M in S) &lt;= len(S) / 2, 同上，L - S 中 M 还是 majority</li>
+</ol>
+<p>最后一段就是最后一个子列表，所以 candidate == M。</p>
+<h3 id="更快更好-">更快更好 😁</h3>
+<p>两遍遍历的 O(n) 已经很快，但是大家还是觉得不够快，于是&hellip; O(3n / 2 -2) 的算法诞生了。</p>
+<p>这个算法只比较 3n/2 - 2 次，已经是理论下限。 Here is the prover.<a class="link" href="http://www.cs.yale.edu/publications/techreports/tr252.pdf"  target="_blank" rel="noopener"
+    >Finding a majority among N votes</a></p>
+<p>这个算法的基本想法是：将原列表重新排列，使得没有两个相邻的值是相同的。</p>
+<p>在这里，我们需要一个<strong>桶</strong>来存放额外的值，所以空间消耗为 O(n)，同样是两遍遍历。</p>
+<p>第一遍遍历，candidate 保持为列表的最后一个值，current 为当前值</p>
+<ol>
+<li>current == candidate, 把 current 放入桶中</li>
+<li>current != candidate, 把 current 放到列表的最后，然后从桶中取出一个放到列表最后</li>
+</ol>
+<p>显然列表相邻的两个绝不可能相同</p>
+<p>第二遍遍历中，我们需要将 candidate 不断的与列表最后一个值比较：</p>
+<ol>
+<li>如果相同，从列表最后去除<strong>两个</strong>元素</li>
+<li>否则，从列表最后去除<strong>一个</strong>元素，并从桶中去除<strong>一个</strong>元素</li>
+</ol>
+<p>如果桶空了，那么没有 majority，否则 candidate 就是 majority。</p>
+<p>证明略去，有兴趣的同学可以参考论文。</p>
+<h3 id="分布式-boyer-moore">分布式 Boyer-Moore</h3>
+<p>有兴趣的同学可以阅读 <a class="link" href="http://www.crm.umontreal.ca/pub/Rapports/3300-3399/3302.pdf"  target="_blank" rel="noopener"
+    >Finding the Majority Element in Parallel</a>。</p>
+<p>主要算法如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">distributed_boyer_moore_majority</span><span class="p">(</span><span class="n">parallel_output</span><span class="p">):</span>
+    <span class="n">candidate</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">candidate_i</span><span class="p">,</span> <span class="n">count_i</span> <span class="ow">in</span> <span class="n">parallel_output</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">candidate_i</span> <span class="o">=</span> <span class="n">candidate</span><span class="p">:</span>
+        <span class="n">count</span> <span class="o">+=</span> <span class="n">count_i</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="n">count_i</span> <span class="o">&gt;</span> <span class="n">count</span><span class="p">:</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="n">count_i</span> <span class="o">-</span> <span class="n">count</span>
+        <span class="n">candidate</span> <span class="o">=</span> <span class="n">candidate_i</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="n">count</span> <span class="o">-</span> <span class="n">count_i</span>
+    <span class="o">...</span>
+</code></pre></div><h2 id="总结">总结</h2>
+<p>刷 leetcode 时遇到的很有意思的题目 <a class="link" href="https://leetcode.com/problems/majority-element-ii/tabs/description"  target="_blank" rel="noopener"
+    >https://leetcode.com/problems/majority-element-ii/tabs/description</a>，知道这个算法就非常容易了。</p>
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/algorithm/">algorithm</a>
+        
+            <a href="/tags/boyer-moore/">boyer-moore</a>
+        
+            <a href="/tags/majority-vote/">majority vote</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    <aside class="related-contents--wrapper">
+    
+    
+        <h2 class="section-title">相关文章</h2>
+        <div class="related-contents">
+            <div class="flex article-list--tile">
+                
+                    
+<article class="">
+    <a href="/p/manachers-algorithm/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">最长回文子串 Manacher 算法 (Longest Palindromic Substring -- Manacher&#39;s Algorithm)</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="">
+    <a href="/p/hourrank23/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">稀疏表和并行二分查找 (Sparse Table &amp; Parallel Binary Search)</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="">
+    <a href="/p/binary-indexed-tree/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">二叉索引树/树状数组 (Binary Indexed Tree)</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="">
+    <a href="/p/segment-tree/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">线段树 (Segment Tree)</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="">
+    <a href="/p/longest-increasing-subsequence/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">最长递增子序列 (Longest Increasing Subsequence)</h2>
+        </div>
+    </a>
+</article>
+                
+            </div>
+        </div>
+    
+</aside>
+
+     
+     
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "crazyark" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (DISQUS) {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2018 - 
+        
+        2021 石沉溪洞 -- Ark&#39;s Blog
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.1.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+            >
+
+            </main>
+    
+        <aside class="sidebar right-sidebar sticky">
+            <section class="widget archives">
+                <div class="widget-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+                </div>
+                <h2 class="widget-title section-title">目录</h2>
+                
+                <div class="widget--toc">
+                    <nav id="TableOfContents">
+  <ol>
+    <li><a href="#显而易见的做法">显而易见的做法</a></li>
+    <li><a href="#boyer-moore-majority-algorithm">Boyer-Moore Majority Algorithm</a>
+      <ol>
+        <li><a href="#一个简单的证明">一个简单的证明</a></li>
+        <li><a href="#更快更好-">更快更好 😁</a></li>
+        <li><a href="#分布式-boyer-moore">分布式 Boyer-Moore</a></li>
+      </ol>
+    </li>
+    <li><a href="#总结">总结</a></li>
+  </ol>
+</nav>
+                </div>
+            </section>
+        </aside>
+    
+
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

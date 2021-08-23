@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on 石沉溪洞 -- Ark&#39;s Blog</title>
+    <link>https://blog.crazyark.xyz/post/</link>
+    <description>Recent content in Posts on 石沉溪洞 -- Ark&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Tue, 17 Aug 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.crazyark.xyz/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Raft on RocksDB -- 共享日志</title>
+      <link>https://blog.crazyark.xyz/p/raft-and-share-log/</link>
+      <pubDate>Tue, 17 Aug 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/p/raft-and-share-log/</guid>
+      <description>自上次更新博客起已经有三年时间了，这期间经历了留学、毕业、工作等很多事情，个中滋味只有自己知道。博客重开，希望文笔和思路上能比以前进步一点点。同时因为学识有限，也希望各位大佬能不吝赐教。
+背景 上个月为了学习 rust 语言，参加了阿里云 ECS 团队举办的 CloudBuild 性能挑战赛，用 rust 实现一个聊天室服务器。因为 rust 不熟练初赛只提交了一次，居然也闯进复赛了，也挺有意思的。复赛题目要求服务要部署在三台机器上，同时提供完整的读写服务，且要求宕机一台不影响服务。看到题目后，我直观地想到了使用一致性协议让三台机器关于存储的数据达成一致就可。分布式系统中常用的一致性协议有 Paxos 和 Raft 等，其中 Raft 从原理上来说是一种特化的 Paxos，而且简单易懂。因此我最终决定采用 Raft + RocksDB 的方案进行实现。
+问题 Raft 是一个分布式一致性协议，而 RocksDB 是一个 K-V 数据库，在各自的领域应该都是闻名遐迩，在此不再多做介绍。在方案的实现过程中，碰到不少问题，其中的一个主要问题是：Raft 协议运行过程中需要维护一份日志，而 RocksDB 为了保障持久性，也会维护一份 WAL，这两份日志在数据内容上是高度重合的。这意味着在写入数据的过程中，需要再多写一份，这对于任何关注性能的系统来说都是不能接受的。
+事实上很多分布式数据库系统都已经合并了这两条日志，比如某些魔改的分布式 MySQL 系统，以及 tikv（？我没调研）。他们采用的方案或是将存储引擎的 WAL 扩展支持一致性协议的特殊事件，或是在一致性协议的日志中嵌入一条存储引擎的 WAL，或者对某些特化的系统比如分布式日志系统，干脆直接将 Raft 的日志改造成存储引擎。在 Google 解决方案的过程中，我发现了 eBay 以前的一篇文章[1]，讲的就是如何把日志存储的日志和 Raft 的日志相结合起来，虽然只是一篇 workshop 的文章，但图文讲解还是让我茅塞顿开。
+由于我采用了 RocksDB 作为存储引擎，显然我不希望去修改 RocksDB 的 WAL，这工程量太大了，不够回本的。因此我决定尝试定制 Raft 日志、关闭 RocksDB 的 WAL 的方案。在崩溃恢复的时候，使用 Raft 的日志去进行 RocksDB 的恢复。因为 RocksDB 是一个 LSMT 结构的系统，它在磁盘上持久化的 SST（Sorted String Table）都是只读的，即使崩溃也只是丢失内存中还没有刷盘的 memtable，这大大简化了崩溃恢复的工作量。</description>
+    </item>
+    
+    <item>
+      <title>哈希表 -- 哈希冲突</title>
+      <link>https://blog.crazyark.xyz/p/hash-table-collision/</link>
+      <pubDate>Thu, 16 Aug 2018 14:55:23 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/p/hash-table-collision/</guid>
+      <description>Hash table &amp;ndash; Collision 在计算机科学中，哈希表 (hash table) 是一个非常重要的数据结构，它帮助我们快速的进行插入和查询。理论上来说，在表中查询一次的耗时应该是 O(1) 的。这里假设大家对于哈希 (hash) 都已经了解，如果你以前没有接触过这个概念，这篇文章或许是一个很好的开始。
+假设你有一个完美的哈希函数 (perfect hashing) 和无穷大的内存，那么哈希表中每一个哈希值都对应了一个原始的元素。显然此时要进行查找，我们只需要算出哈希值，然后找到表中对应的项就可以了。然而现实中不存在无穷大的内存，也不是很容易去找到一个“优秀”的完美哈希，比如最小完美哈希 (minimal perfect hashing)。
+所以实际中，我们不可避免的会碰到哈希冲突 (hash collision) ，也就是两个不同的元素被映射到同一个哈希值上。当一个哈希表碰到哈希冲突的时候，有几种办法去解决它，它们各有优劣，且容我一一道来。
+Hash collision 哈希冲突的解决办法通常是两种，一种叫拉链法 (separate chaining) ，一种叫开地址法 (open addressing)。当然不仅限于这两种，其他的比如 multiple-choice hashing, cuckoo hashing, hopscotch hashing, robin hood hashing 等等，本文挑几种介绍一下。
+Separate chaining 拉链法核心思想就是将哈希冲突的元素存入都存入到链表中，如下图所示，
+在每个哈希表的单元格中 (hash table cell, 或者我们也称为桶 bucket)，都存放了一个链表头。当哈希冲突发生时，只需要把冲突的元素放到链表中。当需要查找时，先通过哈希值找到对应的单元格，再遍历链表找到想要的元素，此时查找时间是 O(N) 的。这里 N 是链表长度，通常链表不会很长，所以可以认为整体查询时间还是 O(1) 的。大多数标准库中的哈希表时间都是采用了这种方式，因为足够通用，性能也还不错。
+当然我们也可以用一棵 BST 来代替链表，此时查询时间是 O(lgN) 的，但是插入和空间开销要比链表大。Java 的 HashMap 的实现中，当一个哈希单元格的链表长度超过 8 时，就会自动转成一颗红黑树来降低查询开销。
+拉链法有两个缺点，这在一些对性能要求比较高的地方可能不太能忍受:
+ 链表的空间开销比较大 链表对 CPU cache 不友好  但同时它的通用性最好，因为采用拉链法不需要对存入的元素有任何了解，所以绝大部分标准库的实现都用的这种方式。</description>
+    </item>
+    
+    <item>
+      <title>第四届天池中间件性能挑战赛感想</title>
+      <link>https://blog.crazyark.xyz/p/awrace-2018/</link>
+      <pubDate>Wed, 01 Aug 2018 19:59:45 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/p/awrace-2018/</guid>
+      <description>从报名比赛开始到现在将近四个月了，终于告一段落，最终拿到了季军也很开心。这三个月中我学到了很多有用的工程知识，顺便把 C++ 又摸熟了。初赛代码实在写太丑就不放出来了，复赛的代码托管在 github 上：
+https://github.com/arkbriar/awrace2018_messagestore
+下面是本次大赛初赛和复赛部分的思考过程和最终方案。
+初赛部分 赛题背景分析及理解  实现一个高性能的 Service Mesh Agent 组件，并包含如下一些功能：1. 服务注册与发现, 2. 协议转换, 3. 负载均衡
+ 本题要求我们能够尽可能的高性能，我们首先对场景和大致思路进行了一个重述：
+ Consumer 将接受超过 500 个连接：想到使用 IO multiplex Http = TCP 连接：禁用 Nagle 算法 Dubbo provider 只有 200 个处理线程，超过 200 个并发请求会快速失败： 负载均衡尽量避免 provider 过载 线上网络性能 (pps) 较差：批量发送 request/response，使用 UDP 进行 Agent 间通信 Consumer 性能较差：将协议转换等放到 provider agent 上去做  核心思路 为了减少系统开销，我们在 agent 之间都只保持一个 udp 信道，在 PA (Provider Agent) 和 Provider 之间也只保持一个 tcp 信道。</description>
+    </item>
+    
+    <item>
+      <title>Linux IO 多路复用 —— Epoll</title>
+      <link>https://blog.crazyark.xyz/p/epoll/</link>
+      <pubDate>Mon, 16 Apr 2018 19:51:21 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/p/epoll/</guid>
+      <description>&lt;p&gt;Epoll 是 Linux 平台上独有的一组编程接口，用于监听多个文件描述符上的 IO 事件。Epoll 相对于 select/poll 的优势在于即使监听了大量的文件描述符，性能也非常好。Epoll API 支持两种监听方式：edge-triggered (EPOLLET) 和 level_triggered (default)。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>布隆过滤器 (Bloom Filter)</title>
+      <link>https://blog.crazyark.xyz/p/bloom-filter/</link>
+      <pubDate>Mon, 16 Apr 2018 13:02:27 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/p/bloom-filter/</guid>
+      <description>&lt;p&gt;布隆过滤器 (Bloom Filter) 是一个空间高效的&lt;strong&gt;概率&lt;/strong&gt;数据结构，它能够用来测试是否一个元素在一个集合中。布隆过滤器存在着 false positive (返回存在，其实不存在），但是不存在 false negative (返回不存在，其实存在)。集合中的元素越多，false positive 的概率就越高。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>最长回文子串 Manacher 算法 (Longest Palindromic Substring -- Manacher&#39;s Algorithm)</title>
+      <link>https://blog.crazyark.xyz/p/manachers-algorithm/</link>
+      <pubDate>Fri, 13 Apr 2018 01:50:51 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/p/manachers-algorithm/</guid>
+      <description>&lt;p&gt;Emm，这篇其实在 2017 年 9 月就打算写了，到现在才填上，再不填又要忘记了&amp;hellip;&lt;/p&gt;
+&lt;p&gt;字符串界的明星回文串，总是有各种稀奇古怪难搞的题目，比如说这道最长回文子串 (Longest Palindromic Substring)，显而易见的算法复杂度是 $O(n^2)$，而这个 Manacher&amp;rsquo;s Algorithm 则可以在 $O(n)$ 的时间给出答案。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>博弈论-公平组合游戏 (Game Theory -- Impartial Combinatorial Games)</title>
+      <link>https://blog.crazyark.xyz/p/game-theory/</link>
+      <pubDate>Wed, 11 Oct 2017 00:40:08 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/p/game-theory/</guid>
+      <description>&lt;p&gt;上回说到接下来都是图算法&amp;hellip; 这个，我食个言 🙃&lt;/p&gt;
+&lt;p&gt;做题目碰到了博弈论，对这方面我真是完全不了解，还是要学习一个。本篇文章主要介绍组合游戏中的 Impartial Combinatorial Games，结构和内容均参考自 CMU Thomas S. Ferguson 教授的博弈论讲稿，结合我自己的思考。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>二部图的最大匹配 (Maximum Matching in Bipartite Graph)</title>
+      <link>https://blog.crazyark.xyz/p/maximum-matching-in-bipartite-graph/</link>
+      <pubDate>Tue, 26 Sep 2017 22:26:08 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/p/maximum-matching-in-bipartite-graph/</guid>
+      <description>&lt;p&gt;上几篇博文主要是关于范围更新和范围查询的几个数据结构，接下去的主题是图论和图算法，希望能够学习和回忆起大部分图算法。&lt;/p&gt;
+&lt;p&gt;今天遇到一个问题，可以转化成二部图(bipartite graph)上的完美匹配的存在性问题，我们先来看一下完美匹配的理论，Hall&amp;rsquo;s Marriage theorem；然后介绍两个算法，用于解决完美匹配的超集——最大匹配问题。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>稀疏表和并行二分查找 (Sparse Table &amp; Parallel Binary Search)</title>
+      <link>https://blog.crazyark.xyz/p/hourrank23/</link>
+      <pubDate>Sun, 10 Sep 2017 01:06:11 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/p/hourrank23/</guid>
+      <description>&lt;p&gt;不刷题不知道自己菜，越刷题越发现自己🙄 —— 记 HourRank23 被虐。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>二叉索引树/树状数组 (Binary Indexed Tree)</title>
+      <link>https://blog.crazyark.xyz/p/binary-indexed-tree/</link>
+      <pubDate>Fri, 08 Sep 2017 22:23:50 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/p/binary-indexed-tree/</guid>
+      <description>&lt;p&gt;Binary Indexed Tree/Fenwick tree 的树构成方式我一直很疑惑，总是似懂非懂。现在终于弄清楚了它的节点的父子关系，记录下来防止忘记。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>线段树 (Segment Tree)</title>
+      <link>https://blog.crazyark.xyz/p/segment-tree/</link>
+      <pubDate>Fri, 08 Sep 2017 12:58:11 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/p/segment-tree/</guid>
+      <description>&lt;p&gt;本篇为WCIPEG上关于SegmentTree的翻译稿，除了删去了几个小节，其余行文结构将完全一致。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;线段树&lt;/strong&gt;是一种非常灵活的数据结构，它可以帮助我们高效地完成对底层数组区间查询或是修改。顾名思义，线段树可以被想象成底层数组区间构成的一棵树，它的基本思想是分治。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>神奇的组合数 (AGC019-F Mysterious Combinators)</title>
+      <link>https://blog.crazyark.xyz/p/agc019-mysterious-combinators/</link>
+      <pubDate>Wed, 06 Sep 2017 21:16:06 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/p/agc019-mysterious-combinators/</guid>
+      <description>&lt;p&gt;原题目在 AtCoder Grand Contest 019，F - Yes or No。&lt;/p&gt;
+&lt;p&gt;把它改成数学题，题目大意如下：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;假设你有M+N个问题要回答，每个问题的回答不是Yes就是No。你知道其中有N个Yes，M个No，但是并不知道顺序。你将按顺序一个一个回答问题，并且答完一道题后立刻就能知道这道题的正确答案。
+假设你每次回答问题都采取最大化期望正确题目数的方式，请问期望正确题目数是多少？&lt;/p&gt;
+&lt;/blockquote&gt;</description>
+    </item>
+    
+    <item>
+      <title>最长递增子序列 (Longest Increasing Subsequence)</title>
+      <link>https://blog.crazyark.xyz/p/longest-increasing-subsequence/</link>
+      <pubDate>Fri, 01 Sep 2017 15:41:22 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/p/longest-increasing-subsequence/</guid>
+      <description>&lt;p&gt;最长递增子序列算法，原本以为已经记住了最快的算法，看来是记性太差，今天碰到一道题目又忘记了怎么做 🙄&lt;/p&gt;
+&lt;p&gt;三种做法：DP，Sort + LCS，DP + BS，我只记得第一种DP了 &amp;hellip;&lt;/p&gt;
+&lt;p&gt;然后咱们顺便把某道题目做了 🤣&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>SIGFPE When Doing DivQ</title>
+      <link>https://blog.crazyark.xyz/p/cpp-sigfpe/</link>
+      <pubDate>Sun, 27 Aug 2017 17:38:37 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/p/cpp-sigfpe/</guid>
+      <description>&lt;p&gt;第一次遇到了除0以外的SIGFPE，记录一下。&lt;/p&gt;
+&lt;h3 id=&#34;症状&#34;&gt;症状&lt;/h3&gt;
+&lt;p&gt;在使用以下函数的时候，假定 a = 1e18, b = 1e18, m = 1e9 + 7 就会触发 SIGFPE。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-cpp&#34; data-lang=&#34;cpp&#34;&gt;&lt;span class=&#34;kt&#34;&gt;long&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;mulmod&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;long&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;long&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;long&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;m&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+    &lt;span class=&#34;kt&#34;&gt;long&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;res&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;asm&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#34;mulq %2; divq %3&amp;#34;&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;=d&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;res&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;),&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;+a&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;S&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;),&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#34;c&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;m&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;));&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;res&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+    </item>
+    
+    <item>
+      <title>整数的超幂 (Project Euler #188 -- The Hyperexponentiation of A Number)</title>
+      <link>https://blog.crazyark.xyz/p/project-euler-188/</link>
+      <pubDate>Fri, 25 Aug 2017 21:32:26 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/p/project-euler-188/</guid>
+      <description>&lt;p&gt;接上次的博文，我们来解决大整数分解问题，并最终解决 Project Euler #188。&lt;/p&gt;
+&lt;p&gt;回忆一下，问题要求解的是 $a\uparrow\uparrow b \ (\textrm{mod} \ m)$，其中 $1 \le a, b, m \le 10^{18}$。&lt;/p&gt;
+&lt;p&gt;其实这里的整数在整数分解领域并不算太大，之前并没有学习过这类的算法，正好也算是补上了。在这里我使用了 Pollard Rho 算法，其他的算法还有 Fermat Rho 和 Quadratic Sieve 算法。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>非质数的欧拉定理扩展 (Euler Theorem for Non-coprime)</title>
+      <link>https://blog.crazyark.xyz/p/euler-theorem-for-noncoprime/</link>
+      <pubDate>Wed, 23 Aug 2017 22:02:59 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/p/euler-theorem-for-noncoprime/</guid>
+      <description>&lt;p&gt;刚遇到一道可怕的题目，迭代次幂(tetration)在超级大的范围下快速求解对某个模数的幂，模数范围在 1 到 1e18 之间。&lt;/p&gt;
+&lt;p&gt;OK，这道题其实思路很清晰，用欧拉定理降幂，但是最难的部分在于&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;对 m 进行质因数分解&lt;/li&gt;
+&lt;li&gt;使用欧拉定理在非互质情况的扩展形式&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;我们先把m的质因数分解放一放 (其实还没解决)&amp;hellip; 先来解决第二个问题。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>多项式哈希及Theu-Morse序列 (Polynomial Hash and Theu-Morse Sequence)</title>
+      <link>https://blog.crazyark.xyz/p/polynomial-hash-and-theu-morse-sequence/</link>
+      <pubDate>Mon, 21 Aug 2017 23:58:42 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/p/polynomial-hash-and-theu-morse-sequence/</guid>
+      <description>&lt;p&gt;前两天刷 Hackerrank 上的 &lt;a class=&#34;link&#34; href=&#34;https://www.hackerrank.com/contests/gs-codesprint/challenges&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Contest&lt;/a&gt;，给了两天时间，没想到被最后一题卡成🐶，谨记录思考和收获。&lt;/p&gt;
+&lt;p&gt;原题目在 &lt;a class=&#34;link&#34; href=&#34;https://www.hackerrank.com/contests/gs-codesprint/challenges/transaction-certificates&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.hackerrank.com/contests/gs-codesprint/challenges/transaction-certificates&lt;/a&gt; ，就不在此赘述了。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>无向带权图图全局最小割 Stoer-Wagner 算法 (Stoer-Wagner Algorithm -- Global Min-Cut in Undirected Weighted Graphs)</title>
+      <link>https://blog.crazyark.xyz/p/stoer-wagner-algorithm/</link>
+      <pubDate>Sat, 05 Aug 2017 22:14:01 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/p/stoer-wagner-algorithm/</guid>
+      <description>&lt;p&gt;最近碰到一道题目，求一个图的全局最小割，可惜图论博主学的不太好，至今只记得一个求s-t最大流/最小割的 ford-fulkerson。想了想总不能做$n^2$次最大流吧，最终还是求助了维基百科 🤣&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>优化比较次数的排序算法 (Ford Johnson Algorithm)</title>
+      <link>https://blog.crazyark.xyz/p/ford-johnson-algorithm/</link>
+      <pubDate>Fri, 04 Aug 2017 14:15:35 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/p/ford-johnson-algorithm/</guid>
+      <description>&lt;p&gt;偶然发现 AtCoder，上去注册了准备试试，结果卡在practice contest&amp;hellip;&lt;/p&gt;
+&lt;p&gt;问题倒是很简单：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;There are N balls labeled with the first N uppercase letters. The balls have pairwise distinct weights.
+You are allowed to ask at most Q queries. In each query, you can compare the weights of two balls (see Input/Output section for details).
+Sort the balls in the ascending order of their weights.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Constraints&lt;/strong&gt;
+(N,Q)=(26,1000), (26,100), or (5,7).&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Partial Score&lt;/strong&gt;
+There are three testsets. Each testset is worth 100 points.
+In testset 1, N=26 and Q=1000.
+In testset 2, N=26 and Q=100.
+In testset 3, N=5 and Q=7.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;通过比较排序，一共三种数据，其中 (26, 1000) 的情况用任何比较都能过，但是可能会 TLE，(26, 100) 的用 worst-case $O(nlgn)$ 的 merge sort 能过，唯一难受的是 (5, 7)。这个样例 merge sort 的 worst case 是比较8次。&lt;/p&gt;
+&lt;p&gt;我和某网友一样，尝试用 STL 的 sort 来解决，结果发现 WA 了更多 🙄&lt;/p&gt;
+&lt;p&gt;You must be kidding!&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>滑动窗口中的最大值 (Sliding Window Maximum / Monotonic Queue)</title>
+      <link>https://blog.crazyark.xyz/p/monotonic-queue/</link>
+      <pubDate>Thu, 03 Aug 2017 15:55:02 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/p/monotonic-queue/</guid>
+      <description>&lt;p&gt;Leetcode 上有一道题叫 Sliding Window Maximum，虽然不是今天刷的，但是解法非常有意思，就记录一下。&lt;/p&gt;
+&lt;p&gt;问题描述：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Given an array nums, there is a sliding window of size k which is moving from the very left of the array to the very right. You can only see the k numbers in the window. Each time the sliding window moves right by one position.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;For example, Given nums = [1,3,-1,-3,5,3,6,7], and k = 3.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Therefore, return the max sliding window as [3,3,5,5,6,7].&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;这道题可以用优先队列、自平衡BST等方法得到一个 O(nlgn) 的解法，但其实这道题有另一种 O(n) 的解法，基本思想是在过程中维持一个单调队列。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>有序矩阵中的第k大数 (Selection in X&#43;Y or Sorted Matrices)</title>
+      <link>https://blog.crazyark.xyz/p/selection-in-x-y-or-sorted-matrices/</link>
+      <pubDate>Wed, 02 Aug 2017 20:58:55 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/p/selection-in-x-y-or-sorted-matrices/</guid>
+      <description>&lt;p&gt;今天在刷 leetcode 的时候遇到一道题目 &lt;a class=&#34;link&#34; href=&#34;https://leetcode.com/problems/kth-smallest-element-in-a-sorted-matrix/description/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Kth Smallest Element in a Sorted Matrix&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;首先用一个 Min-Heap 就可以得到 O(klgn) (n为列数)的算法，实现放在最后。&lt;/p&gt;
+&lt;p&gt;然而在翻阅览 Discuss 区的时候发现，这玩意居然有 O(n) (n为行、列数) 的算法，来自一篇论文 &lt;a class=&#34;link&#34; href=&#34;http://www.cse.yorku.ca/~andy/pubs/X&amp;#43;Y.pdf&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Selection in X + Y and Matrices with Sorted Rows and Columns&lt;/a&gt;，同时适用于另一道题 &lt;a class=&#34;link&#34; href=&#34;https://leetcode.com/problems/find-k-pairs-with-smallest-sums/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Find k Pairs with Smallest Sums&lt;/a&gt;，在此只做介绍，因为我不认为有人能在面试的时候写的出来&amp;hellip;&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Dynamic Proxy in Java</title>
+      <link>https://blog.crazyark.xyz/p/dynamic-proxy-java/</link>
+      <pubDate>Sat, 29 Jul 2017 22:44:24 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/p/dynamic-proxy-java/</guid>
+      <description>&lt;p&gt;虽然在一年前就知道了 Proxy 模式，但是基本没有尝试使用过，仅在框架里看到一些例子。昨天翻阅《大型网站系统与Java中间件实践》时，偶然发现了 Proxy 模式在 Java 中的应用 —— 动态代理，遂记录下来，顺便复习一下 Proxy 模式。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Boyer-Moore 投票算法 (Boyer-Moore Majority Voting Algorithm)</title>
+      <link>https://blog.crazyark.xyz/p/majority-voting/</link>
+      <pubDate>Fri, 28 Jul 2017 21:08:02 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/p/majority-voting/</guid>
+      <description>&lt;p&gt;刷leetcode时碰到的问题，本篇仅做简要描述，以及记录思考。&lt;/p&gt;
+&lt;p&gt;参考自: &lt;a class=&#34;link&#34; href=&#34;https://gregable.com/2013/10/majority-vote-algorithm-find-majority.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://gregable.com/2013/10/majority-vote-algorithm-find-majority.html&lt;/a&gt;，一篇写的非常好的博客&lt;/p&gt;
+&lt;p&gt;问题描述：考虑你有一个长度为n的&lt;strong&gt;无序&lt;/strong&gt;列表，现在你想知道列表中是否有一个值占据了列表的一半以上 (majority)，如果有的话找出这个数。&lt;/p&gt;
+&lt;p&gt;这个问题的一个普遍的应用场景是在容错计算 (fault-tolerant computing) 中，在进行了多次冗余的计算后，输出最后多数计算得到的值。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>2017 Alibaba Middleware 24h Final (Just for Fun 😀)</title>
+      <link>https://blog.crazyark.xyz/p/awrace-topkn/</link>
+      <pubDate>Wed, 26 Jul 2017 16:59:26 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/p/awrace-topkn/</guid>
+      <description>&lt;p&gt;今年阿里中间件比赛的时候不巧博主心情不好，外加要准备期末考试，并没有参加，非常遗憾。不过好在好基友 &lt;a class=&#34;link&#34; href=&#34;https://ericfu.me&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Eric Fu&lt;/a&gt; 参加并获得了冠军！今年的主题是分布式数据库，如果想了解详情及复赛的解题思路请读者前往 Eric 的博客。&lt;/p&gt;
+&lt;p&gt;博主没有参加甚是遗憾，外加看到题目手痒难耐，遂问基友讨了最后的24h极客赛来玩一玩。&lt;/p&gt;
+&lt;h2 id=&#34;24h-topkn&#34;&gt;24h TOPKN&lt;/h2&gt;
+&lt;p&gt;题目是分布式数据库上的分页排序，对应的SQL执行为 order by id limit k，n；主要的技术挑战为&amp;quot;分布式&amp;quot;的策略，赛题中使用多个文件模拟多个数据分片。&lt;/p&gt;
+&lt;p&gt;简称 top(k, n)。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

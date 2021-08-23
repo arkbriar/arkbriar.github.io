@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='今天在刷 leetcode 的时候遇到一道题目 Kth Smallest Element in a Sorted Matrix。
+首先用一个 Min-Heap 就可以得到 O(klgn) (n为列数)的算法，实现放在最后。
+然而在翻阅览 Discuss 区的时候发现，这玩意居然有 O(n) (n为行、列数) 的算法，来自一篇论文 Selection in X &#43; Y and Matrices with Sorted Rows and Columns，同时适用于另一道题 Find k Pairs with Smallest Sums，在此只做介绍，因为我不认为有人能在面试的时候写的出来&amp;hellip;
+'><title>有序矩阵中的第k大数 (Selection in X&#43;Y or Sorted Matrices)</title>
+
+<link rel='canonical' href='https://blog.crazyark.xyz/p/selection-in-x-y-or-sorted-matrices/'>
+
+<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='有序矩阵中的第k大数 (Selection in X&#43;Y or Sorted Matrices)'>
+<meta property='og:description' content='今天在刷 leetcode 的时候遇到一道题目 Kth Smallest Element in a Sorted Matrix。
+首先用一个 Min-Heap 就可以得到 O(klgn) (n为列数)的算法，实现放在最后。
+然而在翻阅览 Discuss 区的时候发现，这玩意居然有 O(n) (n为行、列数) 的算法，来自一篇论文 Selection in X &#43; Y and Matrices with Sorted Rows and Columns，同时适用于另一道题 Find k Pairs with Smallest Sums，在此只做介绍，因为我不认为有人能在面试的时候写的出来&amp;hellip;
+'>
+<meta property='og:url' content='https://blog.crazyark.xyz/p/selection-in-x-y-or-sorted-matrices/'>
+<meta property='og:site_name' content='石沉溪洞 -- Ark&#39;s Blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='algorithm' /><meta property='article:published_time' content='2017-08-02T20:58:55&#43;08:00'/><meta property='article:modified_time' content='2017-08-02T20:58:55&#43;08:00'/>
+<meta name="twitter:site" content="@ImperiusDs">
+    <meta name="twitter:creator" content="@ImperiusDs"><meta name="twitter:title" content="有序矩阵中的第k大数 (Selection in X&#43;Y or Sorted Matrices)">
+<meta name="twitter:description" content="今天在刷 leetcode 的时候遇到一道题目 Kth Smallest Element in a Sorted Matrix。
+首先用一个 Min-Heap 就可以得到 O(klgn) (n为列数)的算法，实现放在最后。
+然而在翻阅览 Discuss 区的时候发现，这玩意居然有 O(n) (n为行、列数) 的算法，来自一篇论文 Selection in X &#43; Y and Matrices with Sorted Rows and Columns，同时适用于另一道题 Find k Pairs with Smallest Sums，在此只做介绍，因为我不认为有人能在面试的时候写的出来&amp;hellip;
+">
+    </head>
+    <body class="
+    article-page has-toc
+">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex 
+    
+        extended
+    
+">
+    
+        <div id="article-toolbar">
+            <a href="https://blog.crazyark.xyz" class="back-home">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="15 6 9 12 15 18" />
+</svg>
+
+
+
+                <span>返回</span>
+            </a>
+        </div>
+    
+<main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/algorithm/" >
+                Algorithm
+            </a>
+        
+    </header>
+    
+
+    <h2 class="article-title">
+        <a href="/p/selection-in-x-y-or-sorted-matrices/">有序矩阵中的第k大数 (Selection in X&#43;Y or Sorted Matrices)</a>
+    </h2>
+
+    
+
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Aug 02, 2017</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 6 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+</div>
+</header>
+
+    <section class="article-content">
+    <p>今天在刷 leetcode 的时候遇到一道题目 <a class="link" href="https://leetcode.com/problems/kth-smallest-element-in-a-sorted-matrix/description/"  target="_blank" rel="noopener"
+    >Kth Smallest Element in a Sorted Matrix</a>。</p>
+<p>首先用一个 Min-Heap 就可以得到 O(klgn) (n为列数)的算法，实现放在最后。</p>
+<p>然而在翻阅览 Discuss 区的时候发现，这玩意居然有 O(n) (n为行、列数) 的算法，来自一篇论文 <a class="link" href="http://www.cse.yorku.ca/~andy/pubs/X&#43;Y.pdf"  target="_blank" rel="noopener"
+    >Selection in X + Y and Matrices with Sorted Rows and Columns</a>，同时适用于另一道题 <a class="link" href="https://leetcode.com/problems/find-k-pairs-with-smallest-sums/"  target="_blank" rel="noopener"
+    >Find k Pairs with Smallest Sums</a>，在此只做介绍，因为我不认为有人能在面试的时候写的出来&hellip;</p>
+<h3 id="简单介绍">简单介绍</h3>
+<p>设 A 为一个 n * n 的矩阵，所有行和列都是非降续的。</p>
+<p>令 $A^*$ 是 A 取所有奇数行的子矩阵，如果 n 为偶数的话添上 A 的最后一行一列；令 $rank_{desc}(A, a)$ 为 A 中大于 a 的元素的数目，$rank_{asc}(A, a)$ 为 A 中小于 a 的元素数目。</p>
+<p>那么有以下不等式成立</p>
+<ol>
+<li>$rank_{asc}(A, a) \le 4 rank_{asc}(A^*, a)$</li>
+<li>$rank_{desc}(A, a) \le 4 rank_{desc}(A^*, a)$</li>
+</ol>
+<p>这是这个算法的基础，加上巧妙的选择，可以是使得问题变为解一个在A*上的子问题。</p>
+<p>算法过程参考论文，非常不直观，需要不少理论证明，实在没法详述&hellip; 有兴趣的同学还是参阅原论文</p>
+<h3 id="pythonc-算法实现">Python、C++ 算法实现</h3>
+<p>在此摘录 discuss 上大佬给出的 python 和 cpp 版实现，在面试中谁能手写出来我只能跪穿。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">Solution</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">kthSmallest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">matrix</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+
+        <span class="c1"># The median-of-medians selection function.</span>
+        <span class="k">def</span> <span class="nf">pick</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+            <span class="n">groups</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">5</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="mi">5</span><span class="p">))</span>
+            <span class="n">medians</span> <span class="o">=</span> <span class="p">[</span><span class="nb">sorted</span><span class="p">(</span><span class="n">group</span><span class="p">)[</span><span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">]</span>
+            <span class="n">pivot</span> <span class="o">=</span> <span class="n">pick</span><span class="p">(</span><span class="n">medians</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">medians</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">smaller</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">a</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">pivot</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">smaller</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">pick</span><span class="p">(</span><span class="n">smaller</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+            <span class="n">k</span> <span class="o">-=</span> <span class="nb">len</span><span class="p">(</span><span class="n">smaller</span><span class="p">)</span> <span class="o">+</span> <span class="n">a</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">pivot</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">pivot</span> <span class="k">if</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">pick</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">a</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="n">pivot</span><span class="p">],</span> <span class="n">k</span><span class="p">)</span>
+
+        <span class="c1"># Find the k1-th and k2th smallest entries in the submatrix.</span>
+        <span class="k">def</span> <span class="nf">biselect</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">k1</span><span class="p">,</span> <span class="n">k2</span><span class="p">):</span>
+
+            <span class="c1"># Provide the submatrix.</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+            <span class="k">def</span> <span class="nf">A</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">matrix</span><span class="p">[</span><span class="n">index</span><span class="p">[</span><span class="n">i</span><span class="p">]][</span><span class="n">index</span><span class="p">[</span><span class="n">j</span><span class="p">]]</span>
+            
+            <span class="c1"># Base case.</span>
+            <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">nums</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">A</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+                <span class="k">return</span> <span class="n">nums</span><span class="p">[</span><span class="n">k1</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">nums</span><span class="p">[</span><span class="n">k2</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="c1"># Solve the subproblem.</span>
+            <span class="n">index_</span> <span class="o">=</span> <span class="n">index</span><span class="p">[::</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">index</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="o">+</span><span class="n">n</span><span class="o">%</span><span class="mi">2</span><span class="p">:]</span>
+            <span class="n">k1_</span> <span class="o">=</span> <span class="p">(</span><span class="n">k1</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">n</span><span class="p">)</span> <span class="o">/</span> <span class="mi">4</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">2</span> <span class="k">else</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="n">k1</span> <span class="o">+</span> <span class="mi">3</span><span class="p">)</span> <span class="o">/</span> <span class="mi">4</span>
+            <span class="n">k2_</span> <span class="o">=</span> <span class="p">(</span><span class="n">k2</span> <span class="o">+</span> <span class="mi">3</span><span class="p">)</span> <span class="o">/</span> <span class="mi">4</span>
+            <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">biselect</span><span class="p">(</span><span class="n">index_</span><span class="p">,</span> <span class="n">k1_</span><span class="p">,</span> <span class="n">k2_</span><span class="p">)</span>
+
+            <span class="c1"># Prepare ra_less, rb_more and L with saddleback search variants.</span>
+            <span class="n">ra_less</span> <span class="o">=</span> <span class="n">rb_more</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">L</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">jb</span> <span class="o">=</span> <span class="n">n</span>   <span class="c1"># jb is the first where A(i, jb) is larger than b.</span>
+            <span class="n">ja</span> <span class="o">=</span> <span class="n">n</span>   <span class="c1"># ja is the first where A(i, ja) is larger than or equal to a.</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+                <span class="k">while</span> <span class="n">jb</span> <span class="ow">and</span> <span class="n">A</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">jb</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">b</span><span class="p">:</span>
+                    <span class="n">jb</span> <span class="o">-=</span> <span class="mi">1</span>
+                <span class="k">while</span> <span class="n">ja</span> <span class="ow">and</span> <span class="n">A</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">ja</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">a</span><span class="p">:</span>
+                    <span class="n">ja</span> <span class="o">-=</span> <span class="mi">1</span>
+                <span class="n">ra_less</span> <span class="o">+=</span> <span class="n">ja</span>
+                <span class="n">rb_more</span> <span class="o">+=</span> <span class="n">n</span> <span class="o">-</span> <span class="n">jb</span>
+                <span class="n">L</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">A</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">jb</span><span class="p">,</span> <span class="n">ja</span><span class="p">))</span>
+                
+            <span class="c1"># Compute and return x and y.</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">a</span> <span class="k">if</span> <span class="n">ra_less</span> <span class="o">&lt;=</span> <span class="n">k1</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">else</span> \
+                <span class="n">b</span> <span class="k">if</span> <span class="n">k1</span> <span class="o">+</span> <span class="n">rb_more</span> <span class="o">-</span> <span class="n">n</span><span class="o">*</span><span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="k">else</span> \
+                <span class="n">pick</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">k1</span> <span class="o">+</span> <span class="n">rb_more</span> <span class="o">-</span> <span class="n">n</span><span class="o">*</span><span class="n">n</span><span class="p">)</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">a</span> <span class="k">if</span> <span class="n">ra_less</span> <span class="o">&lt;=</span> <span class="n">k2</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">else</span> \
+                <span class="n">b</span> <span class="k">if</span> <span class="n">k2</span> <span class="o">+</span> <span class="n">rb_more</span> <span class="o">-</span> <span class="n">n</span><span class="o">*</span><span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="k">else</span> \
+                <span class="n">pick</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">k2</span> <span class="o">+</span> <span class="n">rb_more</span> <span class="o">-</span> <span class="n">n</span><span class="o">*</span><span class="n">n</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span>
+
+        <span class="c1"># Set up and run the search.</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">matrix</span><span class="p">)</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">k</span> <span class="o">-</span> <span class="n">n</span><span class="o">*</span><span class="n">n</span> <span class="o">+</span> <span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">k</span> <span class="o">-=</span> <span class="n">n</span><span class="o">*</span><span class="n">n</span> <span class="o">-</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="k">return</span> <span class="n">biselect</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">start</span><span class="o">+</span><span class="n">k</span><span class="p">)),</span> <span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+</code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">class</span> <span class="nc">Solution</span> <span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+	<span class="kt">int</span> <span class="n">kthSmallest</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;</span> <span class="o">&amp;</span> <span class="n">matrix</span><span class="p">,</span> <span class="kt">int</span> <span class="n">k</span><span class="p">)</span>
+	<span class="p">{</span>
+		<span class="k">if</span> <span class="p">(</span><span class="n">k</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="c1">// guard for 1x1 matrix
+</span><span class="c1"></span>		<span class="p">{</span>
+			<span class="k">return</span> <span class="n">matrix</span><span class="p">.</span><span class="n">front</span><span class="p">().</span><span class="n">front</span><span class="p">();</span>
+		<span class="p">}</span>
+
+		<span class="n">size_t</span> <span class="n">n</span> <span class="o">=</span> <span class="n">matrix</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
+		<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">size_t</span><span class="o">&gt;</span> <span class="n">indices</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
+		<span class="n">std</span><span class="o">::</span><span class="n">iota</span><span class="p">(</span><span class="n">indices</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">indices</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span> <span class="mi">0</span><span class="p">);</span>
+		<span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="n">size_t</span><span class="p">,</span> <span class="mi">2</span><span class="o">&gt;</span> <span class="n">ks</span> <span class="o">=</span> <span class="p">{</span> <span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">k</span> <span class="o">-</span> <span class="mi">1</span> <span class="p">};</span> <span class="c1">// use zero-based indices
+</span><span class="c1"></span>		<span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="mi">2</span><span class="o">&gt;</span> <span class="n">results</span> <span class="o">=</span> <span class="n">biSelect</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">ks</span><span class="p">);</span>
+		<span class="k">return</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+	<span class="p">}</span>
+
+<span class="k">private</span><span class="o">:</span>
+	<span class="c1">// select two elements from four elements, recursively
+</span><span class="c1"></span>	<span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="mi">2</span><span class="o">&gt;</span> <span class="n">biSelect</span><span class="p">(</span>
+		<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;</span> <span class="o">&amp;</span> <span class="n">matrix</span><span class="p">,</span>
+		<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">size_t</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">indices</span><span class="p">,</span>
+		<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="n">size_t</span><span class="p">,</span> <span class="mi">2</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">ks</span><span class="p">)</span>
+	<span class="c1">// Select both ks[0]-th element and ks[1]-th element in the matrix,
+</span><span class="c1"></span>	<span class="c1">// where k0 = ks[0] and k1 = ks[1] and n = indices.size() satisfie
+</span><span class="c1"></span>	<span class="c1">// 0 &lt;= k0 &lt;= k1 &lt; n*n  and  k1 - k0 &lt;= 4n-4 = O(n)   and  n&gt;=2
+</span><span class="c1"></span>	<span class="p">{</span>
+		<span class="n">size_t</span> <span class="n">n</span> <span class="o">=</span> <span class="n">indices</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>		
+		<span class="k">if</span> <span class="p">(</span><span class="n">n</span> <span class="o">==</span> <span class="mi">2u</span><span class="p">)</span> <span class="c1">// base case of resursion
+</span><span class="c1"></span>		<span class="p">{</span>			
+			<span class="k">return</span> <span class="nf">biSelectNative</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">ks</span><span class="p">);</span>
+		<span class="p">}</span>
+		
+		<span class="c1">// update indices
+</span><span class="c1"></span>		<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">size_t</span><span class="o">&gt;</span> <span class="n">indices_</span><span class="p">;</span>
+		<span class="k">for</span> <span class="p">(</span><span class="n">size_t</span> <span class="n">idx</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">idx</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">idx</span> <span class="o">+=</span> <span class="mi">2</span><span class="p">)</span>
+		<span class="p">{</span>
+			<span class="n">indices_</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">indices</span><span class="p">[</span><span class="n">idx</span><span class="p">]);</span>
+		<span class="p">}</span>
+		<span class="k">if</span> <span class="p">(</span><span class="n">n</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="c1">// ensure the last indice is included
+</span><span class="c1"></span>		<span class="p">{</span>
+			<span class="n">indices_</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">indices</span><span class="p">.</span><span class="n">back</span><span class="p">());</span>
+		<span class="p">}</span>
+
+		<span class="c1">// update ks
+</span><span class="c1"></span>		<span class="c1">// the new interval [xs_[0], xs_[1]] should contain [xs[0], xs[1]]
+</span><span class="c1"></span>		<span class="c1">// but the length of the new interval should be as small as possible
+</span><span class="c1"></span>		<span class="c1">// therefore, ks_[0] is the largest possible index to ensure xs_[0] &lt;= xs[0]
+</span><span class="c1"></span>		<span class="c1">// ks_[1] is the smallest possible index to ensure xs_[1] &gt;= xs[1]
+</span><span class="c1"></span>		<span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="n">size_t</span><span class="p">,</span> <span class="mi">2</span><span class="o">&gt;</span> <span class="n">ks_</span> <span class="o">=</span> <span class="p">{</span> <span class="n">ks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span> <span class="p">};</span>
+		<span class="k">if</span> <span class="p">(</span><span class="n">n</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="c1">// even
+</span><span class="c1"></span>		<span class="p">{</span>
+			<span class="n">ks_</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">ks</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mi">4</span> <span class="o">+</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+		<span class="p">}</span>
+		<span class="k">else</span> <span class="c1">// odd
+</span><span class="c1"></span>		<span class="p">{</span>
+			<span class="n">ks_</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">ks</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">4</span><span class="p">;</span>
+		<span class="p">}</span>
+
+		<span class="c1">// call recursively
+</span><span class="c1"></span>		<span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="mi">2</span><span class="o">&gt;</span> <span class="n">xs_</span> <span class="o">=</span> <span class="n">biSelect</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">indices_</span><span class="p">,</span> <span class="n">ks_</span><span class="p">);</span>
+
+		<span class="c1">// Now we partipate all elements into three parts:
+</span><span class="c1"></span>		<span class="c1">// Part 1: {e : e &lt; xs_[0]}.  For this part, we only record its cardinality
+</span><span class="c1"></span>		<span class="c1">// Part 2: {e : xs_[0] &lt;= e &lt; xs_[1]}. We store the set elementsBetween
+</span><span class="c1"></span>		<span class="c1">// Part 3: {e : x &gt;= xs_[1]}. No use. Discard.
+</span><span class="c1"></span>		<span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="mi">2</span><span class="o">&gt;</span> <span class="n">numbersOfElementsLessThanX</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span> <span class="p">};</span>
+		<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">elementsBetween</span><span class="p">;</span> <span class="c1">// [xs_[0], xs_[1])
+</span><span class="c1"></span>
+		<span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="n">size_t</span><span class="p">,</span> <span class="mi">2</span><span class="o">&gt;</span> <span class="n">cols</span> <span class="o">=</span> <span class="p">{</span> <span class="n">n</span><span class="p">,</span> <span class="n">n</span> <span class="p">};</span> <span class="c1">// column index such that elem &gt;= x
+</span><span class="c1"></span>		 <span class="c1">// the first column where matrix(r, c) &gt; b
+</span><span class="c1"></span>		 <span class="c1">// the first column where matrix(r, c) &gt;= a
+</span><span class="c1"></span>		<span class="k">for</span> <span class="p">(</span><span class="n">size_t</span> <span class="n">row</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">row</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="o">++</span><span class="n">row</span><span class="p">)</span>
+		<span class="p">{</span>
+			<span class="n">size_t</span> <span class="n">row_indice</span> <span class="o">=</span> <span class="n">indices</span><span class="p">[</span><span class="n">row</span><span class="p">];</span>
+			<span class="k">for</span> <span class="p">(</span><span class="n">size_t</span> <span class="nl">idx</span> <span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">})</span>
+			<span class="p">{</span>
+				<span class="k">while</span> <span class="p">((</span><span class="n">cols</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+					<span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">matrix</span><span class="p">[</span><span class="n">row_indice</span><span class="p">][</span><span class="n">indices</span><span class="p">[</span><span class="n">cols</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">&gt;=</span> <span class="n">xs_</span><span class="p">[</span><span class="n">idx</span><span class="p">]))</span>
+				<span class="p">{</span>
+					<span class="o">--</span><span class="n">cols</span><span class="p">[</span><span class="n">idx</span><span class="p">];</span>
+				<span class="p">}</span>
+				<span class="n">numbersOfElementsLessThanX</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">+=</span> <span class="n">cols</span><span class="p">[</span><span class="n">idx</span><span class="p">];</span>
+			<span class="p">}</span>
+			<span class="k">for</span> <span class="p">(</span><span class="n">size_t</span> <span class="n">col</span> <span class="o">=</span> <span class="n">cols</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span> <span class="n">col</span> <span class="o">&lt;</span> <span class="n">cols</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span> <span class="o">++</span><span class="n">col</span><span class="p">)</span>
+			<span class="p">{</span>
+				<span class="n">elementsBetween</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">matrix</span><span class="p">[</span><span class="n">row_indice</span><span class="p">][</span><span class="n">indices</span><span class="p">[</span><span class="n">col</span><span class="p">]]);</span>
+			<span class="p">}</span>
+		<span class="p">}</span>
+
+		<span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="mi">2</span><span class="o">&gt;</span> <span class="n">xs</span><span class="p">;</span> <span class="c1">// the return value
+</span><span class="c1"></span>		<span class="k">for</span> <span class="p">(</span><span class="n">size_t</span> <span class="nl">idx</span> <span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">})</span>
+		<span class="p">{</span>
+			<span class="n">size_t</span> <span class="n">k</span> <span class="o">=</span> <span class="n">ks</span><span class="p">[</span><span class="n">idx</span><span class="p">];</span>
+			<span class="k">if</span> <span class="p">(</span><span class="n">k</span> <span class="o">&lt;</span> <span class="n">numbersOfElementsLessThanX</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="c1">// in the Part 1
+</span><span class="c1"></span>			<span class="p">{</span>
+				<span class="n">xs</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">xs_</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+			<span class="p">}</span>
+			<span class="k">else</span> <span class="nf">if</span> <span class="p">(</span><span class="n">k</span> <span class="o">&lt;</span> <span class="n">numbersOfElementsLessThanX</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="c1">// in the Part 2
+</span><span class="c1"></span>			<span class="p">{</span>
+				<span class="n">size_t</span> <span class="n">offset</span> <span class="o">=</span> <span class="n">k</span> <span class="o">-</span> <span class="n">numbersOfElementsLessThanX</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+				<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;::</span><span class="n">iterator</span> <span class="n">nth</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">next</span><span class="p">(</span><span class="n">elementsBetween</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">offset</span><span class="p">);</span>
+				<span class="n">std</span><span class="o">::</span><span class="n">nth_element</span><span class="p">(</span><span class="n">elementsBetween</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">nth</span><span class="p">,</span> <span class="n">elementsBetween</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
+				<span class="n">xs</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">nth</span><span class="p">);</span>
+			<span class="p">}</span>
+			<span class="k">else</span> <span class="c1">// in the Part 3
+</span><span class="c1"></span>			<span class="p">{</span>
+				<span class="n">xs</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">xs_</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+			<span class="p">}</span>
+		<span class="p">}</span>
+		<span class="k">return</span> <span class="n">xs</span><span class="p">;</span>
+	<span class="p">}</span>
+
+	<span class="c1">// select two elements from four elements, using native way
+</span><span class="c1"></span>	<span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="mi">2</span><span class="o">&gt;</span> <span class="n">biSelectNative</span><span class="p">(</span>
+		<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;</span> <span class="o">&amp;</span> <span class="n">matrix</span><span class="p">,</span>
+		<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">size_t</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">indices</span><span class="p">,</span>
+		<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="n">size_t</span><span class="p">,</span> <span class="mi">2</span><span class="o">&gt;</span> <span class="o">&amp;</span> <span class="n">ks</span><span class="p">)</span>
+	<span class="p">{</span>
+		<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">allElements</span><span class="p">;</span>
+		<span class="k">for</span> <span class="p">(</span><span class="n">size_t</span> <span class="nl">r</span> <span class="p">:</span> <span class="n">indices</span><span class="p">)</span>
+		<span class="p">{</span>
+			<span class="k">for</span> <span class="p">(</span><span class="n">size_t</span> <span class="nl">c</span> <span class="p">:</span> <span class="n">indices</span><span class="p">)</span>
+			<span class="p">{</span>
+				<span class="n">allElements</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">matrix</span><span class="p">[</span><span class="n">r</span><span class="p">][</span><span class="n">c</span><span class="p">]);</span>
+			<span class="p">}</span>
+		<span class="p">}</span>
+		<span class="n">std</span><span class="o">::</span><span class="n">sort</span><span class="p">(</span><span class="n">allElements</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">allElements</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
+		<span class="n">std</span><span class="o">::</span><span class="n">array</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="mi">2</span><span class="o">&gt;</span> <span class="n">results</span><span class="p">;</span>
+		<span class="k">for</span> <span class="p">(</span><span class="n">size_t</span> <span class="nl">idx</span> <span class="p">:</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">})</span>
+		<span class="p">{</span>
+			<span class="n">results</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">allElements</span><span class="p">[</span><span class="n">ks</span><span class="p">[</span><span class="n">idx</span><span class="p">]];</span>
+		<span class="p">}</span>
+		<span class="k">return</span> <span class="n">results</span><span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">};</span>
+</code></pre></div><h3 id="min-heap-oklgn-算法">Min-Heap O(klgn) 算法</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">class</span> <span class="nc">Solution</span> <span class="p">{</span>
+    <span class="k">struct</span> <span class="nc">Tuple</span> <span class="p">{</span>
+        <span class="kt">int</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">val</span><span class="p">;</span>
+        <span class="n">Tuple</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">,</span> <span class="kt">int</span> <span class="n">y</span><span class="p">,</span> <span class="kt">int</span> <span class="n">val</span><span class="p">)</span> <span class="o">:</span> <span class="n">x</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">y</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">val</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="p">{}</span>
+
+        <span class="kt">bool</span> <span class="k">operator</span><span class="o">&lt;</span><span class="p">(</span><span class="k">const</span> <span class="n">Tuple</span><span class="o">&amp;</span> <span class="n">other</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">val</span> <span class="o">&lt;</span> <span class="n">other</span><span class="p">.</span><span class="n">val</span><span class="p">;</span> <span class="p">}</span>
+        <span class="kt">bool</span> <span class="k">operator</span><span class="o">&gt;</span><span class="p">(</span><span class="k">const</span> <span class="n">Tuple</span><span class="o">&amp;</span> <span class="n">other</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">val</span> <span class="o">&gt;</span> <span class="n">other</span><span class="p">.</span><span class="n">val</span><span class="p">;</span> <span class="p">}</span>
+    <span class="p">};</span>
+
+<span class="k">public</span><span class="o">:</span>
+    <span class="kt">int</span> <span class="n">kthSmallest</span><span class="p">(</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&gt;&amp;</span> <span class="n">matrix</span><span class="p">,</span> <span class="kt">int</span> <span class="n">k</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">priority_queue</span><span class="o">&lt;</span><span class="n">Tuple</span><span class="p">,</span> <span class="n">vector</span><span class="o">&lt;</span><span class="n">Tuple</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">greater</span><span class="o">&lt;</span><span class="n">Tuple</span><span class="o">&gt;&gt;</span> <span class="n">min_heap</span><span class="p">;</span>
+        <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="n">matrix</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="n">min_heap</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">Tuple</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">matrix</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]));</span>
+
+        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">auto</span> <span class="n">t</span> <span class="o">=</span> <span class="n">min_heap</span><span class="p">.</span><span class="n">top</span><span class="p">();</span>
+            <span class="n">min_heap</span><span class="p">.</span><span class="n">pop</span><span class="p">();</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="n">x</span> <span class="o">==</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="k">continue</span><span class="p">;</span>
+            <span class="n">min_heap</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">Tuple</span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">t</span><span class="p">.</span><span class="n">y</span><span class="p">,</span> <span class="n">matrix</span><span class="p">[</span><span class="n">t</span><span class="p">.</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">][</span><span class="n">t</span><span class="p">.</span><span class="n">y</span><span class="p">]));</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">min_heap</span><span class="p">.</span><span class="n">top</span><span class="p">().</span><span class="n">val</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+</code></pre></div>
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/algorithm/">algorithm</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.13.13/dist/katex.min.css"integrity="sha384-RZU/ijkSsFbcmivfdRBQDtwuwVqK7GMOw6IMvKyeWL2K5UAlyp6WonmB8m7Jd0Hn"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.13.13/dist/katex.min.js"integrity="sha384-pK1WpvzWVBQiP0/GjnvRxV4mOb0oxFuyRxJlk6vVw146n3egcN5C925NCP7a7BY8"crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.13.13/dist/contrib/auto-render.min.js"integrity="sha384-vZTG03m&#43;2yp6N6BNi5iM4rW4oIwk5DfcNdFfxkk9ZWpDriOkXX8voJBFrAO7MpVl"crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.querySelector(`.article-content`), {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ]
+        });})
+</script>
+    
+</article>
+
+    <aside class="related-contents--wrapper">
+    
+    
+        <h2 class="section-title">相关文章</h2>
+        <div class="related-contents">
+            <div class="flex article-list--tile">
+                
+                    
+<article class="">
+    <a href="/p/manachers-algorithm/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">最长回文子串 Manacher 算法 (Longest Palindromic Substring -- Manacher&#39;s Algorithm)</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="">
+    <a href="/p/hourrank23/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">稀疏表和并行二分查找 (Sparse Table &amp; Parallel Binary Search)</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="">
+    <a href="/p/binary-indexed-tree/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">二叉索引树/树状数组 (Binary Indexed Tree)</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="">
+    <a href="/p/segment-tree/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">线段树 (Segment Tree)</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="">
+    <a href="/p/longest-increasing-subsequence/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">最长递增子序列 (Longest Increasing Subsequence)</h2>
+        </div>
+    </a>
+</article>
+                
+            </div>
+        </div>
+    
+</aside>
+
+     
+     
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "crazyark" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (DISQUS) {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2018 - 
+        
+        2021 石沉溪洞 -- Ark&#39;s Blog
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.1.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+            >
+
+            </main>
+    
+        <aside class="sidebar right-sidebar sticky">
+            <section class="widget archives">
+                <div class="widget-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+                </div>
+                <h2 class="widget-title section-title">目录</h2>
+                
+                <div class="widget--toc">
+                    <nav id="TableOfContents">
+  <ol>
+    <li>
+      <ol>
+        <li><a href="#简单介绍">简单介绍</a></li>
+        <li><a href="#pythonc-算法实现">Python、C++ 算法实现</a></li>
+        <li><a href="#min-heap-oklgn-算法">Min-Heap O(klgn) 算法</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+                </div>
+            </section>
+        </aside>
+    
+
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

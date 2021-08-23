@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Contest on 石沉溪洞 -- Ark&#39;s Blog</title>
+    <link>https://blog.crazyark.xyz/categories/contest/</link>
+    <description>Recent content in Contest on 石沉溪洞 -- Ark&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Wed, 01 Aug 2018 19:59:45 +0800</lastBuildDate><atom:link href="https://blog.crazyark.xyz/categories/contest/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>第四届天池中间件性能挑战赛感想</title>
+      <link>https://blog.crazyark.xyz/p/awrace-2018/</link>
+      <pubDate>Wed, 01 Aug 2018 19:59:45 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/p/awrace-2018/</guid>
+      <description>从报名比赛开始到现在将近四个月了，终于告一段落，最终拿到了季军也很开心。这三个月中我学到了很多有用的工程知识，顺便把 C++ 又摸熟了。初赛代码实在写太丑就不放出来了，复赛的代码托管在 github 上：
+https://github.com/arkbriar/awrace2018_messagestore
+下面是本次大赛初赛和复赛部分的思考过程和最终方案。
+初赛部分 赛题背景分析及理解  实现一个高性能的 Service Mesh Agent 组件，并包含如下一些功能：1. 服务注册与发现, 2. 协议转换, 3. 负载均衡
+ 本题要求我们能够尽可能的高性能，我们首先对场景和大致思路进行了一个重述：
+ Consumer 将接受超过 500 个连接：想到使用 IO multiplex Http = TCP 连接：禁用 Nagle 算法 Dubbo provider 只有 200 个处理线程，超过 200 个并发请求会快速失败： 负载均衡尽量避免 provider 过载 线上网络性能 (pps) 较差：批量发送 request/response，使用 UDP 进行 Agent 间通信 Consumer 性能较差：将协议转换等放到 provider agent 上去做  核心思路 为了减少系统开销，我们在 agent 之间都只保持一个 udp 信道，在 PA (Provider Agent) 和 Provider 之间也只保持一个 tcp 信道。</description>
+    </item>
+    
+    <item>
+      <title>2017 Alibaba Middleware 24h Final (Just for Fun 😀)</title>
+      <link>https://blog.crazyark.xyz/p/awrace-topkn/</link>
+      <pubDate>Wed, 26 Jul 2017 16:59:26 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/p/awrace-topkn/</guid>
+      <description>&lt;p&gt;今年阿里中间件比赛的时候不巧博主心情不好，外加要准备期末考试，并没有参加，非常遗憾。不过好在好基友 &lt;a class=&#34;link&#34; href=&#34;https://ericfu.me&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Eric Fu&lt;/a&gt; 参加并获得了冠军！今年的主题是分布式数据库，如果想了解详情及复赛的解题思路请读者前往 Eric 的博客。&lt;/p&gt;
+&lt;p&gt;博主没有参加甚是遗憾，外加看到题目手痒难耐，遂问基友讨了最后的24h极客赛来玩一玩。&lt;/p&gt;
+&lt;h2 id=&#34;24h-topkn&#34;&gt;24h TOPKN&lt;/h2&gt;
+&lt;p&gt;题目是分布式数据库上的分页排序，对应的SQL执行为 order by id limit k，n；主要的技术挑战为&amp;quot;分布式&amp;quot;的策略，赛题中使用多个文件模拟多个数据分片。&lt;/p&gt;
+&lt;p&gt;简称 top(k, n)。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

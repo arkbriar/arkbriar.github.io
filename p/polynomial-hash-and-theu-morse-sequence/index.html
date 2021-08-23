@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='前两天刷 Hackerrank 上的 Contest，给了两天时间，没想到被最后一题卡成🐶，谨记录思考和收获。
+原题目在 https://www.hackerrank.com/contests/gs-codesprint/challenges/transaction-certificates ，就不在此赘述了。
+'><title>多项式哈希及Theu-Morse序列 (Polynomial Hash and Theu-Morse Sequence)</title>
+
+<link rel='canonical' href='https://blog.crazyark.xyz/p/polynomial-hash-and-theu-morse-sequence/'>
+
+<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='多项式哈希及Theu-Morse序列 (Polynomial Hash and Theu-Morse Sequence)'>
+<meta property='og:description' content='前两天刷 Hackerrank 上的 Contest，给了两天时间，没想到被最后一题卡成🐶，谨记录思考和收获。
+原题目在 https://www.hackerrank.com/contests/gs-codesprint/challenges/transaction-certificates ，就不在此赘述了。
+'>
+<meta property='og:url' content='https://blog.crazyark.xyz/p/polynomial-hash-and-theu-morse-sequence/'>
+<meta property='og:site_name' content='石沉溪洞 -- Ark&#39;s Blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='math' /><meta property='article:published_time' content='2017-08-21T23:58:42&#43;08:00'/><meta property='article:modified_time' content='2017-08-21T23:58:42&#43;08:00'/>
+<meta name="twitter:site" content="@ImperiusDs">
+    <meta name="twitter:creator" content="@ImperiusDs"><meta name="twitter:title" content="多项式哈希及Theu-Morse序列 (Polynomial Hash and Theu-Morse Sequence)">
+<meta name="twitter:description" content="前两天刷 Hackerrank 上的 Contest，给了两天时间，没想到被最后一题卡成🐶，谨记录思考和收获。
+原题目在 https://www.hackerrank.com/contests/gs-codesprint/challenges/transaction-certificates ，就不在此赘述了。
+">
+    </head>
+    <body class="
+    article-page has-toc
+">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex 
+    
+        extended
+    
+">
+    
+        <div id="article-toolbar">
+            <a href="https://blog.crazyark.xyz" class="back-home">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="15 6 9 12 15 18" />
+</svg>
+
+
+
+                <span>返回</span>
+            </a>
+        </div>
+    
+<main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/math/" >
+                Math
+            </a>
+        
+    </header>
+    
+
+    <h2 class="article-title">
+        <a href="/p/polynomial-hash-and-theu-morse-sequence/">多项式哈希及Theu-Morse序列 (Polynomial Hash and Theu-Morse Sequence)</a>
+    </h2>
+
+    
+
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Aug 21, 2017</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 2 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+</div>
+</header>
+
+    <section class="article-content">
+    <p>前两天刷 Hackerrank 上的 <a class="link" href="https://www.hackerrank.com/contests/gs-codesprint/challenges"  target="_blank" rel="noopener"
+    >Contest</a>，给了两天时间，没想到被最后一题卡成🐶，谨记录思考和收获。</p>
+<p>原题目在 <a class="link" href="https://www.hackerrank.com/contests/gs-codesprint/challenges/transaction-certificates"  target="_blank" rel="noopener"
+    >https://www.hackerrank.com/contests/gs-codesprint/challenges/transaction-certificates</a> ，就不在此赘述了。</p>
+<h3 id="思考过程">思考过程</h3>
+<p>首先，题目其实就是将一个交易链进行hash，并要求给出hash碰撞的两个不同的交易链。</p>
+<p>有一些可能有用的条件，p是素数，m是2的幂。</p>
+<p>解的存在性就不证明了，鸽笼原理很简单。</p>
+<h4 id="思路1">思路1</h4>
+<p>由两个hash相减得到，可以将题目转换为 $\sum\limits_{i = 0}^{n - 1}a_i \cdot p^{n - 1 - i}  \equiv 0 \ (mod\ m), a_i \in (-k, k)$, 并且不能是所有 $a_i$ 为0的 trival 解。</p>
+<p>在 $k \gt p$ 时，令 $a_{n - 1} = p % m, a_{n - 2} = -1$，其余都为0，我们可以很容易的构造原来的解。</p>
+<p>但是在 $k \le p$ 时，我只想到了暴力搜索（通过暴力搜索多元一次同余式的解空间）。</p>
+<h4 id="思路2">思路2</h4>
+<p>由观察，$a_0a_1&hellip;a_{n-1}$ 构成了一个数的p进制表示，而对于一个正整数$x$，有 $tm + x, t \in N$ 模m的余数值与x相同。</p>
+<p>而对于 $x$ 的p进制表示，可以唯一的确定一条交易链 (每位+1构成交易链)，并与 $tm + x$ 构成的交易链hash相同。</p>
+<p>但是因为交易链编号限制，只能在 $k\ge p$ 时快速给出解。</p>
+<p>对于 $k \lt p$ 的情况，还是只想到了暴力搜索 (通过暴力搜索 tm)，但是结合上面的 $k &gt; p$ 情况的快速构造，解出了44分。</p>
+<p>但是有两三个 TLE，这种解法肯定不行。</p>
+<h3 id="editorial">Editorial</h3>
+<p>在出题者给出的答案里，使用 Thue-Morse Sequence 给出了一种非常快速的构造方案，主要是利用了m是2的幂这个性质，并且p甚至可以退化为奇数。</p>
+<p>下面定义两个序列 $f(N)$ 和 $g(N)$，定义为</p>
+<p>$f(1) = [1]$</p>
+<p>$g(0) = [0]$</p>
+<p>$f(N) = f(N - 1) \oplus g(N - 1)$</p>
+<p>$g(N) = g(N - 1) \oplus f(N - 1)$</p>
+<p>这里 $\oplus$ 是指级联两个序列。</p>
+<p>定义计算 certificate 的函数为 $H(A, m), A = [a_0, a_1, &hellip;, a_{n - 1}]$。</p>
+<p>显然, N 一直是2的幂，令 $N = 2^n$，那么存在一个足够大的 $N$ ，$H(f(N), m) = H(g(N), m)$，这里 m 必须是2的幂。</p>
+<p>最有意思的是它的证明，我们可以通过证明知道，在 $m \le 2^{32}$ 的情况下，这样的 $N$ 大约在 $\sqrt{m}$ 左右。</p>
+<p>下面是证明：</p>
+<p>显然，我们知道 $\overline{f(N)} = g(N)$。</p>
+<p>令 $T = H(f(N), m) - H(g(N), m)$, 显然</p>
+<p>$T = p^{2^n - 1} - p^{2^n - 2} - p^{2^n - 3} + p^{2^n - 4} - &hellip; \pm 1$</p>
+<p>那么 $T = (p - 1)(p^2 - 1)\cdots(p^{2^{n-1}} - 1)$。</p>
+<p>OK，还有最后一块砖: 如果 $2^s|(p - 1)$，那么 $2^{s + 1} |(p^2 - 1)$，这个证明很简单，就不证了。</p>
+<p><strong>这里答案漏考虑 p = 2 的情况，但是这种情况太容易了，所以直接忽略了&hellip;而且test cases里也没有😅</strong></p>
+<p>所以由p为质数即奇数，$2 | (p - 1)$，那么一定有 $2^n | (p^{2^n} - 1)$。</p>
+<p>故而一定有 $2^{n(n - 1)/2} | T$，只要 $n(n-1)/2 \ge x，m = 2^x$，就有 $m | T$。</p>
+<p>可以看到，$N$ 的收敛岂止是快。</p>
+<p>得到 $f, g$ 稍微处理下就出答案了，因为答案要求长度为 $n$ 的整数倍，所以复杂度为 $O(n)$。</p>
+<h3 id="总结">总结</h3>
+<p>这个题目里Certificate的计算方式就是 Polynominal Hash，它和 Thue-Morse Sequence 一样，都有一些很有意思的性质，留着之后慢慢发掘一下。</p>
+<p>在看到 m为2的幂的条件时，第一反应肯定是能够做什么文章，而我想来想去想将 Fermat&rsquo;s Last Theorem 应用上去，始终无法如愿。这道题由于解空间庞大，所以想必是构造解，只是实在想不到如何应用p是素数以及m是2的幂，可以看到我的思路中始终无法应用这两点。</p>
+<p>Editorial 的解法简直精妙，更偏近于数学了。</p>
+<h3 id="references">References</h3>
+<ol>
+<li><a class="link" href="http://codeforces.com/blog/entry/4898"  target="_blank" rel="noopener"
+    >http://codeforces.com/blog/entry/4898</a></li>
+<li><a class="link" href="https://www.hackerrank.com/contests/gs-codesprint/challenges/transaction-certificates/editorial"  target="_blank" rel="noopener"
+    >https://www.hackerrank.com/contests/gs-codesprint/challenges/transaction-certificates/editorial</a></li>
+<li><a class="link" href="https://www.wikiwand.com/en/Thue%E2%80%93Morse_sequence"  target="_blank" rel="noopener"
+    >https://www.wikiwand.com/en/Thue%E2%80%93Morse_sequence</a></li>
+</ol>
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/math/">math</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+        <link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/katex@0.13.13/dist/katex.min.css"integrity="sha384-RZU/ijkSsFbcmivfdRBQDtwuwVqK7GMOw6IMvKyeWL2K5UAlyp6WonmB8m7Jd0Hn"crossorigin="anonymous"
+            ><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.13.13/dist/katex.min.js"integrity="sha384-pK1WpvzWVBQiP0/GjnvRxV4mOb0oxFuyRxJlk6vVw146n3egcN5C925NCP7a7BY8"crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/katex@0.13.13/dist/contrib/auto-render.min.js"integrity="sha384-vZTG03m&#43;2yp6N6BNi5iM4rW4oIwk5DfcNdFfxkk9ZWpDriOkXX8voJBFrAO7MpVl"crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script>
+    window.addEventListener("DOMContentLoaded", () => {
+        renderMathInElement(document.querySelector(`.article-content`), {
+            delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+                { left: "\\[", right: "\\]", display: true }
+            ]
+        });})
+</script>
+    
+</article>
+
+    <aside class="related-contents--wrapper">
+    
+    
+        <h2 class="section-title">相关文章</h2>
+        <div class="related-contents">
+            <div class="flex article-list--tile">
+                
+                    
+<article class="">
+    <a href="/p/game-theory/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">博弈论-公平组合游戏 (Game Theory -- Impartial Combinatorial Games)</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="">
+    <a href="/p/agc019-mysterious-combinators/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">神奇的组合数 (AGC019-F Mysterious Combinators)</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="">
+    <a href="/p/euler-theorem-for-noncoprime/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">非质数的欧拉定理扩展 (Euler Theorem for Non-coprime)</h2>
+        </div>
+    </a>
+</article>
+                
+            </div>
+        </div>
+    
+</aside>
+
+     
+     
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "crazyark" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (DISQUS) {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2018 - 
+        
+        2021 石沉溪洞 -- Ark&#39;s Blog
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.1.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+            >
+
+            </main>
+    
+        <aside class="sidebar right-sidebar sticky">
+            <section class="widget archives">
+                <div class="widget-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+                </div>
+                <h2 class="widget-title section-title">目录</h2>
+                
+                <div class="widget--toc">
+                    <nav id="TableOfContents">
+  <ol>
+    <li>
+      <ol>
+        <li><a href="#思考过程">思考过程</a>
+          <ol>
+            <li><a href="#思路1">思路1</a></li>
+            <li><a href="#思路2">思路2</a></li>
+          </ol>
+        </li>
+        <li><a href="#editorial">Editorial</a></li>
+        <li><a href="#总结">总结</a></li>
+        <li><a href="#references">References</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+                </div>
+            </section>
+        </aside>
+    
+
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

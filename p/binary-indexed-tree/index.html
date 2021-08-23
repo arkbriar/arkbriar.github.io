@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Binary Indexed Tree/Fenwick tree 的树构成方式我一直很疑惑，总是似懂非懂。现在终于弄清楚了它的节点的父子关系，记录下来防止忘记。
+'><title>二叉索引树/树状数组 (Binary Indexed Tree)</title>
+
+<link rel='canonical' href='https://blog.crazyark.xyz/p/binary-indexed-tree/'>
+
+<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='二叉索引树/树状数组 (Binary Indexed Tree)'>
+<meta property='og:description' content='Binary Indexed Tree/Fenwick tree 的树构成方式我一直很疑惑，总是似懂非懂。现在终于弄清楚了它的节点的父子关系，记录下来防止忘记。
+'>
+<meta property='og:url' content='https://blog.crazyark.xyz/p/binary-indexed-tree/'>
+<meta property='og:site_name' content='石沉溪洞 -- Ark&#39;s Blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='algorithm' /><meta property='article:tag' content='binary-indexed-tree' /><meta property='article:published_time' content='2017-09-08T22:23:50&#43;08:00'/><meta property='article:modified_time' content='2017-09-08T22:23:50&#43;08:00'/>
+<meta name="twitter:site" content="@ImperiusDs">
+    <meta name="twitter:creator" content="@ImperiusDs"><meta name="twitter:title" content="二叉索引树/树状数组 (Binary Indexed Tree)">
+<meta name="twitter:description" content="Binary Indexed Tree/Fenwick tree 的树构成方式我一直很疑惑，总是似懂非懂。现在终于弄清楚了它的节点的父子关系，记录下来防止忘记。
+">
+    </head>
+    <body class="
+    article-page has-toc
+">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex 
+    
+        extended
+    
+">
+    
+        <div id="article-toolbar">
+            <a href="https://blog.crazyark.xyz" class="back-home">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="15 6 9 12 15 18" />
+</svg>
+
+
+
+                <span>返回</span>
+            </a>
+        </div>
+    
+<main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/algorithm/" >
+                Algorithm
+            </a>
+        
+    </header>
+    
+
+    <h2 class="article-title">
+        <a href="/p/binary-indexed-tree/">二叉索引树/树状数组 (Binary Indexed Tree)</a>
+    </h2>
+
+    
+
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Sep 08, 2017</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 6 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+</div>
+</header>
+
+    <section class="article-content">
+    <p>Binary Indexed Tree/Fenwick tree 的树构成方式我一直很疑惑，总是似懂非懂。现在终于弄清楚了它的节点的父子关系，记录下来防止忘记。</p>
+<h3 id="binary-indexed-tree">Binary Indexed Tree</h3>
+<p>BIT 通常用于存储前缀和，或者存储数组本身(用前缀和trick)。BIT 用一个数组来表示树，空间复杂度为 O(n)。BIT 支持两个操作，update和query，用于单点更新和前缀和查询，它们的时间复杂度都为严格的 O(lgn)。</p>
+<p>前缀和BIT数组里的第i项（1-based）记录了原数组区间 [i - (i &amp; -i) + 1, i] 的和，其中(i &amp; -i) 是 i 的最低位1表示的数。</p>
+<h4 id="parent">Parent</h4>
+<p>假设我们有节点i，节点i的父节点为 i - (i &amp; -i)，也就是抹除最后一个1。显然父节点唯一，且所有节点都有公共祖先0。</p>
+<h4 id="siblings">Siblings</h4>
+<p>通过以下过程可以获得所有兄弟节点:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">i</span> <span class="o">&amp;</span> <span class="o">-</span><span class="n">i</span><span class="p">);</span> <span class="n">j</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// z is a sibling of i
+</span><span class="c1"></span>    <span class="kt">int</span> <span class="n">z</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="n">j</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><h4 id="point-get">Point Get</h4>
+<p>假设我们有节点i，那么可以通过以下过程获取数组i的值：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">int</span> <span class="n">res</span> <span class="o">=</span> <span class="n">bit</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+<span class="kt">int</span> <span class="n">z</span> <span class="o">=</span> <span class="n">i</span> <span class="o">-</span> <span class="p">(</span><span class="n">i</span> <span class="o">&amp;</span> <span class="o">-</span><span class="n">i</span><span class="p">);</span>
+<span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+<span class="k">while</span> <span class="p">(</span><span class="n">j</span> <span class="o">!=</span> <span class="n">z</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">res</span> <span class="o">-=</span> <span class="n">bit</span><span class="p">[</span><span class="n">j</span><span class="p">];</span>
+    <span class="n">j</span> <span class="o">=</span> <span class="n">j</span> <span class="o">-</span> <span class="p">(</span><span class="n">j</span> <span class="o">&amp;</span> <span class="o">-</span><span class="n">j</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div><p>上述过程即把 i - 1 的末尾的连续的1一步步移除，也就是求了 sum(i - (i &amp; -i), i - 1)，然后用i节点的和减去就得到了数组项i的值。</p>
+<h4 id="prefix-sum">Prefix Sum</h4>
+<p>通过以下过程不断找到父节点，并加和：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">long</span> <span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span> <span class="n">j</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">-=</span> <span class="p">(</span><span class="n">j</span> <span class="o">&amp;</span> <span class="o">-</span><span class="n">j</span><span class="p">))</span> <span class="p">{</span>
+    <span class="n">sum</span> <span class="o">+=</span> <span class="n">bit</span><span class="p">[</span><span class="n">j</span><span class="p">];</span>
+<span class="p">}</span>
+</code></pre></div><p>显然各个区间不交，最终区间为 [1, i]。</p>
+<h4 id="intervals-cover-i-i">Intervals Cover [i, i]</h4>
+<p>通过以下过程，获得所有覆盖区间[i, i]的节点，同时它们是节点i在补码中的父节点，稍后证明：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">j</span> <span class="o">+=</span> <span class="p">(</span><span class="n">j</span> <span class="o">&amp;</span> <span class="o">-</span><span class="n">j</span><span class="p">))</span> <span class="p">{</span>
+    <span class="c1">// node j covers [i, i]
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></div><p>首先显然，节点i是第一个覆盖i的节点，然后 j = i + (i &amp; -i) 是i之后的第一个满足 j - (j &amp; -j) &lt; i 的节点，证明也很容易。</p>
+<p>且有 j = i + (i &amp; -i)，j - (j &amp; -j) &lt;= i - (i &amp; -i) 恒成立，也就是节点j所代表的区间能够覆盖i的节点，而i到j之间的节点与节点i均不交。</p>
+<p>所以很容易就能推导出，所有与节点i所代表区间相交的节点为上述过程中的节点。</p>
+<h4 id="parent-in-2s-complement">Parent in 2&rsquo;s Complement</h4>
+<p>不妨设这里是32位的环境，大家还记得负数 -i 的二进制表示么？对，就是 2^32 - i，所以我们有 i &amp; -i = i &amp; (2^32 - i)，这样我们可以从有符号数转换到无符号数的操作。</p>
+<p>还记得上述获取下一个覆盖i的节点的操作，i + (i &amp; -i)，我们用 j = 2^32 - i 来重新组织一下这个式子：</p>
+<p>i + (i &amp; -i) = 2^32 - (j - (j &amp; (2 ^32 - j))),</p>
+<p>我们把它也映射成补码，2^32 - i - (i &amp; -i) = j - (j &amp; (2 ^32 - j))</p>
+<p>十分熟悉了吧？就是j去掉最后一位1的操作，我们也可以把它看做一个找父节点的操作，公共祖先也是0。现在就可以清楚地看到了，其实 i + (i &amp; -i) 的操作在补码中是一个对称的求父节点操作，原来的求父节点操作 i - (i &amp; -i) 同理为对称操作。</p>
+<h4 id="suffix-bit">Suffix BIT</h4>
+<p>现在可以引出一个后缀和的BIT：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">const</span> <span class="kt">int</span> <span class="n">MAX_N</span> <span class="o">=</span> <span class="mf">1e5</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">bit</span><span class="p">[</span><span class="n">MAX_N</span><span class="p">];</span>
+
+<span class="kt">void</span> <span class="nf">update</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="kt">int</span> <span class="n">delta</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">bit</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">delta</span><span class="p">;</span>
+        <span class="n">i</span> <span class="o">-=</span> <span class="p">(</span><span class="n">i</span> <span class="o">&amp;</span> <span class="o">-</span><span class="n">i</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// get the suffix sum of [i, n]
+</span><span class="c1"></span><span class="kt">int</span> <span class="nf">get</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="kt">int</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">res</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">i</span> <span class="o">&lt;=</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">res</span> <span class="o">+=</span> <span class="n">bit</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="p">(</span><span class="n">i</span> <span class="o">&amp;</span> <span class="o">-</span><span class="n">i</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">res</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div><p>本来百思不得其解的操作在补码中得到了解释，这里节点i代表的区间和为[i, i + (i &amp; -i) - 1]。</p>
+<p>但是这里直接添加一个数字用于记录全局sum，然后 sum - prefix(1, i - 1) 也是可以的。</p>
+<h3 id="appendix">Appendix</h3>
+<h4 id="impl--3-usages">Impl &amp; 3 Usages</h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="cp">#include</span> <span class="cpf">&lt;vector&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+</span><span class="cp">#include</span> <span class="cpf">&lt;cassert&gt;</span><span class="cp">
+</span><span class="cp"></span><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">BinaryIndexedTree</span> <span class="p">{</span>
+<span class="k">protected</span><span class="o">:</span>
+    <span class="n">vector</span><span class="o">&lt;</span><span class="kt">long</span><span class="o">&gt;</span> <span class="n">bit</span><span class="p">;</span>
+
+    <span class="k">static</span> <span class="kt">int</span> <span class="nf">lowbit</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">x</span> <span class="o">&amp;</span> <span class="o">-</span><span class="n">x</span><span class="p">;</span> <span class="p">}</span>
+
+    <span class="n">BinaryIndexedTree</span><span class="p">(</span><span class="n">BinaryIndexedTree</span><span class="o">&amp;&amp;</span> <span class="n">other</span><span class="p">)</span> <span class="p">{</span> <span class="n">bit</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">other</span><span class="p">.</span><span class="n">bit</span><span class="p">);</span> <span class="p">}</span>
+
+<span class="k">public</span><span class="o">:</span>
+    <span class="n">BinaryIndexedTree</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span> <span class="n">bit</span> <span class="o">=</span> <span class="n">vector</span><span class="o">&lt;</span><span class="kt">long</span><span class="o">&gt;</span><span class="p">(</span><span class="n">n</span><span class="p">);</span> <span class="p">}</span>
+
+    <span class="n">BinaryIndexedTree</span><span class="p">(</span><span class="k">const</span> <span class="n">vector</span><span class="o">&lt;</span><span class="kt">long</span><span class="o">&gt;&amp;</span> <span class="n">nums</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="n">nums</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
+        <span class="n">bit</span> <span class="o">=</span> <span class="n">vector</span><span class="o">&lt;</span><span class="kt">long</span><span class="o">&gt;</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
+
+        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">bit</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">nums</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+            <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span> <span class="n">j</span> <span class="o">&gt;</span> <span class="n">i</span> <span class="o">-</span> <span class="n">lowbit</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span> <span class="o">--</span><span class="n">j</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">bit</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">nums</span><span class="p">[</span><span class="n">j</span><span class="p">];</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="kt">void</span> <span class="nf">add</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="kt">long</span> <span class="n">delta</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="kt">int</span><span class="p">(</span><span class="n">bit</span><span class="p">.</span><span class="n">size</span><span class="p">());</span> <span class="n">j</span> <span class="o">+=</span> <span class="n">lowbit</span><span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span> <span class="p">{</span>
+            <span class="n">bit</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+=</span> <span class="n">delta</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="kt">long</span> <span class="nf">sum</span><span class="p">(</span><span class="kt">int</span> <span class="n">k</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kt">long</span> <span class="n">res</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">k</span><span class="p">;</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">-=</span> <span class="n">lowbit</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span> <span class="p">{</span>
+            <span class="n">res</span> <span class="o">+=</span> <span class="n">bit</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">res</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">PointUpdateRangeQueryExectuor</span> <span class="p">{</span>
+<span class="k">private</span><span class="o">:</span>
+    <span class="kt">int</span> <span class="n">n</span><span class="p">;</span>
+    <span class="n">BinaryIndexedTree</span> <span class="n">tree</span><span class="p">;</span>
+
+    <span class="kt">long</span> <span class="nf">prefixSum</span><span class="p">(</span><span class="kt">int</span> <span class="n">r</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">r</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="k">return</span> <span class="n">tree</span><span class="p">.</span><span class="n">sum</span><span class="p">(</span><span class="n">r</span><span class="p">);</span>
+    <span class="p">}</span>
+
+<span class="k">public</span><span class="o">:</span>
+    <span class="n">PointUpdateRangeQueryExectuor</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">)</span> <span class="o">:</span> <span class="n">n</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="n">tree</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="p">{}</span>
+    <span class="n">PointUpdateRangeQueryExectuor</span><span class="p">(</span><span class="k">const</span> <span class="n">vector</span><span class="o">&lt;</span><span class="kt">long</span><span class="o">&gt;&amp;</span> <span class="n">nums</span><span class="p">)</span> <span class="o">:</span> <span class="n">n</span><span class="p">(</span><span class="n">nums</span><span class="p">.</span><span class="n">size</span><span class="p">()),</span> <span class="n">tree</span><span class="p">(</span><span class="n">nums</span><span class="p">)</span> <span class="p">{}</span>
+
+    <span class="kt">void</span> <span class="nf">update</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="kt">long</span> <span class="n">delta</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">assert</span><span class="p">(</span><span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">);</span>
+        <span class="n">tree</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">delta</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="kt">long</span> <span class="nf">rangeSum</span><span class="p">(</span><span class="kt">int</span> <span class="n">l</span><span class="p">,</span> <span class="kt">int</span> <span class="n">r</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">assert</span><span class="p">(</span><span class="n">l</span> <span class="o">&lt;=</span> <span class="n">r</span> <span class="o">&amp;&amp;</span> <span class="n">l</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">r</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">prefixSum</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">-</span> <span class="n">prefixSum</span><span class="p">(</span><span class="n">l</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">RangeUpdatePointQueryExecutor</span> <span class="p">{</span>
+<span class="k">private</span><span class="o">:</span>
+    <span class="kt">int</span> <span class="n">n</span><span class="p">;</span>
+    <span class="n">BinaryIndexedTree</span> <span class="n">tree</span><span class="p">;</span>
+
+    <span class="c1">// Tear array into pieces
+</span><span class="c1"></span>    <span class="k">static</span> <span class="n">vector</span><span class="o">&lt;</span><span class="kt">long</span><span class="o">&gt;</span> <span class="n">rangePieces</span><span class="p">(</span><span class="k">const</span> <span class="n">vector</span><span class="o">&lt;</span><span class="kt">long</span><span class="o">&gt;&amp;</span> <span class="n">nums</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="n">nums</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
+        <span class="n">vector</span><span class="o">&lt;</span><span class="kt">long</span><span class="o">&gt;</span> <span class="n">res</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
+        <span class="c1">// make sure that prefix_sum(res, i) = nums[i]
+</span><span class="c1"></span>        <span class="k">if</span> <span class="p">(</span><span class="n">n</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">nums</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">res</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">nums</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">nums</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">];</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">res</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">friend</span> <span class="k">class</span> <span class="nc">RangeUpdateRangeQueryExecutor</span><span class="p">;</span>
+
+<span class="k">public</span><span class="o">:</span>
+    <span class="n">RangeUpdatePointQueryExecutor</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">)</span> <span class="o">:</span> <span class="n">n</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="n">tree</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="p">{}</span>
+
+    <span class="n">RangeUpdatePointQueryExecutor</span><span class="p">(</span><span class="k">const</span> <span class="n">vector</span><span class="o">&lt;</span><span class="kt">long</span><span class="o">&gt;&amp;</span> <span class="n">nums</span><span class="p">)</span>
+        <span class="o">:</span> <span class="n">n</span><span class="p">(</span><span class="n">nums</span><span class="p">.</span><span class="n">size</span><span class="p">()),</span> <span class="n">tree</span><span class="p">(</span><span class="n">rangePieces</span><span class="p">(</span><span class="n">nums</span><span class="p">))</span> <span class="p">{}</span>
+
+    <span class="kt">void</span> <span class="nf">update</span><span class="p">(</span><span class="kt">int</span> <span class="n">l</span><span class="p">,</span> <span class="kt">int</span> <span class="n">r</span><span class="p">,</span> <span class="kt">long</span> <span class="n">delta</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">assert</span><span class="p">(</span><span class="n">l</span> <span class="o">&lt;=</span> <span class="n">r</span> <span class="o">&amp;&amp;</span> <span class="n">l</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">r</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">);</span>
+        <span class="n">tree</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">delta</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">r</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">)</span> <span class="n">tree</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">r</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="n">delta</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="kt">long</span> <span class="nf">get</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">assert</span><span class="p">(</span><span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">tree</span><span class="p">.</span><span class="n">sum</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="k">class</span> <span class="nc">RangeUpdateRangeQueryExecutor</span> <span class="p">{</span>
+<span class="k">private</span><span class="o">:</span>
+    <span class="kt">long</span> <span class="n">n</span><span class="p">;</span>
+    <span class="n">BinaryIndexedTree</span> <span class="n">tree</span><span class="p">;</span>
+    <span class="n">BinaryIndexedTree</span> <span class="n">tree2</span><span class="p">;</span>
+
+    <span class="k">static</span> <span class="n">vector</span><span class="o">&lt;</span><span class="kt">long</span><span class="o">&gt;</span> <span class="n">prefixPieces</span><span class="p">(</span><span class="k">const</span> <span class="n">vector</span><span class="o">&lt;</span><span class="kt">long</span><span class="o">&gt;&amp;</span> <span class="n">nums</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="n">nums</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
+        <span class="n">vector</span><span class="o">&lt;</span><span class="kt">long</span><span class="o">&gt;</span> <span class="n">res</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
+        <span class="c1">// make sure that nums[i] * i - res[i] = prefix_sum(nums, i),
+</span><span class="c1"></span>        <span class="c1">// so that the following prefixSum works.
+</span><span class="c1"></span>        <span class="c1">// Then run rangePieces, so that we get res[i] = (nums[i] - nums[i - 1]) * (i - 1);
+</span><span class="c1"></span>        <span class="k">if</span> <span class="p">(</span><span class="n">n</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">nums</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kt">long</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">res</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">nums</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">nums</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">res</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="kt">long</span> <span class="nf">prefixSum</span><span class="p">(</span><span class="kt">long</span> <span class="n">r</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">r</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="k">return</span> <span class="n">tree</span><span class="p">.</span><span class="n">sum</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">*</span> <span class="n">r</span> <span class="o">-</span> <span class="n">tree2</span><span class="p">.</span><span class="n">sum</span><span class="p">(</span><span class="n">r</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">static</span> <span class="k">constexpr</span> <span class="k">auto</span> <span class="n">rangePieces</span> <span class="o">=</span> <span class="n">RangeUpdatePointQueryExecutor</span><span class="o">::</span><span class="n">rangePieces</span><span class="p">;</span>
+
+<span class="k">public</span><span class="o">:</span>
+    <span class="n">RangeUpdateRangeQueryExecutor</span><span class="p">(</span><span class="kt">long</span> <span class="n">n</span><span class="p">)</span> <span class="o">:</span> <span class="n">n</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="n">tree</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="n">tree2</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="p">{}</span>
+
+    <span class="n">RangeUpdateRangeQueryExecutor</span><span class="p">(</span><span class="k">const</span> <span class="n">vector</span><span class="o">&lt;</span><span class="kt">long</span><span class="o">&gt;&amp;</span> <span class="n">nums</span><span class="p">)</span>
+        <span class="o">:</span> <span class="n">n</span><span class="p">(</span><span class="n">nums</span><span class="p">.</span><span class="n">size</span><span class="p">()),</span> <span class="n">tree</span><span class="p">(</span><span class="n">rangePieces</span><span class="p">(</span><span class="n">nums</span><span class="p">)),</span> <span class="n">tree2</span><span class="p">(</span><span class="n">prefixPieces</span><span class="p">(</span><span class="n">nums</span><span class="p">))</span> <span class="p">{}</span>
+
+    <span class="kt">void</span> <span class="nf">update</span><span class="p">(</span><span class="kt">long</span> <span class="n">l</span><span class="p">,</span> <span class="kt">long</span> <span class="n">r</span><span class="p">,</span> <span class="kt">long</span> <span class="n">delta</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">assert</span><span class="p">(</span><span class="n">l</span> <span class="o">&lt;=</span> <span class="n">r</span> <span class="o">&amp;&amp;</span> <span class="n">l</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">r</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">);</span>
+        <span class="n">tree</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">delta</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">r</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">)</span> <span class="n">tree</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">r</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="n">delta</span><span class="p">);</span>
+        <span class="n">tree2</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">delta</span> <span class="o">*</span> <span class="p">(</span><span class="n">l</span> <span class="o">-</span> <span class="mi">1</span><span class="p">));</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">r</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">)</span> <span class="n">tree2</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">r</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="n">delta</span> <span class="o">*</span> <span class="n">r</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="kt">long</span> <span class="nf">rangeSum</span><span class="p">(</span><span class="kt">long</span> <span class="n">l</span><span class="p">,</span> <span class="kt">long</span> <span class="n">r</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">assert</span><span class="p">(</span><span class="n">l</span> <span class="o">&lt;=</span> <span class="n">r</span> <span class="o">&amp;&amp;</span> <span class="n">l</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">r</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">prefixSum</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">-</span> <span class="n">prefixSum</span><span class="p">(</span><span class="n">l</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// point update range query
+</span><span class="c1"></span>    <span class="n">PointUpdateRangeQueryExectuor</span> <span class="n">purq</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+    <span class="n">purq</span><span class="p">.</span><span class="n">update</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+    <span class="n">purq</span><span class="p">.</span><span class="n">update</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
+    <span class="n">purq</span><span class="p">.</span><span class="n">update</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">);</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">purq</span><span class="p">.</span><span class="n">rangeSum</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>  <span class="c1">// 2
+</span><span class="c1"></span>    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">purq</span><span class="p">.</span><span class="n">rangeSum</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>  <span class="c1">// 3
+</span><span class="c1"></span>    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">purq</span><span class="p">.</span><span class="n">rangeSum</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>  <span class="c1">// 8
+</span><span class="c1"></span>
+    <span class="n">PointUpdateRangeQueryExectuor</span> <span class="n">purq2</span><span class="p">({</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">});</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">purq2</span><span class="p">.</span><span class="n">rangeSum</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>  <span class="c1">// 3
+</span><span class="c1"></span>    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">purq2</span><span class="p">.</span><span class="n">rangeSum</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>  <span class="c1">// 5
+</span><span class="c1"></span>    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">purq2</span><span class="p">.</span><span class="n">rangeSum</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>  <span class="c1">// 8
+</span><span class="c1"></span>
+    <span class="c1">// range update point query
+</span><span class="c1"></span>    <span class="n">RangeUpdatePointQueryExecutor</span> <span class="n">rupq</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+    <span class="n">rupq</span><span class="p">.</span><span class="n">update</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+    <span class="n">rupq</span><span class="p">.</span><span class="n">update</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">rupq</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>  <span class="c1">// 2
+</span><span class="c1"></span>    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">rupq</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>  <span class="c1">// 5
+</span><span class="c1"></span>
+    <span class="n">RangeUpdatePointQueryExecutor</span> <span class="n">rupq2</span><span class="p">({</span><span class="mi">11</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">});</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">rupq2</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>  <span class="c1">// 11
+</span><span class="c1"></span>    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">rupq2</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>  <span class="c1">// 6
+</span><span class="c1"></span>
+    <span class="c1">// range update range query
+</span><span class="c1"></span>    <span class="n">RangeUpdateRangeQueryExecutor</span> <span class="n">rurq</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+    <span class="n">rurq</span><span class="p">.</span><span class="n">update</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+    <span class="n">rurq</span><span class="p">.</span><span class="n">update</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">rurq</span><span class="p">.</span><span class="n">rangeSum</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>  <span class="c1">// 12
+</span><span class="c1"></span>
+    <span class="n">RangeUpdateRangeQueryExecutor</span> <span class="n">rurq2</span><span class="p">({</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">});</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">rurq2</span><span class="p">.</span><span class="n">rangeSum</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>  <span class="c1">// 14
+</span><span class="c1"></span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/algorithm/">algorithm</a>
+        
+            <a href="/tags/binary-indexed-tree/">binary-indexed-tree</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    <aside class="related-contents--wrapper">
+    
+    
+        <h2 class="section-title">相关文章</h2>
+        <div class="related-contents">
+            <div class="flex article-list--tile">
+                
+                    
+<article class="">
+    <a href="/p/manachers-algorithm/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">最长回文子串 Manacher 算法 (Longest Palindromic Substring -- Manacher&#39;s Algorithm)</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="">
+    <a href="/p/hourrank23/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">稀疏表和并行二分查找 (Sparse Table &amp; Parallel Binary Search)</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="">
+    <a href="/p/segment-tree/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">线段树 (Segment Tree)</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="">
+    <a href="/p/longest-increasing-subsequence/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">最长递增子序列 (Longest Increasing Subsequence)</h2>
+        </div>
+    </a>
+</article>
+                
+                    
+<article class="">
+    <a href="/p/stoer-wagner-algorithm/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">无向带权图图全局最小割 Stoer-Wagner 算法 (Stoer-Wagner Algorithm -- Global Min-Cut in Undirected Weighted Graphs)</h2>
+        </div>
+    </a>
+</article>
+                
+            </div>
+        </div>
+    
+</aside>
+
+     
+     
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "crazyark" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (DISQUS) {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2018 - 
+        
+        2021 石沉溪洞 -- Ark&#39;s Blog
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.1.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+            >
+
+            </main>
+    
+        <aside class="sidebar right-sidebar sticky">
+            <section class="widget archives">
+                <div class="widget-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+                </div>
+                <h2 class="widget-title section-title">目录</h2>
+                
+                <div class="widget--toc">
+                    <nav id="TableOfContents">
+  <ol>
+    <li>
+      <ol>
+        <li><a href="#binary-indexed-tree">Binary Indexed Tree</a>
+          <ol>
+            <li><a href="#parent">Parent</a></li>
+            <li><a href="#siblings">Siblings</a></li>
+            <li><a href="#point-get">Point Get</a></li>
+            <li><a href="#prefix-sum">Prefix Sum</a></li>
+            <li><a href="#intervals-cover-i-i">Intervals Cover [i, i]</a></li>
+            <li><a href="#parent-in-2s-complement">Parent in 2&rsquo;s Complement</a></li>
+            <li><a href="#suffix-bit">Suffix BIT</a></li>
+          </ol>
+        </li>
+        <li><a href="#appendix">Appendix</a>
+          <ol>
+            <li><a href="#impl--3-usages">Impl &amp; 3 Usages</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+                </div>
+            </section>
+        </aside>
+    
+
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

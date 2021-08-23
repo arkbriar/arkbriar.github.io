@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Data Structure on 石沉溪洞 -- Ark&#39;s Blog</title>
+    <link>https://blog.crazyark.xyz/categories/data-structure/</link>
+    <description>Recent content in Data Structure on 石沉溪洞 -- Ark&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Thu, 16 Aug 2018 14:55:23 +0800</lastBuildDate><atom:link href="https://blog.crazyark.xyz/categories/data-structure/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>哈希表 -- 哈希冲突</title>
+      <link>https://blog.crazyark.xyz/p/hash-table-collision/</link>
+      <pubDate>Thu, 16 Aug 2018 14:55:23 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/p/hash-table-collision/</guid>
+      <description>Hash table &amp;ndash; Collision 在计算机科学中，哈希表 (hash table) 是一个非常重要的数据结构，它帮助我们快速的进行插入和查询。理论上来说，在表中查询一次的耗时应该是 O(1) 的。这里假设大家对于哈希 (hash) 都已经了解，如果你以前没有接触过这个概念，这篇文章或许是一个很好的开始。
+假设你有一个完美的哈希函数 (perfect hashing) 和无穷大的内存，那么哈希表中每一个哈希值都对应了一个原始的元素。显然此时要进行查找，我们只需要算出哈希值，然后找到表中对应的项就可以了。然而现实中不存在无穷大的内存，也不是很容易去找到一个“优秀”的完美哈希，比如最小完美哈希 (minimal perfect hashing)。
+所以实际中，我们不可避免的会碰到哈希冲突 (hash collision) ，也就是两个不同的元素被映射到同一个哈希值上。当一个哈希表碰到哈希冲突的时候，有几种办法去解决它，它们各有优劣，且容我一一道来。
+Hash collision 哈希冲突的解决办法通常是两种，一种叫拉链法 (separate chaining) ，一种叫开地址法 (open addressing)。当然不仅限于这两种，其他的比如 multiple-choice hashing, cuckoo hashing, hopscotch hashing, robin hood hashing 等等，本文挑几种介绍一下。
+Separate chaining 拉链法核心思想就是将哈希冲突的元素存入都存入到链表中，如下图所示，
+在每个哈希表的单元格中 (hash table cell, 或者我们也称为桶 bucket)，都存放了一个链表头。当哈希冲突发生时，只需要把冲突的元素放到链表中。当需要查找时，先通过哈希值找到对应的单元格，再遍历链表找到想要的元素，此时查找时间是 O(N) 的。这里 N 是链表长度，通常链表不会很长，所以可以认为整体查询时间还是 O(1) 的。大多数标准库中的哈希表时间都是采用了这种方式，因为足够通用，性能也还不错。
+当然我们也可以用一棵 BST 来代替链表，此时查询时间是 O(lgN) 的，但是插入和空间开销要比链表大。Java 的 HashMap 的实现中，当一个哈希单元格的链表长度超过 8 时，就会自动转成一颗红黑树来降低查询开销。
+拉链法有两个缺点，这在一些对性能要求比较高的地方可能不太能忍受:
+ 链表的空间开销比较大 链表对 CPU cache 不友好  但同时它的通用性最好，因为采用拉链法不需要对存入的元素有任何了解，所以绝大部分标准库的实现都用的这种方式。</description>
+    </item>
+    
+    <item>
+      <title>布隆过滤器 (Bloom Filter)</title>
+      <link>https://blog.crazyark.xyz/p/bloom-filter/</link>
+      <pubDate>Mon, 16 Apr 2018 13:02:27 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/p/bloom-filter/</guid>
+      <description>&lt;p&gt;布隆过滤器 (Bloom Filter) 是一个空间高效的&lt;strong&gt;概率&lt;/strong&gt;数据结构，它能够用来测试是否一个元素在一个集合中。布隆过滤器存在着 false positive (返回存在，其实不存在），但是不存在 false negative (返回不存在，其实存在)。集合中的元素越多，false positive 的概率就越高。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

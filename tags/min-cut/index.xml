@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>min-cut on 石沉溪洞 -- Ark&#39;s Blog</title>
+    <link>https://blog.crazyark.xyz/tags/min-cut/</link>
+    <description>Recent content in min-cut on 石沉溪洞 -- Ark&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sat, 05 Aug 2017 22:14:01 +0800</lastBuildDate><atom:link href="https://blog.crazyark.xyz/tags/min-cut/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>无向带权图图全局最小割 Stoer-Wagner 算法 (Stoer-Wagner Algorithm -- Global Min-Cut in Undirected Weighted Graphs)</title>
+      <link>https://blog.crazyark.xyz/p/stoer-wagner-algorithm/</link>
+      <pubDate>Sat, 05 Aug 2017 22:14:01 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/p/stoer-wagner-algorithm/</guid>
+      <description>&lt;p&gt;最近碰到一道题目，求一个图的全局最小割，可惜图论博主学的不太好，至今只记得一个求s-t最大流/最小割的 ford-fulkerson。想了想总不能做$n^2$次最大流吧，最终还是求助了维基百科 🤣&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>
