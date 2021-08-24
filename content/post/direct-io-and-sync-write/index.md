@@ -23,6 +23,8 @@ slug: direct-io-and-sync-write
 
 [1] <https://github.com/ronomon/direct-io>
 
-[2] <https://www.percona.com/blog/2018/02/08/fsync-performance-storage-devices/>
+[2] <https://www.percona.com/blog/2018/02/08/fsync-performance-storage-devices>
 
-[3] <https://www.percona.com/blog/2019/09/19/update-on-fsync-performance/>
+[3] <https://www.percona.com/blog/2019/09/19/update-on-fsync-performance>
+
+[4] <https://www.burnison.ca/notes/fun-mysql-fact-of-the-day-group-commit>
