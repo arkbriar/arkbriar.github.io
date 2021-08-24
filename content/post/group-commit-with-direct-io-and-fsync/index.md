@@ -1,11 +1,12 @@
 ---
-title: "聊聊 Direct IO、同步写和组提交"
+title: "数据库系统: 聊聊 Direct IO、同步写和组提交"
 date: 2021-08-21T12:36:51+08:00
 draft: true
 categories: ["Database", "Operating System", "File System"]
 tags: ["direct io", "sync", "group commit"]
 comments: true
-slug: direct-io-and-sync-write
+slug: group-commit-with-direct-io-and-fsync
+image: img/transaction_commit.png
 ---
 
 ## Buffered IO 和 Direct IO
