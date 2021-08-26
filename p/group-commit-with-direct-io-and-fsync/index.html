@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='众所周知，数据库管理系统需要满足数据操作的持久性，即保证操作的请求在返回之前，对应的数据一定是已经保存在非易失性存储中 &amp;ndash; 通常来说，就是磁盘。而大多数数据库系统都是构建在操作系统提供的文件系统之上的，因为不同的存储设备往往有着不同的特性和交互方式，操作系统和文件系统帮助屏蔽了物理细节。当然也不排除直接使用块设备操作或是使用用户空间驱动 (e.g. SPDK) 操作的，其优化思想应当是一样的，本文不做额外讨论。
+存储 Buffered / Direct IO 操作系统和文件系统对存储做了层层封装，最终提供给我们这些通用的操作方式，如下 C 函数所示（摘抄自 macOS 的 manual）：
+// 打开文件描述符 int open(const char *path, int oflag, ...); // 关闭文件描述符 int close(int fd); // 顺序读写 ssize_t read(int fd, void *buf, size_t nbyte); ssize_t write(int fd, const void *buf, size_t nbyte); // 指定 offset 读写 ssize_t pread(int fd, void *buf, size_t nbyte, off_t offset); ssize_t pwrite(int fd, const void *buf, size_t nbyte, off_t offset); 这里面有个不可避免的问题：当我进行一次文件操作的时候，它是否已经写入了磁盘，aka.'><title>数据库系统: 聊聊存储和组提交 (group commit)</title>
+
+<link rel='canonical' href='https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/'>
+
+<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='数据库系统: 聊聊存储和组提交 (group commit)'>
+<meta property='og:description' content='众所周知，数据库管理系统需要满足数据操作的持久性，即保证操作的请求在返回之前，对应的数据一定是已经保存在非易失性存储中 &amp;ndash; 通常来说，就是磁盘。而大多数数据库系统都是构建在操作系统提供的文件系统之上的，因为不同的存储设备往往有着不同的特性和交互方式，操作系统和文件系统帮助屏蔽了物理细节。当然也不排除直接使用块设备操作或是使用用户空间驱动 (e.g. SPDK) 操作的，其优化思想应当是一样的，本文不做额外讨论。
+存储 Buffered / Direct IO 操作系统和文件系统对存储做了层层封装，最终提供给我们这些通用的操作方式，如下 C 函数所示（摘抄自 macOS 的 manual）：
+// 打开文件描述符 int open(const char *path, int oflag, ...); // 关闭文件描述符 int close(int fd); // 顺序读写 ssize_t read(int fd, void *buf, size_t nbyte); ssize_t write(int fd, const void *buf, size_t nbyte); // 指定 offset 读写 ssize_t pread(int fd, void *buf, size_t nbyte, off_t offset); ssize_t pwrite(int fd, const void *buf, size_t nbyte, off_t offset); 这里面有个不可避免的问题：当我进行一次文件操作的时候，它是否已经写入了磁盘，aka.'>
+<meta property='og:url' content='https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/'>
+<meta property='og:site_name' content='石沉溪洞 -- Ark&#39;s Blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='direct io' /><meta property='article:tag' content='sync' /><meta property='article:tag' content='group commit' /><meta property='article:published_time' content='2021-08-21T12:36:51&#43;08:00'/><meta property='article:modified_time' content='2021-08-21T12:36:51&#43;08:00'/><meta property='og:image' content='https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/img/transaction_commit.png' />
+<meta name="twitter:site" content="@ImperiusDs">
+    <meta name="twitter:creator" content="@ImperiusDs"><meta name="twitter:title" content="数据库系统: 聊聊存储和组提交 (group commit)">
+<meta name="twitter:description" content="众所周知，数据库管理系统需要满足数据操作的持久性，即保证操作的请求在返回之前，对应的数据一定是已经保存在非易失性存储中 &amp;ndash; 通常来说，就是磁盘。而大多数数据库系统都是构建在操作系统提供的文件系统之上的，因为不同的存储设备往往有着不同的特性和交互方式，操作系统和文件系统帮助屏蔽了物理细节。当然也不排除直接使用块设备操作或是使用用户空间驱动 (e.g. SPDK) 操作的，其优化思想应当是一样的，本文不做额外讨论。
+存储 Buffered / Direct IO 操作系统和文件系统对存储做了层层封装，最终提供给我们这些通用的操作方式，如下 C 函数所示（摘抄自 macOS 的 manual）：
+// 打开文件描述符 int open(const char *path, int oflag, ...); // 关闭文件描述符 int close(int fd); // 顺序读写 ssize_t read(int fd, void *buf, size_t nbyte); ssize_t write(int fd, const void *buf, size_t nbyte); // 指定 offset 读写 ssize_t pread(int fd, void *buf, size_t nbyte, off_t offset); ssize_t pwrite(int fd, const void *buf, size_t nbyte, off_t offset); 这里面有个不可避免的问题：当我进行一次文件操作的时候，它是否已经写入了磁盘，aka."><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/img/transaction_commit.png' />
+    </head>
+    <body class="
+    article-page has-toc
+">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex 
+    
+        extended
+    
+">
+    
+        <div id="article-toolbar">
+            <a href="https://blog.crazyark.xyz" class="back-home">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="15 6 9 12 15 18" />
+</svg>
+
+
+
+                <span>返回</span>
+            </a>
+        </div>
+    
+<main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/p/group-commit-with-direct-io-and-fsync/">
+                <img src="/p/group-commit-with-direct-io-and-fsync/img/transaction_commit_hu68aa13cf911f6fed9e1992f89ad898fd_85726_800x0_resize_box_3.png"
+                        srcset="/p/group-commit-with-direct-io-and-fsync/img/transaction_commit_hu68aa13cf911f6fed9e1992f89ad898fd_85726_800x0_resize_box_3.png 800w, /p/group-commit-with-direct-io-and-fsync/img/transaction_commit_hu68aa13cf911f6fed9e1992f89ad898fd_85726_1600x0_resize_box_3.png 1600w"
+                        width="800" 
+                        height="312" 
+                        loading="lazy"
+                        alt="Featured image of post 数据库系统: 聊聊存储和组提交 (group commit)" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/database/" style="background-color: #2a9d8f; color: #fff;">
+                Database
+            </a>
+        
+            <a href="/categories/operating-system/" style="background-color: #2a9d8f; color: #fff;">
+                Operating System
+            </a>
+        
+            <a href="/categories/file-system/" style="background-color: #2a9d8f; color: #fff;">
+                File System
+            </a>
+        
+    </header>
+    
+
+    <h2 class="article-title">
+        <a href="/p/group-commit-with-direct-io-and-fsync/">数据库系统: 聊聊存储和组提交 (group commit)</a>
+    </h2>
+
+    
+
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Aug 21, 2021</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 3 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+</div>
+</header>
+
+    <section class="article-content">
+    <p>众所周知，数据库管理系统需要满足数据操作的持久性，即保证操作的请求在返回之前，对应的数据一定是已经保存在非易失性存储中 &ndash; 通常来说，就是磁盘。而大多数数据库系统都是构建在操作系统提供的文件系统之上的，因为不同的存储设备往往有着不同的特性和交互方式，操作系统和文件系统帮助屏蔽了物理细节。当然也不排除直接使用块设备操作或是使用用户空间驱动 (e.g. SPDK) 操作的，其优化思想应当是一样的，本文不做额外讨论。</p>
+<h2 id="存储">存储</h2>
+<h3 id="buffered--direct-io">Buffered / Direct IO</h3>
+<p>操作系统和文件系统对存储做了层层封装，最终提供给我们这些通用的操作方式，如下 C 函数所示（摘抄自 macOS 的 manual）：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="c1">// 打开文件描述符
+</span><span class="c1"></span><span class="kt">int</span> <span class="nf">open</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">path</span><span class="p">,</span> <span class="kt">int</span> <span class="n">oflag</span><span class="p">,</span> <span class="p">...);</span>
+<span class="c1">// 关闭文件描述符
+</span><span class="c1"></span><span class="kt">int</span> <span class="nf">close</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">);</span>
+
+<span class="c1">// 顺序读写
+</span><span class="c1"></span><span class="n">ssize_t</span> <span class="nf">read</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">nbyte</span><span class="p">);</span>
+<span class="n">ssize_t</span> <span class="nf">write</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">nbyte</span><span class="p">);</span>
+
+<span class="c1">// 指定 offset 读写
+</span><span class="c1"></span><span class="n">ssize_t</span> <span class="nf">pread</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">nbyte</span><span class="p">,</span> <span class="n">off_t</span> <span class="n">offset</span><span class="p">);</span>
+<span class="n">ssize_t</span> <span class="nf">pwrite</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">nbyte</span><span class="p">,</span> <span class="n">off_t</span> <span class="n">offset</span><span class="p">);</span>
+</code></pre></div><p>这里面有个不可避免的问题：当我进行一次文件操作的时候，它是否已经写入了磁盘，aka. 即使断电也不会丢失？了解过操作系统的同学都知道，为了优化性能，操作系统通常会提供一种叫 page cache 的东西。</p>
+<ul>
+<li>当使用 read 操作进行一次读取的时候，如果此时对应文件磁盘区域的 page cache 不存在，操作系统会先将对应的内容读取出来，存放到 page cache 中，然后在其中拷贝对应的内容到用户给的 buffer 中，再返回给用户；</li>
+<li>当使用 write 操作进行一次写入的时候，同样也会先准备好 page cache，然后将对应的内容拷贝到 page cache 上，此时立即返回给用户程序告知写入成功；
+<ul>
+<li>当写入成功时，对应 page cache 的数据和磁盘上的数据已经存在差异了，操作系统将负责将它回写到磁盘上，用一种 <strong>异步的</strong> 方式；</li>
+</ul>
+</li>
+</ul>
+<p>这种方式通常被称为 buffered IO，相对应的也会有另一种 unbuffered IO，马上会进行介绍。值得注意的是，写入操作并不是到达磁盘才返回的，因此用户程序此时还没有办法知道自己的数据是否已经持久化了，我们暂且先放一下，先看看它有什么优缺点。</p>
+<p>在普遍的读写负载下，buffered IO 要比 unbuffered IO 快出几个数量级，主要有以下几个原因：</p>
+<ul>
+<li>大多数非易失性存储的读写模式都不是按照 byte 来的，而是按照块为单位，一次读写的最小单位就是块。在早期的磁盘上这个数字是 512 bytes（对应一个扇区），SSD 上则是 4096 bytes（对应一个页）。这意味着 1 byte 的修改要写入磁盘就要额外引入 511 或者 4093 个 bytes 的写入，本来就不富裕的磁盘带宽更会雪上加霜；
+<ul>
+<li>题外话，Intel 家的 Optane 设备最小写入单位是 8 bytes 我记得，属实有一点离谱</li>
+</ul>
+</li>
+<li>当引入 page cache 后，在同一个 page 上进行的多次操作可以合并成一次磁盘写入操作，不仅符合块读取/写入的规定，而且有效减少了磁盘操作；</li>
+<li>另外，操作系统并不是傻傻地等着应用程序读取/写入时才准备 page cache，根据访问模式/用户 advice，操作系统会提前读取磁盘内容到内存中，使得 CPU 和磁盘更充分的被（同时）使用起来，从而提升应用程序 IO 操作的响应速度；</li>
+</ul>
+<p>综上，操作系统默认就会打开 page cache 来提升性能。但由于控制 page cache 的操作系统无法完全预测应用程序的行为，反而会导致某些应用程序无法有效利用磁盘，例如数据库管理系统。不必惊慌，想必很多同学都了解过 direct (unbuffered) IO，可以关闭操作系统的 page cache，让每一次读写都直接<em>经过</em>磁盘。几乎所有的操作系统都提供了 direct IO，例如在 Linux 上我们用这种方式打开文件：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="kt">int</span> <span class="n">fd</span> <span class="o">=</span> <span class="n">open</span><span class="p">(</span><span class="s">&#34;/path/to/file&#34;</span><span class="p">,</span> <span class="n">O_CREAT</span> <span class="o">|</span> <span class="n">O_RDWR</span> <span class="o">|</span> <span class="n">O_DIRECT</span><span class="p">);</span>
+</code></pre></div><p>就获得了一个关闭 page cache 的文件描述符。此时再进行 read/write 操作时，会直接对磁盘设备进行请求。由于请求的特殊性（DMA 操作），Linux 甚至对传入 read/write 的参数有额外的要求：buf 的地址要做到扇区对齐，且大小是扇区的整数倍。显然，在类似顺序写（日志文件）这种场景中，direct IO 省去了内存拷贝，也更能完全发挥磁盘的性能。也正因此，数据库系统会倾向于使用 direct 的方式来写它的 write-ahead log（WAL）。</p>
+<p>听起来到这里我们就已经能保证数据库管理系统的持久性了：用 direct 的方式写 WAL，写入成功意味着磁盘上持久化成功了，可是真的如此么？</p>
+<h3 id="同步写-synchronized-write">同步写 (Synchronized Write)</h3>
+<p>熟悉 Linux 几个文件接口的同学一定知道，除了上述我列出的一些参数和接口以外，还有如下的几个参数和接口：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="n">O_SYNC</span>                  <span class="c1">// 同步写，操作系统将尽可能等待数据真的写入到对应的设备
+</span><span class="c1"></span><span class="n">O_DSYNC</span>                 <span class="c1">// 同步写，和上面有所区别的是只等待数据写入到对应的设备
+</span><span class="c1"></span>
+<span class="kt">int</span> <span class="n">fsync</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">);</span>      <span class="c1">// 同步文件修改，操作系统将尽可能地将所有文件修改写入到设备
+</span><span class="c1"></span><span class="kt">int</span> <span class="nf">fdatasync</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">);</span>  <span class="c1">// 同步文件修改，不过也是只等待数据和数据相关元数据写入设备
+</span></code></pre></div><p>为什么要有这些参数和接口？因为除了操作系统有缓存，存储设备也有缓存（你搁这套娃呢），而direct write 只是将用户的 buffer 拷贝到了存储设备的缓存之中。当然热心的同学可能要问了，存储设备的缓存有什么用？AFAIK [5]，</p>
+<ul>
+<li>缓存读取，除了操作系统会做 prefetch，存储设备也会做；</li>
+<li>缓存写入，缓存的一大重要意义就是把比如脉冲式地写入拉平，并且可以立即返回给用户；</li>
+<li>缓存指令，存储设备可以将读写指令缓存起来，并合理重排指令顺序（思考一下一秒 5000 转的磁盘）使得性能最大化；</li>
+</ul>
+<p>因此使用 direct write 还是不能肯定数据到磁盘了，可太辛苦了。不过既然有缓存，一定有控制缓存的方式，比如刷缓存，而其中一种方式叫做 FUA（Force Unit Access）。FUA 会强制等待写入指令直到数据进入磁盘为止，有一些系统使用 FUA 实现 O_SYNC/O_DSYNC 来保证数据同步到设备之上了。与此同时，fsync/fdatasync 的接口同样也提供了相同的语义（通过刷缓存），不过使用他们会额外多一次系统调用开销。</p>
+<p>令人遗憾的是，并不是所有设备都有 FUA 指令（SCSI 有，EIDE 和 SATA 就不行了），且不是所有系统都保证 O_SYNC/O_DSYNC 进入磁盘（实现有 bug），原文大约是 ensure synchronized as far as it can tell。因此单独使用 O_SYNC/O_DSYNC 并不能一定保证数据的完整性，需要配合 fsync/fdatasync 一起使用来达到同步写的目的。</p>
+<p>P.S. 某些系统对 fsync/fdatasync 的实现也有 bug（参考 [1]）或者问题，是数据库系统无法容忍的。如果你查阅 macOS 的 fsync manual，你会发现它有这么一段描述：</p>
+<blockquote>
+<p>Note that while fsync() will flush all data from the host to the drive (i.e. the &ldquo;permanent storage device&rdquo;), the drive itself may not physically write the data to the platters for quite some time and it may be written in an out-of-order sequence.</p>
+<p>Specifically, if the drive loses power or the OS crashes, the application may find that only some or none of their data was written.  The disk drive may also re-order the data so that later writes may be present, while earlier writes are not.</p>
+</blockquote>
+<p>你还需要使用它提供的其他方式来同步数据，aka. fnctl。</p>
+<p>到这里终于看到了一丝曙光，我们终于有办法能够提供同步写的语义了。那么，是时候该实现一个数据库管理系统了，还有其他问题么？</p>
+<p>实际上还有（我都写的不耐烦了🤡），因为数据库系统架构在了文件系统之上，除了数据文件同步写之外，你还需要关心所有的崩溃一致性：</p>
+<ul>
+<li>文件系统修改同步，e.g. 创建了一个文件，写了一些内容，文件同步了但是目录没同步之后断电，会出现文件没了，但是用户侧显示已经提交</li>
+<li>顺序写，e.g. 文件写一半断电，请问哪些部分是已经写入了的？</li>
+<li>原子写，e.g. 写 WAL / B+ 树 / SST 写一半断电，这个记录/页/文件还能不能要了？</li>
+<li>&hellip;</li>
+</ul>
+<p><figure style="flex-grow: 157; flex-basis: 377px">
+		<a href="/p/group-commit-with-direct-io-and-fsync/img/ext4_inode.jpg" data-size="2367x1505"><img src="/p/group-commit-with-direct-io-and-fsync/img/ext4_inode.jpg"
+				srcset="/p/group-commit-with-direct-io-and-fsync/img/ext4_inode_hud9776bdf9876fcbe95ea715c40ddcfae_236370_480x0_resize_q75_box.jpg 480w, /p/group-commit-with-direct-io-and-fsync/img/ext4_inode_hud9776bdf9876fcbe95ea715c40ddcfae_236370_1024x0_resize_q75_box.jpg 1024w"
+				width="2367"
+				height="1505"
+				loading="lazy"
+				alt="ext4_inode">
+		</a>
+		
+		<figcaption>ext4_inode</figcaption>
+		
+	</figure></p>
+<p>实在太多了，这里不一一展开，感兴趣的同学可以了解下 rename 原子操作 和 MySQL InnoDB 的双写，以及南大学长 JYY 之前发表的论文 [7]。</p>
+<h2 id="组提交-group-commit">组提交 (Group Commit)</h2>
+<p>前文提到，我们将修改操作同步到存储设备上之后再进行返回，从而保证持久性，我们将这个操作称为提交（commit）。那假设现在已经有一个数据库系统了，它每次请求都会做一次同步写然后返回，会有什么样的问题呢？</p>
+<p>如 [1][2] 中所示，同步操作的性能可以说是惨不忍睹，且因为同步的缘故，CPU 和 IO 不能充分并行，简直惨上加惨。用 [2] 中的脚本在某台顶配 ECS 上（沾了公司的光）测试下了 ESSD 性能，fsync 也只能获得约 2000 次/s 的性能（对比机械硬盘确实非常不错了）。我本地 macOS 跑 fnctl(F_FULLFSYNC) 可能只有不到 100，不能更惨。而 [1] 中 4k 写在 buffered IO 下能获得 2.5GB/s 写入速度的设备在无脑 fsync 下只剩下可怜的 0.5MB/s 了。这个问题有多严重可见一斑。</p>
+<p>fsync 的每秒执行次数和延迟意味着在单线程请求下，TPS 和延迟一定有个对应的 bound，无法消除，而 fsync + write 的吞吐量则决定了大事务的执行速度，因此优化同步写势在必行。对于单线程请求，实际上没有办法进行优化，因为从原则上必须要同步写之后才能返回。但是对于并发请求，我们可以通过一种叫组提交（group commit）的技术，尽可能的优化 fsync 的执行频率。</p>
+<p>顾名思义，组提交是将一组请求合并到一起提交，然后再返回的方法。通过降低 fsync 的频率，使得 CPU 和 IO 充分并行，同时提升了 TPS 上限和吞吐量。组提交的实现可以有很多参数，比如等待多少时间/多少事务进行提交。我觉得一个比较优雅的实现来自 MySQL 的 binlog，参考 [4] 中描述和代码，以及自己的理解画了一个对应的流程图：</p>
+<p><figure style="flex-grow: 140; flex-basis: 336px">
+		<a href="/p/group-commit-with-direct-io-and-fsync/img/group_commit.jpg" data-size="1764x1260"><img src="/p/group-commit-with-direct-io-and-fsync/img/group_commit.jpg"
+				srcset="/p/group-commit-with-direct-io-and-fsync/img/group_commit_hu4c558425e36484ceebf57c0d1c2e5033_237683_480x0_resize_q75_box.jpg 480w, /p/group-commit-with-direct-io-and-fsync/img/group_commit_hu4c558425e36484ceebf57c0d1c2e5033_237683_1024x0_resize_q75_box.jpg 1024w"
+				width="1764"
+				height="1260"
+				loading="lazy"
+				alt="group commit">
+		</a>
+		
+		<figcaption>group commit</figcaption>
+		
+	</figure></p>
+<p>这种实现有着良好的单线程事务效率（即刻提交），也有良好的回压机制（日志文件锁不释放代表 IO 进行中，阻塞提交），非常优雅。</p>
+<p>更简单的实现方式可以通过一个 mpsc 队列和几个固定的消费线程，来避免复杂的 group leader 机制，实现更加简单。</p>
+<p>由于调研时间有限，如果有更优雅的方法希望了解的同学能够不吝赐教。</p>
+<h2 id="其他的优化方式">其他的优化方式</h2>
+<ol>
+<li>
+<p>如 [2] 中指出，某些 raid 控制器带一个受保护的写缓存。什么叫受保护呢？就是用一块大电容保证即使断电你也能把数据写到磁盘。这样实际上数据写到缓存 fsync 就可以返回了，这种硬件级别的原子写可以让 fsync 频率提升 3 个数量级 (58 -&gt; 23000)，延迟降低 3 个数量级 (17ms -&gt; 0.04 ms)，显然同步写可以获得爆炸性的提升。</p>
+</li>
+<li>
+<p>如 [3] 中指出，最新一代非易失性内存设备的同步写性能简直甩其他设备两条街都不止。且不说新特性（8-byte 原子写）带来的架构变革，光是这个 fsync 性能就能让其他设备相形见绌。</p>
+</li>
+</ol>
+<p>我以前不屑于新设备带来的变革，现在发现还是 too naive 了。</p>
+<h2 id="总结">总结</h2>
+<p>本文主要聊了聊存储设备和数据库管理系统持久性之间的关系，以及其中的一些细节和优化方式。由于知识面有限，大多数都是现调研的，错误疏漏在所难免，希望能够得到指正，也欢迎更多的交流。最近正在摸上一篇文章讲的魔改 Raft WAL，涉及方面不少，有兴趣的同学也欢迎一同探讨（带带我）。</p>
+<h2 id="参考文献">参考文献</h2>
+<p>[1] <a class="link" href="https://github.com/ronomon/direct-io"  target="_blank" rel="noopener"
+    >https://github.com/ronomon/direct-io</a></p>
+<p>[2] <a class="link" href="https://www.percona.com/blog/2018/02/08/fsync-performance-storage-devices"  target="_blank" rel="noopener"
+    >https://www.percona.com/blog/2018/02/08/fsync-performance-storage-devices</a></p>
+<p>[3] <a class="link" href="https://www.percona.com/blog/2019/09/19/update-on-fsync-performance"  target="_blank" rel="noopener"
+    >https://www.percona.com/blog/2019/09/19/update-on-fsync-performance</a></p>
+<p>[4] <a class="link" href="https://www.burnison.ca/notes/fun-mysql-fact-of-the-day-group-commit"  target="_blank" rel="noopener"
+    >https://www.burnison.ca/notes/fun-mysql-fact-of-the-day-group-commit</a></p>
+<p>[5] <a class="link" href="https://en.wikipedia.org/wiki/Disk_buffer"  target="_blank" rel="noopener"
+    >https://en.wikipedia.org/wiki/Disk_buffer</a></p>
+<p>[6] <a class="link" href="https://ext4.wiki.kernel.org/index.php/Ext4_Disk_Layout"  target="_blank" rel="noopener"
+    >https://ext4.wiki.kernel.org/index.php/Ext4_Disk_Layout</a></p>
+<p>[7] Jiang, Yanyan, et al. &ldquo;Crash consistency validation made easy.&rdquo; Proceedings of the 2016 24th ACM SIGSOFT International Symposium on Foundations of Software Engineering. 2016.</p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/direct-io/">direct io</a>
+        
+            <a href="/tags/sync/">sync</a>
+        
+            <a href="/tags/group-commit/">group commit</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    <aside class="related-contents--wrapper">
+    
+    
+        <h2 class="section-title">相关文章</h2>
+        <div class="related-contents">
+            <div class="flex article-list--tile">
+                
+                    
+<article class="has-image">
+    <a href="/p/raft-and-share-log/">
+        
+        
+            <div class="article-image">
+                <img src="/p/raft-and-share-log/img/raft.b808dfc886e92301ed8eea9ff84ea20d_hu789963ccc359d12cda0ae24ab10587a7_341224_250x150_fill_q75_box_smart1.jpg" 
+                        width="250" 
+                        height="150" 
+                        loading="lazy" 
+                        data-key="raft-and-share-log" 
+                        data-hash="md5-uAjfyIbpIwHtjuqf&#43;E6iDQ==">
+                
+            </div>
+        
+
+        <div class="article-details">
+            <h2 class="article-title">Raft on RocksDB -- 共享日志</h2>
+        </div>
+    </a>
+</article>
+                
+            </div>
+        </div>
+    
+</aside>
+
+     
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2018 - 
+        
+        2021 石沉溪洞 -- Ark&#39;s Blog
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.1.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+            >
+
+            </main>
+    
+        <aside class="sidebar right-sidebar sticky">
+            <section class="widget archives">
+                <div class="widget-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+                </div>
+                <h2 class="widget-title section-title">目录</h2>
+                
+                <div class="widget--toc">
+                    <nav id="TableOfContents">
+  <ol>
+    <li><a href="#存储">存储</a>
+      <ol>
+        <li><a href="#buffered--direct-io">Buffered / Direct IO</a></li>
+        <li><a href="#同步写-synchronized-write">同步写 (Synchronized Write)</a></li>
+      </ol>
+    </li>
+    <li><a href="#组提交-group-commit">组提交 (Group Commit)</a></li>
+    <li><a href="#其他的优化方式">其他的优化方式</a></li>
+    <li><a href="#总结">总结</a></li>
+    <li><a href="#参考文献">参考文献</a></li>
+  </ol>
+</nav>
+                </div>
+            </section>
+        </aside>
+    
+
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

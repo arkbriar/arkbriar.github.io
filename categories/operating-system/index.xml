@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Operating System on 石沉溪洞 -- Ark&#39;s Blog</title>
+    <link>https://blog.crazyark.xyz/categories/operating-system/</link>
+    <description>Recent content in Operating System on 石沉溪洞 -- Ark&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sat, 21 Aug 2021 12:36:51 +0800</lastBuildDate><atom:link href="https://blog.crazyark.xyz/categories/operating-system/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>数据库系统: 聊聊存储和组提交 (group commit)</title>
+      <link>https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/</link>
+      <pubDate>Sat, 21 Aug 2021 12:36:51 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/</guid>
+      <description>众所周知，数据库管理系统需要满足数据操作的持久性，即保证操作的请求在返回之前，对应的数据一定是已经保存在非易失性存储中 &amp;ndash; 通常来说，就是磁盘。而大多数数据库系统都是构建在操作系统提供的文件系统之上的，因为不同的存储设备往往有着不同的特性和交互方式，操作系统和文件系统帮助屏蔽了物理细节。当然也不排除直接使用块设备操作或是使用用户空间驱动 (e.g. SPDK) 操作的，其优化思想应当是一样的，本文不做额外讨论。
+存储 Buffered / Direct IO 操作系统和文件系统对存储做了层层封装，最终提供给我们这些通用的操作方式，如下 C 函数所示（摘抄自 macOS 的 manual）：
+// 打开文件描述符 int open(const char *path, int oflag, ...); // 关闭文件描述符 int close(int fd); // 顺序读写 ssize_t read(int fd, void *buf, size_t nbyte); ssize_t write(int fd, const void *buf, size_t nbyte); // 指定 offset 读写 ssize_t pread(int fd, void *buf, size_t nbyte, off_t offset); ssize_t pwrite(int fd, const void *buf, size_t nbyte, off_t offset); 这里面有个不可避免的问题：当我进行一次文件操作的时候，它是否已经写入了磁盘，aka.</description>
+    </item>
+    
+  </channel>
+</rss>

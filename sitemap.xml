@@ -3,15 +3,39 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://blog.crazyark.xyz/categories/</loc>
-    <lastmod>2021-08-17T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://blog.crazyark.xyz/categories/consensus/</loc>
-    <lastmod>2021-08-17T00:00:00+00:00</lastmod>
+    <lastmod>2021-08-21T12:36:51+08:00</lastmod>
   </url><url>
     <loc>https://blog.crazyark.xyz/categories/database/</loc>
-    <lastmod>2021-08-17T00:00:00+00:00</lastmod>
+    <lastmod>2021-08-21T12:36:51+08:00</lastmod>
+  </url><url>
+    <loc>https://blog.crazyark.xyz/tags/direct-io/</loc>
+    <lastmod>2021-08-21T12:36:51+08:00</lastmod>
+  </url><url>
+    <loc>https://blog.crazyark.xyz/categories/file-system/</loc>
+    <lastmod>2021-08-21T12:36:51+08:00</lastmod>
+  </url><url>
+    <loc>https://blog.crazyark.xyz/tags/group-commit/</loc>
+    <lastmod>2021-08-21T12:36:51+08:00</lastmod>
+  </url><url>
+    <loc>https://blog.crazyark.xyz/categories/operating-system/</loc>
+    <lastmod>2021-08-21T12:36:51+08:00</lastmod>
   </url><url>
     <loc>https://blog.crazyark.xyz/post/</loc>
+    <lastmod>2021-08-21T12:36:51+08:00</lastmod>
+  </url><url>
+    <loc>https://blog.crazyark.xyz/tags/sync/</loc>
+    <lastmod>2021-08-21T12:36:51+08:00</lastmod>
+  </url><url>
+    <loc>https://blog.crazyark.xyz/tags/</loc>
+    <lastmod>2021-08-21T12:36:51+08:00</lastmod>
+  </url><url>
+    <loc>https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/</loc>
+    <lastmod>2021-08-21T12:36:51+08:00</lastmod>
+  </url><url>
+    <loc>https://blog.crazyark.xyz/</loc>
+    <lastmod>2021-08-21T12:36:51+08:00</lastmod>
+  </url><url>
+    <loc>https://blog.crazyark.xyz/categories/consensus/</loc>
     <lastmod>2021-08-17T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://blog.crazyark.xyz/tags/raft/</loc>
@@ -20,13 +44,7 @@
     <loc>https://blog.crazyark.xyz/p/raft-and-share-log/</loc>
     <lastmod>2021-08-17T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/</loc>
-    <lastmod>2021-08-17T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>https://blog.crazyark.xyz/tags/write-ahead-log/</loc>
-    <lastmod>2021-08-17T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://blog.crazyark.xyz/</loc>
     <lastmod>2021-08-17T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://blog.crazyark.xyz/archives/</loc>
@@ -39,9 +57,6 @@
     <lastmod>2018-08-16T14:55:23+08:00</lastmod>
   </url><url>
     <loc>https://blog.crazyark.xyz/categories/data-structure/</loc>
-    <lastmod>2018-08-16T14:55:23+08:00</lastmod>
-  </url><url>
-    <loc>https://blog.crazyark.xyz/categories/hash/</loc>
     <lastmod>2018-08-16T14:55:23+08:00</lastmod>
   </url><url>
     <loc>https://blog.crazyark.xyz/tags/hash/</loc>
@@ -75,6 +90,9 @@
     <lastmod>2018-04-16T19:51:21+08:00</lastmod>
   </url><url>
     <loc>https://blog.crazyark.xyz/p/epoll/</loc>
+    <lastmod>2018-04-16T19:51:21+08:00</lastmod>
+  </url><url>
+    <loc>https://blog.crazyark.xyz/categories/network/</loc>
     <lastmod>2018-04-16T19:51:21+08:00</lastmod>
   </url><url>
     <loc>https://blog.crazyark.xyz/tags/bloom-filter/</loc>
@@ -181,9 +199,6 @@
   </url><url>
     <loc>https://blog.crazyark.xyz/tags/x86_64/</loc>
     <lastmod>2017-08-27T17:38:37+08:00</lastmod>
-  </url><url>
-    <loc>https://blog.crazyark.xyz/categories/project-euler/</loc>
-    <lastmod>2017-08-25T21:32:26+08:00</lastmod>
   </url><url>
     <loc>https://blog.crazyark.xyz/tags/project-euler/</loc>
     <lastmod>2017-08-25T21:32:26+08:00</lastmod>

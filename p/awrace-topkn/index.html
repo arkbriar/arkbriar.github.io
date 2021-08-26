@@ -78,8 +78,8 @@
     
     <header class="article-category">
         
-            <a href="/categories/database/" style="background-color: #2a9d8f; color: #fff;">
-                Database
+            <a href="/categories/tianchi/" >
+                Tianchi
             </a>
         
             <a href="/categories/contest/" >
@@ -166,10 +166,14 @@
 <th style="text-align:left"><strong>主要限制</strong></th>
 </tr>
 </thead>
+<tbody>
+<tr>
+<td style="text-align:left">1. 3台机器: 2台worker，1台master <!-- raw HTML omitted --> 2. 输出在master上</td>
+<td style="text-align:center"></td>
+<td style="text-align:left">1. Timeout: 5min <!-- raw HTML omitted --> 2. JVM heap size: 3G <!-- raw HTML omitted --> 3. 不允许使用堆外内存(FileChannel)</td>
+</tr>
+</tbody>
 </table>
-<ol>
-<li>3台机器: 2台worker，1台master <!-- raw HTML omitted --> 2. 输出在master上 | |1. Timeout: 5min <!-- raw HTML omitted --> 2. JVM heap size: 3G <!-- raw HTML omitted --> 3. 不允许使用堆外内存(FileChannel)</li>
-</ol>
 <p><!-- raw HTML omitted -->
 题目中一共有大约160000000条数据(字符串)，并分布在两台机器上，要进行 top(k, n)，首先 brute force 一定是不行的。</p>
 <p>如果要对160000000条数据全排序JVM，第一内存太小，第二时间不够。对 10000000 条数据进行排序大约耗时为 1min13s，参考自 <a class="link" href="https://codereview.stackexchange.com/questions/67387/quicksort-implementation-seems-too-slow-with-large-data"  target="_blank" rel="noopener"
@@ -379,28 +383,6 @@ sys     0m30.568s
         <h2 class="section-title">相关文章</h2>
         <div class="related-contents">
             <div class="flex article-list--tile">
-                
-                    
-<article class="has-image">
-    <a href="/p/raft-and-share-log/">
-        
-        
-            <div class="article-image">
-                <img src="/p/raft-and-share-log/img/raft.b808dfc886e92301ed8eea9ff84ea20d_hu789963ccc359d12cda0ae24ab10587a7_341224_250x150_fill_q75_box_smart1.jpg" 
-                        width="250" 
-                        height="150" 
-                        loading="lazy" 
-                        data-key="raft-and-share-log" 
-                        data-hash="md5-uAjfyIbpIwHtjuqf&#43;E6iDQ==">
-                
-            </div>
-        
-
-        <div class="article-details">
-            <h2 class="article-title">Raft on RocksDB -- 共享日志</h2>
-        </div>
-    </a>
-</article>
                 
                     
 <article class="">

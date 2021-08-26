@@ -6,7 +6,34 @@
     <description>Recent content in Categories on 石沉溪洞 -- Ark&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Tue, 17 Aug 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://blog.crazyark.xyz/categories/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 21 Aug 2021 12:36:51 +0800</lastBuildDate><atom:link href="https://blog.crazyark.xyz/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Database</title>
+      <link>https://blog.crazyark.xyz/categories/database/</link>
+      <pubDate>Sat, 21 Aug 2021 12:36:51 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/categories/database/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>File System</title>
+      <link>https://blog.crazyark.xyz/categories/file-system/</link>
+      <pubDate>Sat, 21 Aug 2021 12:36:51 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/categories/file-system/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Operating System</title>
+      <link>https://blog.crazyark.xyz/categories/operating-system/</link>
+      <pubDate>Sat, 21 Aug 2021 12:36:51 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/categories/operating-system/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>Consensus</title>
       <link>https://blog.crazyark.xyz/categories/consensus/</link>
@@ -17,29 +44,11 @@
     </item>
     
     <item>
-      <title>Database</title>
-      <link>https://blog.crazyark.xyz/categories/database/</link>
-      <pubDate>Tue, 17 Aug 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://blog.crazyark.xyz/categories/database/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>Data Structure</title>
       <link>https://blog.crazyark.xyz/categories/data-structure/</link>
       <pubDate>Thu, 16 Aug 2018 14:55:23 +0800</pubDate>
       
       <guid>https://blog.crazyark.xyz/categories/data-structure/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Hash</title>
-      <link>https://blog.crazyark.xyz/categories/hash/</link>
-      <pubDate>Thu, 16 Aug 2018 14:55:23 +0800</pubDate>
-      
-      <guid>https://blog.crazyark.xyz/categories/hash/</guid>
       <description></description>
     </item>
     
@@ -67,6 +76,15 @@
       <pubDate>Mon, 16 Apr 2018 19:51:21 +0800</pubDate>
       
       <guid>https://blog.crazyark.xyz/categories/linux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Network</title>
+      <link>https://blog.crazyark.xyz/categories/network/</link>
+      <pubDate>Mon, 16 Apr 2018 19:51:21 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/categories/network/</guid>
       <description></description>
     </item>
     
@@ -112,15 +130,6 @@
       <pubDate>Sun, 27 Aug 2017 17:38:37 +0800</pubDate>
       
       <guid>https://blog.crazyark.xyz/categories/assembly/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Project Euler</title>
-      <link>https://blog.crazyark.xyz/categories/project-euler/</link>
-      <pubDate>Fri, 25 Aug 2017 21:32:26 +0800</pubDate>
-      
-      <guid>https://blog.crazyark.xyz/categories/project-euler/</guid>
       <description></description>
     </item>
     
