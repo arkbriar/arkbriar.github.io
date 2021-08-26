@@ -2,7 +2,7 @@
 title: "2017 Alibaba Middleware 24h Final (Just for Fun 😀)"
 date: 2017-07-26T16:59:26+08:00
 tags: ["java", "distributed system", "parallel computing"]
-categories: ["Database", "Contest"]
+categories: ["Tianchi", "Contest"]
 slug: awrace-topkn
 ---
 
@@ -37,9 +37,9 @@ Codes 托管在 github 上 [https://github.com/arkbriar/topKN](https://github.co
 ## 解题过程
 
 
-**主要条件** | | **主要限制**
-:---- | :-:|:------
-1. 3台机器: 2台worker，1台master <br /> 2. 输出在master上 | |1. Timeout: 5min <br /> 2. JVM heap size: 3G <br/> 3. 不允许使用堆外内存(FileChannel)
+| **主要条件**                                              |       | **主要限制**                                                                          |
+| :-------------------------------------------------------- | :---: | :------------------------------------------------------------------------------------ |
+| 1. 3台机器: 2台worker，1台master <br /> 2. 输出在master上 |       | 1. Timeout: 5min <br /> 2. JVM heap size: 3G <br/> 3. 不允许使用堆外内存(FileChannel) |
 
 
 <br />

@@ -2,7 +2,7 @@
 title: "哈希表 -- 哈希冲突"
 date: 2018-08-16T14:55:23+08:00
 draft: false
-categories: ["Data Structure", "Hash"]
+categories: ["Data Structure"]
 tags: ["hash", "collision"]
 slug: hash-table-collision
 ---
