@@ -81,36 +81,50 @@
 &lt;li&gt;原子写，e.g. 写 WAL / B+ 树 / SST 写一半断电，这个记录/页/文件还能不能要了？&lt;/li&gt;
 &lt;li&gt;&amp;hellip;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;figure style=&#34;flex-grow: 157; flex-basis: 377px&#34;&gt;
-		&lt;a href=&#34;https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/img/ext4_inode.jpg&#34; data-size=&#34;2367x1505&#34;&gt;&lt;img src=&#34;https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/img/ext4_inode.jpg&#34;
-				srcset=&#34;https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/img/ext4_inode_hud9776bdf9876fcbe95ea715c40ddcfae_236370_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/img/ext4_inode_hud9776bdf9876fcbe95ea715c40ddcfae_236370_1024x0_resize_q75_box.jpg 1024w&#34;
-				width=&#34;2367&#34;
-				height=&#34;1505&#34;
-				loading=&#34;lazy&#34;
-				alt=&#34;ext4_inode&#34;&gt;
-		&lt;/a&gt;
-		
-		&lt;figcaption&gt;ext4_inode&lt;/figcaption&gt;
-		
-	&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 157; 
+			flex-basis: 377px&#34;
+	&gt;
+	&lt;a href=&#34;https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/img/ext4_inode.jpg&#34; data-size=&#34;2367x1505&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/img/ext4_inode.jpg&#34;
+			width=&#34;2367&#34;
+			height=&#34;1505&#34;
+			srcset=&#34;https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/img/ext4_inode_hud9776bdf9876fcbe95ea715c40ddcfae_236370_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/img/ext4_inode_hud9776bdf9876fcbe95ea715c40ddcfae_236370_1024x0_resize_q75_box.jpg 1024w&#34;
+			loading=&#34;lazy&#34;
+			alt=&#34;ext4_inode&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;ext4_inode&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
 &lt;p&gt;实在太多了，这里不一一展开，感兴趣的同学可以了解下 rename 原子操作 和 MySQL InnoDB 的双写，以及南大学长 JYY 之前发表的论文 [7]。&lt;/p&gt;
 &lt;h2 id=&#34;组提交-group-commit&#34;&gt;组提交 (Group Commit)&lt;/h2&gt;
 &lt;p&gt;前文提到，我们将修改操作同步到存储设备上之后再进行返回，从而保证持久性，我们将这个操作称为提交（commit）。那假设现在已经有一个数据库系统了，它每次请求都会做一次同步写然后返回，会有什么样的问题呢？&lt;/p&gt;
 &lt;p&gt;如 [1][2] 中所示，同步操作的性能可以说是惨不忍睹，且因为同步的缘故，CPU 和 IO 不能充分并行，简直惨上加惨。用 [2] 中的脚本在某台顶配 ECS 上（沾了公司的光）测试下了 ESSD 性能，fsync 也只能获得约 2000 次/s 的性能（对比机械硬盘确实非常不错了）。我本地 macOS 跑 fnctl(F_FULLFSYNC) 可能只有不到 100，不能更惨。而 [1] 中 4k 写在 buffered IO 下能获得 2.5GB/s 写入速度的设备在无脑 fsync 下只剩下可怜的 0.5MB/s 了。这个问题有多严重可见一斑。&lt;/p&gt;
 &lt;p&gt;fsync 的每秒执行次数和延迟意味着在单线程请求下，TPS 和延迟一定有个对应的 bound，无法消除，而 fsync + write 的吞吐量则决定了大事务的执行速度，因此优化同步写势在必行。对于单线程请求，实际上没有办法进行优化，因为从原则上必须要同步写之后才能返回。但是对于并发请求，我们可以通过一种叫组提交（group commit）的技术，尽可能的优化 fsync 的执行频率。&lt;/p&gt;
 &lt;p&gt;顾名思义，组提交是将一组请求合并到一起提交，然后再返回的方法。通过降低 fsync 的频率，使得 CPU 和 IO 充分并行，同时提升了 TPS 上限和吞吐量。组提交的实现可以有很多参数，比如等待多少时间/多少事务进行提交。我觉得一个比较优雅的实现来自 MySQL 的 binlog，参考 [4] 中描述和代码，以及自己的理解画了一个对应的流程图：&lt;/p&gt;
-&lt;p&gt;&lt;figure style=&#34;flex-grow: 140; flex-basis: 336px&#34;&gt;
-		&lt;a href=&#34;https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/img/group_commit.jpg&#34; data-size=&#34;1764x1260&#34;&gt;&lt;img src=&#34;https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/img/group_commit.jpg&#34;
-				srcset=&#34;https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/img/group_commit_hu4c558425e36484ceebf57c0d1c2e5033_237683_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/img/group_commit_hu4c558425e36484ceebf57c0d1c2e5033_237683_1024x0_resize_q75_box.jpg 1024w&#34;
-				width=&#34;1764&#34;
-				height=&#34;1260&#34;
-				loading=&#34;lazy&#34;
-				alt=&#34;group commit&#34;&gt;
-		&lt;/a&gt;
-		
-		&lt;figcaption&gt;group commit&lt;/figcaption&gt;
-		
-	&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 140; 
+			flex-basis: 336px&#34;
+	&gt;
+	&lt;a href=&#34;https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/img/group_commit.jpg&#34; data-size=&#34;1764x1260&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/img/group_commit.jpg&#34;
+			width=&#34;1764&#34;
+			height=&#34;1260&#34;
+			srcset=&#34;https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/img/group_commit_hu4c558425e36484ceebf57c0d1c2e5033_237683_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/img/group_commit_hu4c558425e36484ceebf57c0d1c2e5033_237683_1024x0_resize_q75_box.jpg 1024w&#34;
+			loading=&#34;lazy&#34;
+			alt=&#34;group commit&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;group commit&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
 &lt;p&gt;这种实现有着良好的单线程事务效率（即刻提交），也有良好的回压机制（日志文件锁不释放代表 IO 进行中，阻塞提交），非常优雅。&lt;/p&gt;
 &lt;p&gt;更简单的实现方式可以通过一个 mpsc 队列和几个固定的消费线程，来避免复杂的 group leader 机制，实现更加简单。&lt;/p&gt;
 &lt;p&gt;由于调研时间有限，如果有更优雅的方法希望了解的同学能够不吝赐教。&lt;/p&gt;
@@ -175,18 +189,25 @@
 &lt;p&gt;共享的 WAL 同样也可以采用合并提交的方式进行写入，但是注意的这时需要对上述崩溃恢复的方案做一些小的修改，即当所有 K-V 都 put 后再将 LSN 写入。&lt;/p&gt;
 &lt;h3 id=&#34;流程图&#34;&gt;流程图&lt;/h3&gt;
 &lt;p&gt;照猫画虎搞了个流程图：&lt;/p&gt;
-&lt;p&gt;&lt;figure style=&#34;flex-grow: 148; flex-basis: 355px&#34;&gt;
-		&lt;a href=&#34;https://blog.crazyark.xyz/p/raft-and-share-log/img/raft_on_rocksdb.jpg&#34; data-size=&#34;1454x982&#34;&gt;&lt;img src=&#34;https://blog.crazyark.xyz/p/raft-and-share-log/img/raft_on_rocksdb.jpg&#34;
-				srcset=&#34;https://blog.crazyark.xyz/p/raft-and-share-log/img/raft_on_rocksdb_hu4c558425e36484ceebf57c0d1c2e5033_152789_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/raft-and-share-log/img/raft_on_rocksdb_hu4c558425e36484ceebf57c0d1c2e5033_152789_1024x0_resize_q75_box.jpg 1024w&#34;
-				width=&#34;1454&#34;
-				height=&#34;982&#34;
-				loading=&#34;lazy&#34;
-				alt=&#34;流程图&#34;&gt;
-		&lt;/a&gt;
-		
-		&lt;figcaption&gt;流程图&lt;/figcaption&gt;
-		
-	&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 148; 
+			flex-basis: 355px&#34;
+	&gt;
+	&lt;a href=&#34;https://blog.crazyark.xyz/p/raft-and-share-log/img/raft_on_rocksdb.jpg&#34; data-size=&#34;1454x982&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.xyz/p/raft-and-share-log/img/raft_on_rocksdb.jpg&#34;
+			width=&#34;1454&#34;
+			height=&#34;982&#34;
+			srcset=&#34;https://blog.crazyark.xyz/p/raft-and-share-log/img/raft_on_rocksdb_hu4c558425e36484ceebf57c0d1c2e5033_152789_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/raft-and-share-log/img/raft_on_rocksdb_hu4c558425e36484ceebf57c0d1c2e5033_152789_1024x0_resize_q75_box.jpg 1024w&#34;
+			loading=&#34;lazy&#34;
+			alt=&#34;流程图&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;流程图&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
 &lt;h2 id=&#34;总结&#34;&gt;总结&lt;/h2&gt;
 &lt;p&gt;总之只是一个小比赛引发的一点思考，实际上比赛是只有插入和查询，没有删除、覆盖写的场景，甚至消息只有 append。RocksDB 并不是每个场景都能做到最优性能，但 Raft on 某种存储引擎的思路应该是通用的。&lt;/p&gt;
 &lt;h2 id=&#34;参考文献&#34;&gt;参考文献&lt;/h2&gt;
@@ -208,7 +229,20 @@
 &lt;p&gt;哈希冲突的解决办法通常是两种，一种叫拉链法 (separate chaining) ，一种叫开地址法 (open addressing)。当然不仅限于这两种，其他的比如 multiple-choice hashing, cuckoo hashing, hopscotch hashing, robin hood hashing 等等，本文挑几种介绍一下。&lt;/p&gt;
 &lt;h3 id=&#34;separate-chaining&#34;&gt;Separate chaining&lt;/h3&gt;
 &lt;p&gt;拉链法核心思想就是将哈希冲突的元素存入都存入到链表中，如下图所示，&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://upload.wikimedia.org/wikipedia/commons/d/d0/Hash_table_5_0_1_1_1_1_1_LL.svg&#34; alt=&#34;Separate Chaining&#34;  /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://upload.wikimedia.org/wikipedia/commons/d/d0/Hash_table_5_0_1_1_1_1_1_LL.svg&#34; &gt;
+		&lt;img src=&#34;https://upload.wikimedia.org/wikipedia/commons/d/d0/Hash_table_5_0_1_1_1_1_1_LL.svg&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;Separate Chaining&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;Separate Chaining&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
 &lt;p&gt;在每个哈希表的单元格中 (hash table cell, 或者我们也称为桶 bucket)，都存放了一个链表头。当哈希冲突发生时，只需要把冲突的元素放到链表中。当需要查找时，先通过哈希值找到对应的单元格，再遍历链表找到想要的元素，此时查找时间是 O(N) 的。这里 N 是链表长度，通常链表不会很长，所以可以认为整体查询时间还是 O(1) 的。大多数标准库中的哈希表时间都是采用了这种方式，因为足够通用，性能也还不错。&lt;/p&gt;
 &lt;p&gt;当然我们也可以用一棵 BST 来代替链表，此时查询时间是 O(lgN) 的，但是插入和空间开销要比链表大。Java 的 HashMap 的实现中，当一个哈希单元格的链表长度超过 8 时，就会自动转成一颗红黑树来降低查询开销。&lt;/p&gt;
 &lt;p&gt;拉链法有两个缺点，这在一些对性能要求比较高的地方可能不太能忍受:&lt;/p&gt;
@@ -230,7 +264,20 @@
 &lt;li&gt;如果是线性探查，则依次往后搜索，位置由 s(i +1) = (s(i) + 1) % n 推导; 如果是二次探查，也是依次往后搜索，不过位置推导为 s(i + 1) = (s(i) + i^2) % n&lt;/li&gt;
 &lt;li&gt;循环第二步直到找到或者确认找不到为止&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;&lt;img src=&#34;https://upload.wikimedia.org/wikipedia/commons/b/bf/Hash_table_5_0_1_1_1_1_0_SP.svg&#34; alt=&#34;Linear Probing&#34;  /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	&gt;
+	&lt;a href=&#34;https://upload.wikimedia.org/wikipedia/commons/b/bf/Hash_table_5_0_1_1_1_1_0_SP.svg&#34; &gt;
+		&lt;img src=&#34;https://upload.wikimedia.org/wikipedia/commons/b/bf/Hash_table_5_0_1_1_1_1_0_SP.svg&#34;
+			
+			
+			
+			loading=&#34;lazy&#34;
+			alt=&#34;Linear Probing&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;Linear Probing&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
 &lt;p&gt;线性探查的优势是对于 CPU cache 非常友好，相关的元素都聚集在一起；但是缺点同样也是因为聚集，这个问题称为 primary clustering: 任何添加到哈希表的元素，必须探查并跨过探查过程中的元素聚簇 (cluster)，并且最终会增大聚簇。Primary clustering 的问题在负载系数 (load factor) 比较大时候非常严重，感兴趣的同学可以去看下参考文献 [2] 中 CMU 的课程讲义，有一些证明和实验结果。&lt;/p&gt;
 &lt;p&gt;由于这个原因，线性探查的性能和哈希函数的质量有很大的关系。当负载系数较小 (30% -70%) 并且哈希函数质量比较高时，线性探查的实际运行速度是相当快的。&lt;/p&gt;
 &lt;p&gt;二次探查则很好的解决了 primary clustering 的问题，但同样无法避免聚集，这个聚集叫做 secondary clustering: 当两个哈希值相同时，它们的探查序列也是相同的，这就和刚才的一样，探查序列会越来越长。&lt;/p&gt;
@@ -341,27 +388,41 @@
 &lt;h3 id=&#34;核心思路&#34;&gt;核心思路&lt;/h3&gt;
 &lt;p&gt;为了减少系统开销，我们在 agent 之间都只保持一个 udp 信道，在 PA (Provider Agent) 和 Provider 之间也只保持一个 tcp 信道。&lt;/p&gt;
 &lt;p&gt;整体的架构图如下所示：&lt;/p&gt;
-&lt;p&gt;&lt;figure style=&#34;flex-grow: 133; flex-basis: 320px&#34;&gt;
-		&lt;a href=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321002017148.jpg&#34; data-size=&#34;1280x960&#34;&gt;&lt;img src=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321002017148.jpg&#34;
-				srcset=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321002017148_hua5afa8ce71308f91ef79d2bfc60f7366_105122_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/awrace-2018/img/15321002017148_hua5afa8ce71308f91ef79d2bfc60f7366_105122_1024x0_resize_q75_box.jpg 1024w&#34;
-				width=&#34;1280&#34;
-				height=&#34;960&#34;
-				loading=&#34;lazy&#34;
-				&gt;
-		&lt;/a&gt;
-		
-	&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 133; 
+			flex-basis: 320px&#34;
+	&gt;
+	&lt;a href=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321002017148.jpg&#34; data-size=&#34;1280x960&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321002017148.jpg&#34;
+			width=&#34;1280&#34;
+			height=&#34;960&#34;
+			srcset=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321002017148_hua5afa8ce71308f91ef79d2bfc60f7366_105122_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/awrace-2018/img/15321002017148_hua5afa8ce71308f91ef79d2bfc60f7366_105122_1024x0_resize_q75_box.jpg 1024w&#34;
+			loading=&#34;lazy&#34;
+			&gt;
+	&lt;/a&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
 &lt;p&gt;其中，CA (Consumer Agent) 端使用一个 epoll 的 eventloop，loop 的大致流程如下图：&lt;/p&gt;
-&lt;p&gt;&lt;figure style=&#34;flex-grow: 133; flex-basis: 320px&#34;&gt;
-		&lt;a href=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321002990709.jpg&#34; data-size=&#34;1502x1126&#34;&gt;&lt;img src=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321002990709.jpg&#34;
-				srcset=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321002990709_hu0a5db44a40f1a46ca5b546777e717e36_117478_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/awrace-2018/img/15321002990709_hu0a5db44a40f1a46ca5b546777e717e36_117478_1024x0_resize_q75_box.jpg 1024w&#34;
-				width=&#34;1502&#34;
-				height=&#34;1126&#34;
-				loading=&#34;lazy&#34;
-				&gt;
-		&lt;/a&gt;
-		
-	&lt;/figure&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 133; 
+			flex-basis: 320px&#34;
+	&gt;
+	&lt;a href=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321002990709.jpg&#34; data-size=&#34;1502x1126&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321002990709.jpg&#34;
+			width=&#34;1502&#34;
+			height=&#34;1126&#34;
+			srcset=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321002990709_hu0a5db44a40f1a46ca5b546777e717e36_117478_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/awrace-2018/img/15321002990709_hu0a5db44a40f1a46ca5b546777e717e36_117478_1024x0_resize_q75_box.jpg 1024w&#34;
+			loading=&#34;lazy&#34;
+			&gt;
+	&lt;/a&gt;
+	
+&lt;/figure&gt;
 1. 首先接起所有的新的连接，在接到连接的时候，根据 provider 的权重直接分配一个 provider 处理后续该连接的所有请求&lt;/p&gt;
 &lt;p&gt;2. 读所有的能读的 socket&lt;/p&gt;
 &lt;ul&gt;
@@ -405,26 +466,40 @@
 &lt;/ol&gt;
 &lt;h4 id=&#34;存储设计页式存储&#34;&gt;存储设计：页式存储&lt;/h4&gt;
 &lt;p&gt;首先我们研究了一个比较类似的产品，Kafka：&lt;/p&gt;
-&lt;p&gt;&lt;figure style=&#34;flex-grow: 215; flex-basis: 516px&#34;&gt;
-		&lt;a href=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321022399044.jpg&#34; data-size=&#34;904x420&#34;&gt;&lt;img src=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321022399044.jpg&#34;
-				srcset=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321022399044_hu4bb4523a07eff2093e6598edd29d0d43_98681_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/awrace-2018/img/15321022399044_hu4bb4523a07eff2093e6598edd29d0d43_98681_1024x0_resize_q75_box.jpg 1024w&#34;
-				width=&#34;904&#34;
-				height=&#34;420&#34;
-				loading=&#34;lazy&#34;
-				&gt;
-		&lt;/a&gt;
-		
-	&lt;/figure&gt;&lt;/p&gt;
-&lt;p&gt;&lt;figure style=&#34;flex-grow: 338; flex-basis: 811px&#34;&gt;
-		&lt;a href=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321022432192.jpg&#34; data-size=&#34;954x282&#34;&gt;&lt;img src=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321022432192.jpg&#34;
-				srcset=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321022432192_hu1c06df13f10d3387ac2ac27db6f6fc34_74387_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/awrace-2018/img/15321022432192_hu1c06df13f10d3387ac2ac27db6f6fc34_74387_1024x0_resize_q75_box.jpg 1024w&#34;
-				width=&#34;954&#34;
-				height=&#34;282&#34;
-				loading=&#34;lazy&#34;
-				&gt;
-		&lt;/a&gt;
-		
-	&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 215; 
+			flex-basis: 516px&#34;
+	&gt;
+	&lt;a href=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321022399044.jpg&#34; data-size=&#34;904x420&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321022399044.jpg&#34;
+			width=&#34;904&#34;
+			height=&#34;420&#34;
+			srcset=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321022399044_hu4bb4523a07eff2093e6598edd29d0d43_98681_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/awrace-2018/img/15321022399044_hu4bb4523a07eff2093e6598edd29d0d43_98681_1024x0_resize_q75_box.jpg 1024w&#34;
+			loading=&#34;lazy&#34;
+			&gt;
+	&lt;/a&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 338; 
+			flex-basis: 811px&#34;
+	&gt;
+	&lt;a href=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321022432192.jpg&#34; data-size=&#34;954x282&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321022432192.jpg&#34;
+			width=&#34;954&#34;
+			height=&#34;282&#34;
+			srcset=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321022432192_hu1c06df13f10d3387ac2ac27db6f6fc34_74387_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/awrace-2018/img/15321022432192_hu1c06df13f10d3387ac2ac27db6f6fc34_74387_1024x0_resize_q75_box.jpg 1024w&#34;
+			loading=&#34;lazy&#34;
+			&gt;
+	&lt;/a&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
 &lt;p&gt;Kafka 的大致存储模型如上图所示，这里并不展开叙述，有兴趣的同学可以到这个网站继续学习 &lt;a class=&#34;link&#34; href=&#34;https://thehoard.blog/how-kafkas-storage-internals-work-3a29b02e026&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;https://thehoard.blog/how-kafkas-storage-internals-work-3a29b02e026&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;但是对于我们来说，照搬它有很多问题：&lt;/p&gt;
@@ -449,40 +524,61 @@
 &lt;p&gt;如果要理解内置并发这个事情，我们可能需要去了解一些 SSD 的原理，下面这个网站提供了更多的细节，在这里只叙述一部分的东西。&lt;/p&gt;
 &lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;http://codecapsule.com/2014/02/12/coding-for-ssds-part-3-pages-blocks-and-the-flash-translation-layer/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;http://codecapsule.com/2014/02/12/coding-for-ssds-part-3-pages-blocks-and-the-flash-translation-layer/&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;figure style=&#34;flex-grow: 82; flex-basis: 198px&#34;&gt;
-		&lt;a href=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321031573324.jpg&#34; data-size=&#34;801x967&#34;&gt;&lt;img src=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321031573324.jpg&#34;
-				srcset=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321031573324_huea8623adfd433ef5c976570e570bcfa2_160898_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/awrace-2018/img/15321031573324_huea8623adfd433ef5c976570e570bcfa2_160898_1024x0_resize_q75_box.jpg 1024w&#34;
-				width=&#34;801&#34;
-				height=&#34;967&#34;
-				loading=&#34;lazy&#34;
-				&gt;
-		&lt;/a&gt;
-		
-	&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 82; 
+			flex-basis: 198px&#34;
+	&gt;
+	&lt;a href=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321031573324.jpg&#34; data-size=&#34;801x967&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321031573324.jpg&#34;
+			width=&#34;801&#34;
+			height=&#34;967&#34;
+			srcset=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321031573324_huea8623adfd433ef5c976570e570bcfa2_160898_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/awrace-2018/img/15321031573324_huea8623adfd433ef5c976570e570bcfa2_160898_1024x0_resize_q75_box.jpg 1024w&#34;
+			loading=&#34;lazy&#34;
+			&gt;
+	&lt;/a&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
 &lt;p&gt;SSD 的读写都是以页 (NAND-flash page) 为单位的，即使只读/写一个 bit，也会同时读/写一个页。相邻的页组成一个块，块大小通常在 256k 到 4m 之间。SSD 的还有些原理会导致一个写放大和 GC 的问题，这里不再展开，有兴趣的同学自行了解。&lt;/p&gt;
 &lt;p&gt;SSD 的内置并发指的是，图示上面的不同 channel/package/chip/plane 的访问都是可以并发进行的，不同的 plane 上的 block 组成的访问单位叫做聚簇块 (Clustered Block)，如图示中黄色框中的部分。可以看到，读写聚簇块就能充分地并发访问，而我们接下来要讲的读写模式就是，对齐聚簇块随机读写，性能将完全不输顺序读写。这里额外提一句，通常聚簇块大小为 32/64m。&lt;/p&gt;
 &lt;p&gt;这是一张随机写与顺序写的吞吐对比，在 32M/64M 下，随机写已经能够全线等同顺序写。
-&lt;figure style=&#34;flex-grow: 151; flex-basis: 362px&#34;&gt;
-		&lt;a href=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321036720838.jpg&#34; data-size=&#34;810x536&#34;&gt;&lt;img src=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321036720838.jpg&#34;
-				srcset=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321036720838_hu7aa2b71d568a824992a6f317ef0fc88d_121802_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/awrace-2018/img/15321036720838_hu7aa2b71d568a824992a6f317ef0fc88d_121802_1024x0_resize_q75_box.jpg 1024w&#34;
-				width=&#34;810&#34;
-				height=&#34;536&#34;
-				loading=&#34;lazy&#34;
-				&gt;
-		&lt;/a&gt;
-		
-	&lt;/figure&gt;&lt;/p&gt;
+&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 151; 
+			flex-basis: 362px&#34;
+	&gt;
+	&lt;a href=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321036720838.jpg&#34; data-size=&#34;810x536&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321036720838.jpg&#34;
+			width=&#34;810&#34;
+			height=&#34;536&#34;
+			srcset=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321036720838_hu7aa2b71d568a824992a6f317ef0fc88d_121802_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/awrace-2018/img/15321036720838_hu7aa2b71d568a824992a6f317ef0fc88d_121802_1024x0_resize_q75_box.jpg 1024w&#34;
+			loading=&#34;lazy&#34;
+			&gt;
+	&lt;/a&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
 &lt;p&gt;而我们也做了一个小测试，测试 4g 大小的文件读写，单位都是秒：&lt;/p&gt;
-&lt;p&gt;&lt;figure style=&#34;flex-grow: 316; flex-basis: 759px&#34;&gt;
-		&lt;a href=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321037598597.jpg&#34; data-size=&#34;1906x602&#34;&gt;&lt;img src=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321037598597.jpg&#34;
-				srcset=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321037598597_hu24a85cf152ae3fa35fb59282832f4ac6_314186_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/awrace-2018/img/15321037598597_hu24a85cf152ae3fa35fb59282832f4ac6_314186_1024x0_resize_q75_box.jpg 1024w&#34;
-				width=&#34;1906&#34;
-				height=&#34;602&#34;
-				loading=&#34;lazy&#34;
-				&gt;
-		&lt;/a&gt;
-		
-	&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 316; 
+			flex-basis: 759px&#34;
+	&gt;
+	&lt;a href=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321037598597.jpg&#34; data-size=&#34;1906x602&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321037598597.jpg&#34;
+			width=&#34;1906&#34;
+			height=&#34;602&#34;
+			srcset=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321037598597_hu24a85cf152ae3fa35fb59282832f4ac6_314186_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/awrace-2018/img/15321037598597_hu24a85cf152ae3fa35fb59282832f4ac6_314186_1024x0_resize_q75_box.jpg 1024w&#34;
+			loading=&#34;lazy&#34;
+			&gt;
+	&lt;/a&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
 &lt;p&gt;其中 concurrent pseudo sequential write 是指多个线程从同一个 atomic int 上获取下一个写 offset。实验结果证明了这个模式的有效性。&lt;/p&gt;
 &lt;p&gt;所以我们最后的读写模式为块读块写：&lt;/p&gt;
 &lt;ul&gt;
@@ -499,56 +595,84 @@
 &lt;/ul&gt;
 &lt;h4 id=&#34;整体架构&#34;&gt;整体架构&lt;/h4&gt;
 &lt;p&gt;Queue 与文件的关系如下图：&lt;/p&gt;
-&lt;p&gt;&lt;figure style=&#34;flex-grow: 133; flex-basis: 319px&#34;&gt;
-		&lt;a href=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321040869218.jpg&#34; data-size=&#34;1390x1044&#34;&gt;&lt;img src=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321040869218.jpg&#34;
-				srcset=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321040869218_huacd3f5dc60665b25a2f31db973dbb916_102813_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/awrace-2018/img/15321040869218_huacd3f5dc60665b25a2f31db973dbb916_102813_1024x0_resize_q75_box.jpg 1024w&#34;
-				width=&#34;1390&#34;
-				height=&#34;1044&#34;
-				loading=&#34;lazy&#34;
-				&gt;
-		&lt;/a&gt;
-		
-	&lt;/figure&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 133; 
+			flex-basis: 319px&#34;
+	&gt;
+	&lt;a href=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321040869218.jpg&#34; data-size=&#34;1390x1044&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321040869218.jpg&#34;
+			width=&#34;1390&#34;
+			height=&#34;1044&#34;
+			srcset=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321040869218_huacd3f5dc60665b25a2f31db973dbb916_102813_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/awrace-2018/img/15321040869218_huacd3f5dc60665b25a2f31db973dbb916_102813_1024x0_resize_q75_box.jpg 1024w&#34;
+			loading=&#34;lazy&#34;
+			&gt;
+	&lt;/a&gt;
+	
+&lt;/figure&gt;
 页与消息的结构如下图：&lt;/p&gt;
-&lt;p&gt;&lt;figure style=&#34;flex-grow: 133; flex-basis: 319px&#34;&gt;
-		&lt;a href=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321040994886.jpg&#34; data-size=&#34;1578x1184&#34;&gt;&lt;img src=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321040994886.jpg&#34;
-				srcset=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321040994886_huacd3f5dc60665b25a2f31db973dbb916_76700_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/awrace-2018/img/15321040994886_huacd3f5dc60665b25a2f31db973dbb916_76700_1024x0_resize_q75_box.jpg 1024w&#34;
-				width=&#34;1578&#34;
-				height=&#34;1184&#34;
-				loading=&#34;lazy&#34;
-				&gt;
-		&lt;/a&gt;
-		
-	&lt;/figure&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 133; 
+			flex-basis: 319px&#34;
+	&gt;
+	&lt;a href=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321040994886.jpg&#34; data-size=&#34;1578x1184&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321040994886.jpg&#34;
+			width=&#34;1578&#34;
+			height=&#34;1184&#34;
+			srcset=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321040994886_huacd3f5dc60665b25a2f31db973dbb916_76700_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/awrace-2018/img/15321040994886_huacd3f5dc60665b25a2f31db973dbb916_76700_1024x0_resize_q75_box.jpg 1024w&#34;
+			loading=&#34;lazy&#34;
+			&gt;
+	&lt;/a&gt;
+	
+&lt;/figure&gt;
 Size 的计算采用变长编码：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Size &amp;lt; 128，使用一个 byte 存储，第一个 bit 为 0&lt;/li&gt;
 &lt;li&gt;Size &amp;gt;= 128 并且 &amp;lt; 32768，使用两个 byte 存储，但是由于第一个 bit 也为 0，所以存储 size | 0x8000&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;针对每个页的索引大致如下：&lt;/p&gt;
-&lt;p&gt;&lt;figure style=&#34;flex-grow: 133; flex-basis: 320px&#34;&gt;
-		&lt;a href=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321041984763.jpg&#34; data-size=&#34;1582x1186&#34;&gt;&lt;img src=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321041984763.jpg&#34;
-				srcset=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321041984763_hu3b7b820f6188ac43dd748418d36a402e_116922_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/awrace-2018/img/15321041984763_hu3b7b820f6188ac43dd748418d36a402e_116922_1024x0_resize_q75_box.jpg 1024w&#34;
-				width=&#34;1582&#34;
-				height=&#34;1186&#34;
-				loading=&#34;lazy&#34;
-				&gt;
-		&lt;/a&gt;
-		
-	&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 133; 
+			flex-basis: 320px&#34;
+	&gt;
+	&lt;a href=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321041984763.jpg&#34; data-size=&#34;1582x1186&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321041984763.jpg&#34;
+			width=&#34;1582&#34;
+			height=&#34;1186&#34;
+			srcset=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321041984763_hu3b7b820f6188ac43dd748418d36a402e_116922_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/awrace-2018/img/15321041984763_hu3b7b820f6188ac43dd748418d36a402e_116922_1024x0_resize_q75_box.jpg 1024w&#34;
+			loading=&#34;lazy&#34;
+			&gt;
+	&lt;/a&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
 &lt;p&gt;每个页存储页编号、文件编号、页内消息数和之前所有页消息数这四项，这样我们在 get 时二分查找就可以获取到对应消息所在的页。所有的索引总量大约为 12byte * 25m = 300m，完全可以放于内存。&lt;/p&gt;
 &lt;h4 id=&#34;putget-流程&#34;&gt;Put/Get 流程&lt;/h4&gt;
 &lt;p&gt;这两个流程相对简单，首先是 put 流程：&lt;/p&gt;
-&lt;p&gt;&lt;figure style=&#34;flex-grow: 133; flex-basis: 320px&#34;&gt;
-		&lt;a href=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321043391182.jpg&#34; data-size=&#34;1308x980&#34;&gt;&lt;img src=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321043391182.jpg&#34;
-				srcset=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321043391182_huc5d40804f4c6da7eecc544ca84e32f82_156135_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/awrace-2018/img/15321043391182_huc5d40804f4c6da7eecc544ca84e32f82_156135_1024x0_resize_q75_box.jpg 1024w&#34;
-				width=&#34;1308&#34;
-				height=&#34;980&#34;
-				loading=&#34;lazy&#34;
-				&gt;
-		&lt;/a&gt;
-		
-	&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 133; 
+			flex-basis: 320px&#34;
+	&gt;
+	&lt;a href=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321043391182.jpg&#34; data-size=&#34;1308x980&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321043391182.jpg&#34;
+			width=&#34;1308&#34;
+			height=&#34;980&#34;
+			srcset=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321043391182_huc5d40804f4c6da7eecc544ca84e32f82_156135_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/awrace-2018/img/15321043391182_huc5d40804f4c6da7eecc544ca84e32f82_156135_1024x0_resize_q75_box.jpg 1024w&#34;
+			loading=&#34;lazy&#34;
+			&gt;
+	&lt;/a&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;检查内存中的页还有没有空间
 &lt;ul&gt;
@@ -929,16 +1053,23 @@ Size 的计算采用变长编码：&lt;/p&gt;
 &lt;p&gt;布隆过滤器的结构非常简单，即一个长度为 m 的比特数组，初始化都为0。然后，布隆过滤器需要有 k 个不同的哈希函数，每一个都能将元素映射到 [0, m) 中的一个数字，也就是数组上的一个位置，并呈现均匀分布。&lt;/p&gt;
 &lt;p&gt;通常，k 是一个远小于 m 的常数，与将要被加入的元素成比例。精确的 k 和 m 的取值取决于期望的 false positive 率。&lt;/p&gt;
 &lt;p&gt;下图是一个布隆过滤器：&lt;/p&gt;
-&lt;p&gt;&lt;figure style=&#34;flex-grow: 278; flex-basis: 668px&#34;&gt;
-		&lt;a href=&#34;https://blog.crazyark.xyz/p/bloom-filter/img/15238556159607.png&#34; data-size=&#34;649x233&#34;&gt;&lt;img src=&#34;https://blog.crazyark.xyz/p/bloom-filter/img/15238556159607.png&#34;
-				srcset=&#34;https://blog.crazyark.xyz/p/bloom-filter/img/15238556159607_hu41c2302f1d9ff2cc9a1d82f9162d2f29_30563_480x0_resize_box_3.png 480w, https://blog.crazyark.xyz/p/bloom-filter/img/15238556159607_hu41c2302f1d9ff2cc9a1d82f9162d2f29_30563_1024x0_resize_box_3.png 1024w&#34;
-				width=&#34;649&#34;
-				height=&#34;233&#34;
-				loading=&#34;lazy&#34;
-				&gt;
-		&lt;/a&gt;
-		
-	&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 278; 
+			flex-basis: 668px&#34;
+	&gt;
+	&lt;a href=&#34;https://blog.crazyark.xyz/p/bloom-filter/img/15238556159607.png&#34; data-size=&#34;649x233&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.xyz/p/bloom-filter/img/15238556159607.png&#34;
+			width=&#34;649&#34;
+			height=&#34;233&#34;
+			srcset=&#34;https://blog.crazyark.xyz/p/bloom-filter/img/15238556159607_hu41c2302f1d9ff2cc9a1d82f9162d2f29_30563_480x0_resize_box_3.png 480w, https://blog.crazyark.xyz/p/bloom-filter/img/15238556159607_hu41c2302f1d9ff2cc9a1d82f9162d2f29_30563_1024x0_resize_box_3.png 1024w&#34;
+			loading=&#34;lazy&#34;
+			&gt;
+	&lt;/a&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
 &lt;p&gt;那么介绍下布隆过滤器上的两个操作：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;添加一个元素：对每一个哈希函数，都计算出对应的数组上的位置，并将其置为 1&lt;/li&gt;
@@ -991,16 +1122,23 @@ Size 的计算采用变长编码：&lt;/p&gt;
 &lt;h3 id=&#34;manachers-algorithm&#34;&gt;Manacher&amp;rsquo;s Algorithm&lt;/h3&gt;
 &lt;p&gt;Manacher&amp;rsquo;s Algorithm 利用了之前已经计算过的最大回文长度，来加速后面的计算。&lt;/p&gt;
 &lt;p&gt;首先依旧是标明所有回文核，如下图所示：&lt;/p&gt;
-&lt;p&gt;&lt;figure style=&#34;flex-grow: 309; flex-basis: 742px&#34;&gt;
-		&lt;a href=&#34;https://blog.crazyark.xyz/p/manachers-algorithm/img/15235560287436.jpg&#34; data-size=&#34;551x178&#34;&gt;&lt;img src=&#34;https://blog.crazyark.xyz/p/manachers-algorithm/img/15235560287436.jpg&#34;
-				srcset=&#34;https://blog.crazyark.xyz/p/manachers-algorithm/img/15235560287436_hu369a0e3579d052bdfcd0cbdbe8116bdb_38464_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/manachers-algorithm/img/15235560287436_hu369a0e3579d052bdfcd0cbdbe8116bdb_38464_1024x0_resize_q75_box.jpg 1024w&#34;
-				width=&#34;551&#34;
-				height=&#34;178&#34;
-				loading=&#34;lazy&#34;
-				&gt;
-		&lt;/a&gt;
-		
-	&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 309; 
+			flex-basis: 742px&#34;
+	&gt;
+	&lt;a href=&#34;https://blog.crazyark.xyz/p/manachers-algorithm/img/15235560287436.jpg&#34; data-size=&#34;551x178&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.xyz/p/manachers-algorithm/img/15235560287436.jpg&#34;
+			width=&#34;551&#34;
+			height=&#34;178&#34;
+			srcset=&#34;https://blog.crazyark.xyz/p/manachers-algorithm/img/15235560287436_hu369a0e3579d052bdfcd0cbdbe8116bdb_38464_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/manachers-algorithm/img/15235560287436_hu369a0e3579d052bdfcd0cbdbe8116bdb_38464_1024x0_resize_q75_box.jpg 1024w&#34;
+			loading=&#34;lazy&#34;
+			&gt;
+	&lt;/a&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
 &lt;p&gt;对于每个回文核，我们标号从 0 - 2n，一共 2n + 1 个。偶数号的为偶数长度的回文的核，奇数号的为奇数长度的回文的核。我们使用一个数组 LPS 来记录已经知道的最长回文长度。&lt;/p&gt;
 &lt;p&gt;毫无疑问，LPS[0] 一定是 0，LPS[1] 一定是 1。假设我们从左往右计算 LPS，当前为标红的 7 号，LPS[7] = 7。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;这里有一个很重要的事情，那就是 7 是 i &amp;lt;= 7 中，i + LPS[i] 最大的，也就是右边界最远的那个。i + LPS[i] 一定是偶数。&lt;/strong&gt;&lt;/p&gt;
@@ -1250,81 +1388,116 @@ $F(x) = F(x_1, &amp;hellip;, x_n) = F_1(x_1) \times {x_2} \times \cdots {x_n} \c
 &lt;p&gt;这个游戏的 impartial 版本叫做 Green Hackenbush：图上的每条边都是绿色的，两个玩家都能砍任意边。Partizan 版本的游戏叫做 Blue-Red Hackenbush，其中图上的边有蓝色和红色之分，玩家 I 只能砍蓝色的，而玩家 II 只能砍红色的。更为一般的版本中，边有上述三种，绿色是都能砍的。&lt;/p&gt;
 &lt;h4 id=&#34;bamboo-stalks&#34;&gt;Bamboo Stalks&lt;/h4&gt;
 &lt;p&gt;先看一个简单的 Green Hackenbush 的特例，这个特例里，每个有根的联通分支都是一条直线，就跟柱子一样，如下图所示：&lt;/p&gt;
-&lt;p&gt;&lt;figure style=&#34;flex-grow: 96; flex-basis: 231px&#34;&gt;
-		&lt;a href=&#34;https://blog.crazyark.xyz/p/game-theory/img/bamboo_stalks.png&#34; data-size=&#34;475x492&#34;&gt;&lt;img src=&#34;https://blog.crazyark.xyz/p/game-theory/img/bamboo_stalks.png&#34;
-				srcset=&#34;https://blog.crazyark.xyz/p/game-theory/img/bamboo_stalks_hu6954f238b34429d4da7526d1df236f80_13006_480x0_resize_box_3.png 480w, https://blog.crazyark.xyz/p/game-theory/img/bamboo_stalks_hu6954f238b34429d4da7526d1df236f80_13006_1024x0_resize_box_3.png 1024w&#34;
-				width=&#34;475&#34;
-				height=&#34;492&#34;
-				loading=&#34;lazy&#34;
-				alt=&#34;Bamboo Stalks&#34;&gt;
-		&lt;/a&gt;
-		
-		&lt;figcaption&gt;Bamboo Stalks&lt;/figcaption&gt;
-		
-	&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 96; 
+			flex-basis: 231px&#34;
+	&gt;
+	&lt;a href=&#34;https://blog.crazyark.xyz/p/game-theory/img/bamboo_stalks.png&#34; data-size=&#34;475x492&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.xyz/p/game-theory/img/bamboo_stalks.png&#34;
+			width=&#34;475&#34;
+			height=&#34;492&#34;
+			srcset=&#34;https://blog.crazyark.xyz/p/game-theory/img/bamboo_stalks_hu6954f238b34429d4da7526d1df236f80_13006_480x0_resize_box_3.png 480w, https://blog.crazyark.xyz/p/game-theory/img/bamboo_stalks_hu6954f238b34429d4da7526d1df236f80_13006_1024x0_resize_box_3.png 1024w&#34;
+			loading=&#34;lazy&#34;
+			alt=&#34;Bamboo Stalks&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;Bamboo Stalks&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
 &lt;p&gt;每一次移动就是选取其中一条边，砍断它并移除所有不连到地面的部分。玩家交替进行移动，最后一个移动的玩家胜利。&lt;/p&gt;
 &lt;p&gt;显然，有n根柱子的这个游戏和有n堆的nim游戏是等价的。&lt;/p&gt;
 &lt;h4 id=&#34;green-hackenbush-on-trees&#34;&gt;Green Hackenbush on Trees&lt;/h4&gt;
 &lt;p&gt;顾名思义，每棵灌木长的和树一样：&lt;/p&gt;
-&lt;p&gt;&lt;figure style=&#34;flex-grow: 268; flex-basis: 644px&#34;&gt;
-		&lt;a href=&#34;https://blog.crazyark.xyz/p/game-theory/img/green_hackenbush_on_trees.png&#34; data-size=&#34;1367x509&#34;&gt;&lt;img src=&#34;https://blog.crazyark.xyz/p/game-theory/img/green_hackenbush_on_trees.png&#34;
-				srcset=&#34;https://blog.crazyark.xyz/p/game-theory/img/green_hackenbush_on_trees_hu66d277dbc89a2d79fdbc23ae5e3a2a04_60086_480x0_resize_box_3.png 480w, https://blog.crazyark.xyz/p/game-theory/img/green_hackenbush_on_trees_hu66d277dbc89a2d79fdbc23ae5e3a2a04_60086_1024x0_resize_box_3.png 1024w&#34;
-				width=&#34;1367&#34;
-				height=&#34;509&#34;
-				loading=&#34;lazy&#34;
-				alt=&#34;Green Hackenbush on Trees&#34;&gt;
-		&lt;/a&gt;
-		
-		&lt;figcaption&gt;Green Hackenbush on Trees&lt;/figcaption&gt;
-		
-	&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 268; 
+			flex-basis: 644px&#34;
+	&gt;
+	&lt;a href=&#34;https://blog.crazyark.xyz/p/game-theory/img/green_hackenbush_on_trees.png&#34; data-size=&#34;1367x509&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.xyz/p/game-theory/img/green_hackenbush_on_trees.png&#34;
+			width=&#34;1367&#34;
+			height=&#34;509&#34;
+			srcset=&#34;https://blog.crazyark.xyz/p/game-theory/img/green_hackenbush_on_trees_hu66d277dbc89a2d79fdbc23ae5e3a2a04_60086_480x0_resize_box_3.png 480w, https://blog.crazyark.xyz/p/game-theory/img/green_hackenbush_on_trees_hu66d277dbc89a2d79fdbc23ae5e3a2a04_60086_1024x0_resize_box_3.png 1024w&#34;
+			loading=&#34;lazy&#34;
+			alt=&#34;Green Hackenbush on Trees&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;Green Hackenbush on Trees&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
 &lt;p&gt;由上一节的定理，这个游戏等价于某个版本的 Bamboo Stalks。我们可以通过以下原则来进行转换，更为普遍地，叫做 Colon Principle：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;当分支交汇于某个顶点时，可以用一条长度为&lt;strong&gt;分支长度 nim-和&lt;/strong&gt;的杆来代替&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;figure style=&#34;flex-grow: 214; flex-basis: 514px&#34;&gt;
-		&lt;a href=&#34;https://blog.crazyark.xyz/p/game-theory/img/colon_principle.png&#34; data-size=&#34;1409x657&#34;&gt;&lt;img src=&#34;https://blog.crazyark.xyz/p/game-theory/img/colon_principle.png&#34;
-				srcset=&#34;https://blog.crazyark.xyz/p/game-theory/img/colon_principle_hu750eba6a4ce35f55e74ad823081f0332_55132_480x0_resize_box_3.png 480w, https://blog.crazyark.xyz/p/game-theory/img/colon_principle_hu750eba6a4ce35f55e74ad823081f0332_55132_1024x0_resize_box_3.png 1024w&#34;
-				width=&#34;1409&#34;
-				height=&#34;657&#34;
-				loading=&#34;lazy&#34;
-				alt=&#34;Colon Principle&#34;&gt;
-		&lt;/a&gt;
-		
-		&lt;figcaption&gt;Colon Principle&lt;/figcaption&gt;
-		
-	&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 214; 
+			flex-basis: 514px&#34;
+	&gt;
+	&lt;a href=&#34;https://blog.crazyark.xyz/p/game-theory/img/colon_principle.png&#34; data-size=&#34;1409x657&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.xyz/p/game-theory/img/colon_principle.png&#34;
+			width=&#34;1409&#34;
+			height=&#34;657&#34;
+			srcset=&#34;https://blog.crazyark.xyz/p/game-theory/img/colon_principle_hu750eba6a4ce35f55e74ad823081f0332_55132_480x0_resize_box_3.png 480w, https://blog.crazyark.xyz/p/game-theory/img/colon_principle_hu750eba6a4ce35f55e74ad823081f0332_55132_1024x0_resize_box_3.png 1024w&#34;
+			loading=&#34;lazy&#34;
+			alt=&#34;Colon Principle&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;Colon Principle&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
 &lt;p&gt;Colon Principle 的证明应该比较简单，这里留作思考。&lt;/p&gt;
 &lt;h4 id=&#34;green-hackenbush-on-general-rooted-graphs&#34;&gt;Green Hackenbush on general rooted graphs&lt;/h4&gt;
 &lt;p&gt;现在我们来考虑任意的图，这些图中可能存在环等，如下所示：&lt;/p&gt;
-&lt;p&gt;&lt;figure style=&#34;flex-grow: 251; flex-basis: 603px&#34;&gt;
-		&lt;a href=&#34;https://blog.crazyark.xyz/p/game-theory/img/arbitrary_green_hackenbush.png&#34; data-size=&#34;1374x546&#34;&gt;&lt;img src=&#34;https://blog.crazyark.xyz/p/game-theory/img/arbitrary_green_hackenbush.png&#34;
-				srcset=&#34;https://blog.crazyark.xyz/p/game-theory/img/arbitrary_green_hackenbush_hu20c83af8058c6bce94bac3d9e87e1226_53980_480x0_resize_box_3.png 480w, https://blog.crazyark.xyz/p/game-theory/img/arbitrary_green_hackenbush_hu20c83af8058c6bce94bac3d9e87e1226_53980_1024x0_resize_box_3.png 1024w&#34;
-				width=&#34;1374&#34;
-				height=&#34;546&#34;
-				loading=&#34;lazy&#34;
-				alt=&#34;Arbitrary Green Hackenbush&#34;&gt;
-		&lt;/a&gt;
-		
-		&lt;figcaption&gt;Arbitrary Green Hackenbush&lt;/figcaption&gt;
-		
-	&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 251; 
+			flex-basis: 603px&#34;
+	&gt;
+	&lt;a href=&#34;https://blog.crazyark.xyz/p/game-theory/img/arbitrary_green_hackenbush.png&#34; data-size=&#34;1374x546&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.xyz/p/game-theory/img/arbitrary_green_hackenbush.png&#34;
+			width=&#34;1374&#34;
+			height=&#34;546&#34;
+			srcset=&#34;https://blog.crazyark.xyz/p/game-theory/img/arbitrary_green_hackenbush_hu20c83af8058c6bce94bac3d9e87e1226_53980_480x0_resize_box_3.png 480w, https://blog.crazyark.xyz/p/game-theory/img/arbitrary_green_hackenbush_hu20c83af8058c6bce94bac3d9e87e1226_53980_1024x0_resize_box_3.png 1024w&#34;
+			loading=&#34;lazy&#34;
+			alt=&#34;Arbitrary Green Hackenbush&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;Arbitrary Green Hackenbush&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
 &lt;p&gt;这图看着复杂，其实同样对于每个联通分支都可以转换为 Nim 游戏中的一个堆。考虑如果能将每个分支转换成一棵树，那就可以用上面的方法转换成等价的堆了。&lt;/p&gt;
 &lt;p&gt;这里介绍一种转换方式，叫做 Fusion Principle：
 在不改变图上 SG-函数值的情况下，回路上的点可以进行合并。&lt;/p&gt;
 &lt;p&gt;如下图所示，我们可以将门形状的回路转换为长度为1的杆：&lt;/p&gt;
-&lt;p&gt;&lt;figure style=&#34;flex-grow: 648; flex-basis: 1556px&#34;&gt;
-		&lt;a href=&#34;https://blog.crazyark.xyz/p/game-theory/img/fusion_principle_ex1.png&#34; data-size=&#34;1271x196&#34;&gt;&lt;img src=&#34;https://blog.crazyark.xyz/p/game-theory/img/fusion_principle_ex1.png&#34;
-				srcset=&#34;https://blog.crazyark.xyz/p/game-theory/img/fusion_principle_ex1_hude38f068e013fc66183009c5b4503194_28795_480x0_resize_box_3.png 480w, https://blog.crazyark.xyz/p/game-theory/img/fusion_principle_ex1_hude38f068e013fc66183009c5b4503194_28795_1024x0_resize_box_3.png 1024w&#34;
-				width=&#34;1271&#34;
-				height=&#34;196&#34;
-				loading=&#34;lazy&#34;
-				alt=&#34;Fusion Principle Example&#34;&gt;
-		&lt;/a&gt;
-		
-		&lt;figcaption&gt;Fusion Principle Example&lt;/figcaption&gt;
-		
-	&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 648; 
+			flex-basis: 1556px&#34;
+	&gt;
+	&lt;a href=&#34;https://blog.crazyark.xyz/p/game-theory/img/fusion_principle_ex1.png&#34; data-size=&#34;1271x196&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.xyz/p/game-theory/img/fusion_principle_ex1.png&#34;
+			width=&#34;1271&#34;
+			height=&#34;196&#34;
+			srcset=&#34;https://blog.crazyark.xyz/p/game-theory/img/fusion_principle_ex1_hude38f068e013fc66183009c5b4503194_28795_480x0_resize_box_3.png 480w, https://blog.crazyark.xyz/p/game-theory/img/fusion_principle_ex1_hude38f068e013fc66183009c5b4503194_28795_1024x0_resize_box_3.png 1024w&#34;
+			loading=&#34;lazy&#34;
+			alt=&#34;Fusion Principle Example&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;Fusion Principle Example&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
 &lt;p&gt;首先，地上的两个点事实上可以合并成一个点；然后应用fusion principle，这个三角形等价于三个独立的自环；而每个自环又等价于一个大小为1的nim堆，最终合并为一个大小为1的堆。&lt;/p&gt;
 &lt;p&gt;更一般地，奇数长度的回路都可以转换为一条边，偶数长度的回路转换为一个点。&lt;/p&gt;
 &lt;p&gt;关于 fusion principle 的证明比较长，有兴趣的同学可以参考 &lt;em&gt;&lt;strong&gt;《Winning Ways》&lt;/strong&gt;&lt;/em&gt; 的第七章。&lt;/p&gt;
@@ -2518,49 +2691,70 @@ So what Parallel Binary Search does is move one step down in N binary search tre
 &lt;/ul&gt;
 &lt;p&gt;也就是说，线段树的结构和递归计算 $f(1,N)$ 的过程完全相同。&lt;/p&gt;
 &lt;p&gt;因此，举个例子，数组 [9,2,6,3,1,5,0,7]的根节点包含数字0 —— 整个数组的最小值。它的左子节点包含[9,2,6,3]中的最小，2；右子节点包含[1,5,0,7]中的最小，0。每个元素对应于一个叶节点，仅仅包含它自己。&lt;/p&gt;
-&lt;p&gt;&lt;figure style=&#34;flex-grow: 196; flex-basis: 471px&#34;&gt;
-		&lt;a href=&#34;https://blog.crazyark.xyz/p/segment-tree/img/Segtree_92631507.png&#34; data-size=&#34;367x187&#34;&gt;&lt;img src=&#34;https://blog.crazyark.xyz/p/segment-tree/img/Segtree_92631507.png&#34;
-				srcset=&#34;https://blog.crazyark.xyz/p/segment-tree/img/Segtree_92631507_hu048eda11744b5690bd60961f9c220a55_7150_480x0_resize_box_3.png 480w, https://blog.crazyark.xyz/p/segment-tree/img/Segtree_92631507_hu048eda11744b5690bd60961f9c220a55_7150_1024x0_resize_box_3.png 1024w&#34;
-				width=&#34;367&#34;
-				height=&#34;187&#34;
-				loading=&#34;lazy&#34;
-				&gt;
-		&lt;/a&gt;
-		
-	&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 196; 
+			flex-basis: 471px&#34;
+	&gt;
+	&lt;a href=&#34;https://blog.crazyark.xyz/p/segment-tree/img/Segtree_92631507.png&#34; data-size=&#34;367x187&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.xyz/p/segment-tree/img/Segtree_92631507.png&#34;
+			width=&#34;367&#34;
+			height=&#34;187&#34;
+			srcset=&#34;https://blog.crazyark.xyz/p/segment-tree/img/Segtree_92631507_hu048eda11744b5690bd60961f9c220a55_7150_480x0_resize_box_3.png 480w, https://blog.crazyark.xyz/p/segment-tree/img/Segtree_92631507_hu048eda11744b5690bd60961f9c220a55_7150_1024x0_resize_box_3.png 1024w&#34;
+			loading=&#34;lazy&#34;
+			&gt;
+	&lt;/a&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
 &lt;h3 id=&#34;operations&#34;&gt;Operations&lt;/h3&gt;
 &lt;p&gt;线段树一共有三种基础操作：构建、更新、查询。&lt;/p&gt;
 &lt;h4 id=&#34;construction&#34;&gt;Construction&lt;/h4&gt;
 &lt;p&gt;为了进行查询和更新，首先我们需要构建一棵线段树来表示某个数组。我们可以自底向上或是自顶向下地构建。自顶向下的构建是一个递归的过程：尝试填充节点，如果是叶子节点，直接用对应的值填充，否则先填充该节点的两个子节点，然后用子节点中小的值填充该节点。自底向上的构建留作练习。这两种方式在运行速度上的差距几乎可以忽略不计。&lt;/p&gt;
 &lt;h4 id=&#34;update&#34;&gt;Update&lt;/h4&gt;
 &lt;p&gt;更新线段树即更新底层数组的某个元素。我们首先更新对应的叶子节点 —— 因为叶子节点只对应数组的一个元素。被更新的节点的父节点也将被影响，因为它对应的区间包含了被修改的元素，对祖父节点同样，直到根节点，但是&lt;strong&gt;不会影响其他节点&lt;/strong&gt;。如果要进行自顶向下的更新，首先进行根节点的更新，这将导致两个子节点中的相关的那个递归地更新。对子节点的更新也是同样的，边界为对叶节点的更新。当递归过程完成以后，非叶节点的值更新为两个子节点的较小值。自底向上的更新同样留作练习。&lt;/p&gt;
-&lt;p&gt;&lt;figure style=&#34;flex-grow: 196; flex-basis: 471px&#34;&gt;
-		&lt;a href=&#34;https://blog.crazyark.xyz/p/segment-tree/img/Segtree_92631587.png&#34; data-size=&#34;367x187&#34;&gt;&lt;img src=&#34;https://blog.crazyark.xyz/p/segment-tree/img/Segtree_92631587.png&#34;
-				srcset=&#34;https://blog.crazyark.xyz/p/segment-tree/img/Segtree_92631587_hu7d0797410047cdc4348c852d9c1936ad_6831_480x0_resize_box_3.png 480w, https://blog.crazyark.xyz/p/segment-tree/img/Segtree_92631587_hu7d0797410047cdc4348c852d9c1936ad_6831_1024x0_resize_box_3.png 1024w&#34;
-				width=&#34;367&#34;
-				height=&#34;187&#34;
-				loading=&#34;lazy&#34;
-				alt=&#34;0 changed to 8&#34;&gt;
-		&lt;/a&gt;
-		
-		&lt;figcaption&gt;0 changed to 8&lt;/figcaption&gt;
-		
-	&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 196; 
+			flex-basis: 471px&#34;
+	&gt;
+	&lt;a href=&#34;https://blog.crazyark.xyz/p/segment-tree/img/Segtree_92631587.png&#34; data-size=&#34;367x187&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.xyz/p/segment-tree/img/Segtree_92631587.png&#34;
+			width=&#34;367&#34;
+			height=&#34;187&#34;
+			srcset=&#34;https://blog.crazyark.xyz/p/segment-tree/img/Segtree_92631587_hu7d0797410047cdc4348c852d9c1936ad_6831_480x0_resize_box_3.png 480w, https://blog.crazyark.xyz/p/segment-tree/img/Segtree_92631587_hu7d0797410047cdc4348c852d9c1936ad_6831_1024x0_resize_box_3.png 1024w&#34;
+			loading=&#34;lazy&#34;
+			alt=&#34;0 changed to 8&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;0 changed to 8&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
 &lt;h4 id=&#34;query&#34;&gt;Query&lt;/h4&gt;
 &lt;p&gt;在线段树上进行查询即确定底层数组某个区间的函数值，在这里就是区间内的最小元素值。查询操作的执行过程比更新操作复杂的多，我们用一个例子来阐释。假设我们想要知道第1个到第6个元素内的最小值，我们将这个查询表示为 $f(1, 6)$。线段树上每个节点包含了某个区间内的最小值：举例来说，根节点包含了 $f(1, 8)$，它的左子节点 $f(1, 4)$，右子节点 $f(5, 8)$，等等；每个叶节点包含了 $f(x,x)$。没有一个节点是 $f(1,6)$，但是注意到 $f(1, 6) = \min(f(1,4),f(5,6))$，并且存在两个节点包含这两个值（在下图中以黄色标识）。&lt;/p&gt;
 &lt;p&gt;因此在线段树上查询时，我们选择所有节点的一个子集，使得它们所表示的区间的并集与我们要查询的区间完全相同。为了找到这些节点，我们首先从根节点开始，递归查询那些与区间至少有一个交集的节点。在我们的例子中，$f(1, 6)$，我们注意到左子树和右子树对应的区间都有交集，因此他们都被递归执行。左子节点是一个base case（以黄色标识），因为它的区间被查询区间整个包含。在右子节点中，我们注意到它的左子节点和查询区间相交，但是右子节点没有，所以我们只递归执行它的左子节点。而它也是一个base case，同样以黄色标识。递归终止，而最终的最小值就是这些被选中的节点的最小值。&lt;/p&gt;
-&lt;p&gt;&lt;figure style=&#34;flex-grow: 196; flex-basis: 471px&#34;&gt;
-		&lt;a href=&#34;https://blog.crazyark.xyz/p/segment-tree/img/Segtree_query_92631587.png&#34; data-size=&#34;367x187&#34;&gt;&lt;img src=&#34;https://blog.crazyark.xyz/p/segment-tree/img/Segtree_query_92631587.png&#34;
-				srcset=&#34;https://blog.crazyark.xyz/p/segment-tree/img/Segtree_query_92631587_hu0d83e9c25b58c00b4903440285ada782_7114_480x0_resize_box_3.png 480w, https://blog.crazyark.xyz/p/segment-tree/img/Segtree_query_92631587_hu0d83e9c25b58c00b4903440285ada782_7114_1024x0_resize_box_3.png 1024w&#34;
-				width=&#34;367&#34;
-				height=&#34;187&#34;
-				loading=&#34;lazy&#34;
-				alt=&#34;Query (1, 6)&#34;&gt;
-		&lt;/a&gt;
-		
-		&lt;figcaption&gt;Query (1, 6)&lt;/figcaption&gt;
-		
-	&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 196; 
+			flex-basis: 471px&#34;
+	&gt;
+	&lt;a href=&#34;https://blog.crazyark.xyz/p/segment-tree/img/Segtree_query_92631587.png&#34; data-size=&#34;367x187&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.xyz/p/segment-tree/img/Segtree_query_92631587.png&#34;
+			width=&#34;367&#34;
+			height=&#34;187&#34;
+			srcset=&#34;https://blog.crazyark.xyz/p/segment-tree/img/Segtree_query_92631587_hu0d83e9c25b58c00b4903440285ada782_7114_480x0_resize_box_3.png 480w, https://blog.crazyark.xyz/p/segment-tree/img/Segtree_query_92631587_hu0d83e9c25b58c00b4903440285ada782_7114_1024x0_resize_box_3.png 1024w&#34;
+			loading=&#34;lazy&#34;
+			alt=&#34;Query (1, 6)&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;Query (1, 6)&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
 &lt;h3 id=&#34;analysis&#34;&gt;Analysis&lt;/h3&gt;
 &lt;p&gt;线段树的一些重要的性能指标如下：&lt;/p&gt;
 &lt;h4 id=&#34;space&#34;&gt;Space&lt;/h4&gt;
@@ -2881,18 +3075,25 @@ Every street intersects every avenue. Every intersection can be described by pai
 &lt;p&gt;There are N fountains in the city, situated at intersections (Xi,Yi). Unlike normal intersections, there&amp;rsquo;s a circle with radius 10 meters centered at the intersection, and there are no road parts inside this circle.
 The picture below shows an example of how a part of the city with roads and fountains may look like.&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;&lt;figure style=&#34;flex-grow: 121; flex-basis: 291px&#34;&gt;
-		&lt;a href=&#34;https://blog.crazyark.xyz/p/longest-increasing-subsequence/img/1f931bf0c98ec6f07e612b0282cdb094.png&#34; data-size=&#34;376x310&#34;&gt;&lt;img src=&#34;https://blog.crazyark.xyz/p/longest-increasing-subsequence/img/1f931bf0c98ec6f07e612b0282cdb094.png&#34;
-				srcset=&#34;https://blog.crazyark.xyz/p/longest-increasing-subsequence/img/1f931bf0c98ec6f07e612b0282cdb094_hufaaf75fc670df1c7809cf083332601f3_6060_480x0_resize_box_3.png 480w, https://blog.crazyark.xyz/p/longest-increasing-subsequence/img/1f931bf0c98ec6f07e612b0282cdb094_hufaaf75fc670df1c7809cf083332601f3_6060_1024x0_resize_box_3.png 1024w&#34;
-				width=&#34;376&#34;
-				height=&#34;310&#34;
-				loading=&#34;lazy&#34;
-				alt=&#34;city&#34;&gt;
-		&lt;/a&gt;
-		
-		&lt;figcaption&gt;city&lt;/figcaption&gt;
-		
-	&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 121; 
+			flex-basis: 291px&#34;
+	&gt;
+	&lt;a href=&#34;https://blog.crazyark.xyz/p/longest-increasing-subsequence/img/1f931bf0c98ec6f07e612b0282cdb094.png&#34; data-size=&#34;376x310&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.xyz/p/longest-increasing-subsequence/img/1f931bf0c98ec6f07e612b0282cdb094.png&#34;
+			width=&#34;376&#34;
+			height=&#34;310&#34;
+			srcset=&#34;https://blog.crazyark.xyz/p/longest-increasing-subsequence/img/1f931bf0c98ec6f07e612b0282cdb094_hufaaf75fc670df1c7809cf083332601f3_6060_480x0_resize_box_3.png 480w, https://blog.crazyark.xyz/p/longest-increasing-subsequence/img/1f931bf0c98ec6f07e612b0282cdb094_hufaaf75fc670df1c7809cf083332601f3_6060_1024x0_resize_box_3.png 1024w&#34;
+			loading=&#34;lazy&#34;
+			alt=&#34;city&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;city&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
 &lt;p&gt;约束:&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;ul&gt;
@@ -3852,18 +4053,25 @@ In testset 3, N=5 and Q=7.&lt;/p&gt;
     &gt;http://www.baeldung.com/java-dynamic-proxies&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;Proxy 模式图示：&lt;/p&gt;
-&lt;p&gt;&lt;figure style=&#34;flex-grow: 194; flex-basis: 466px&#34;&gt;
-		&lt;a href=&#34;https://blog.crazyark.xyz/p/dynamic-proxy-java/img/proxy_pattern.jpg&#34; data-size=&#34;624x321&#34;&gt;&lt;img src=&#34;https://blog.crazyark.xyz/p/dynamic-proxy-java/img/proxy_pattern.jpg&#34;
-				srcset=&#34;https://blog.crazyark.xyz/p/dynamic-proxy-java/img/proxy_pattern_huecf3cb5f59dd7cada22bb31448bd1d4d_12361_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/dynamic-proxy-java/img/proxy_pattern_huecf3cb5f59dd7cada22bb31448bd1d4d_12361_1024x0_resize_q75_box.jpg 1024w&#34;
-				width=&#34;624&#34;
-				height=&#34;321&#34;
-				loading=&#34;lazy&#34;
-				alt=&#34;Proxy Pattern&#34;&gt;
-		&lt;/a&gt;
-		
-		&lt;figcaption&gt;Proxy Pattern&lt;/figcaption&gt;
-		
-	&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 194; 
+			flex-basis: 466px&#34;
+	&gt;
+	&lt;a href=&#34;https://blog.crazyark.xyz/p/dynamic-proxy-java/img/proxy_pattern.jpg&#34; data-size=&#34;624x321&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.xyz/p/dynamic-proxy-java/img/proxy_pattern.jpg&#34;
+			width=&#34;624&#34;
+			height=&#34;321&#34;
+			srcset=&#34;https://blog.crazyark.xyz/p/dynamic-proxy-java/img/proxy_pattern_huecf3cb5f59dd7cada22bb31448bd1d4d_12361_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/dynamic-proxy-java/img/proxy_pattern_huecf3cb5f59dd7cada22bb31448bd1d4d_12361_1024x0_resize_q75_box.jpg 1024w&#34;
+			loading=&#34;lazy&#34;
+			alt=&#34;Proxy Pattern&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;Proxy Pattern&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
 &lt;h3 id=&#34;proxy-模式&#34;&gt;Proxy 模式&lt;/h3&gt;
 &lt;p&gt;在《Design Patterns》书中提到了使用 Proxy 模式的四种常见情况：&lt;/p&gt;
 &lt;ol&gt;

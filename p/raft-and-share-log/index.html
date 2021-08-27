@@ -173,18 +173,25 @@
 <p>共享的 WAL 同样也可以采用合并提交的方式进行写入，但是注意的这时需要对上述崩溃恢复的方案做一些小的修改，即当所有 K-V 都 put 后再将 LSN 写入。</p>
 <h3 id="流程图">流程图</h3>
 <p>照猫画虎搞了个流程图：</p>
-<p><figure style="flex-grow: 148; flex-basis: 355px">
-		<a href="/p/raft-and-share-log/img/raft_on_rocksdb.jpg" data-size="1454x982"><img src="/p/raft-and-share-log/img/raft_on_rocksdb.jpg"
-				srcset="/p/raft-and-share-log/img/raft_on_rocksdb_hu4c558425e36484ceebf57c0d1c2e5033_152789_480x0_resize_q75_box.jpg 480w, /p/raft-and-share-log/img/raft_on_rocksdb_hu4c558425e36484ceebf57c0d1c2e5033_152789_1024x0_resize_q75_box.jpg 1024w"
-				width="1454"
-				height="982"
-				loading="lazy"
-				alt="流程图">
-		</a>
-		
-		<figcaption>流程图</figcaption>
-		
-	</figure></p>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 148; 
+			flex-basis: 355px"
+	>
+	<a href="/p/raft-and-share-log/img/raft_on_rocksdb.jpg" data-size="1454x982">
+		<img src="/p/raft-and-share-log/img/raft_on_rocksdb.jpg"
+			width="1454"
+			height="982"
+			srcset="/p/raft-and-share-log/img/raft_on_rocksdb_hu4c558425e36484ceebf57c0d1c2e5033_152789_480x0_resize_q75_box.jpg 480w, /p/raft-and-share-log/img/raft_on_rocksdb_hu4c558425e36484ceebf57c0d1c2e5033_152789_1024x0_resize_q75_box.jpg 1024w"
+			loading="lazy"
+			alt="流程图">
+	</a>
+	
+	<figcaption>流程图</figcaption>
+	
+</figure></p>
 <h2 id="总结">总结</h2>
 <p>总之只是一个小比赛引发的一点思考，实际上比赛是只有插入和查询，没有删除、覆盖写的场景，甚至消息只有 append。RocksDB 并不是每个场景都能做到最优性能，但 Raft on 某种存储引擎的思路应该是通用的。</p>
 <h2 id="参考文献">参考文献</h2>
@@ -314,7 +321,7 @@
     
     <section class="powerby">
         Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
-        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.1.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.2.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
     </section>
 </footer>
 

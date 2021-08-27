@@ -131,16 +131,23 @@
 <h3 id="manachers-algorithm">Manacher&rsquo;s Algorithm</h3>
 <p>Manacher&rsquo;s Algorithm 利用了之前已经计算过的最大回文长度，来加速后面的计算。</p>
 <p>首先依旧是标明所有回文核，如下图所示：</p>
-<p><figure style="flex-grow: 309; flex-basis: 742px">
-		<a href="/p/manachers-algorithm/img/15235560287436.jpg" data-size="551x178"><img src="/p/manachers-algorithm/img/15235560287436.jpg"
-				srcset="/p/manachers-algorithm/img/15235560287436_hu369a0e3579d052bdfcd0cbdbe8116bdb_38464_480x0_resize_q75_box.jpg 480w, /p/manachers-algorithm/img/15235560287436_hu369a0e3579d052bdfcd0cbdbe8116bdb_38464_1024x0_resize_q75_box.jpg 1024w"
-				width="551"
-				height="178"
-				loading="lazy"
-				>
-		</a>
-		
-	</figure></p>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 309; 
+			flex-basis: 742px"
+	>
+	<a href="/p/manachers-algorithm/img/15235560287436.jpg" data-size="551x178">
+		<img src="/p/manachers-algorithm/img/15235560287436.jpg"
+			width="551"
+			height="178"
+			srcset="/p/manachers-algorithm/img/15235560287436_hu369a0e3579d052bdfcd0cbdbe8116bdb_38464_480x0_resize_q75_box.jpg 480w, /p/manachers-algorithm/img/15235560287436_hu369a0e3579d052bdfcd0cbdbe8116bdb_38464_1024x0_resize_q75_box.jpg 1024w"
+			loading="lazy"
+			>
+	</a>
+	
+</figure></p>
 <p>对于每个回文核，我们标号从 0 - 2n，一共 2n + 1 个。偶数号的为偶数长度的回文的核，奇数号的为奇数长度的回文的核。我们使用一个数组 LPS 来记录已经知道的最长回文长度。</p>
 <p>毫无疑问，LPS[0] 一定是 0，LPS[1] 一定是 1。假设我们从左往右计算 LPS，当前为标红的 7 号，LPS[7] = 7。</p>
 <p><strong>这里有一个很重要的事情，那就是 7 是 i &lt;= 7 中，i + LPS[i] 最大的，也就是右边界最远的那个。i + LPS[i] 一定是偶数。</strong></p>
@@ -392,7 +399,7 @@
     
     <section class="powerby">
         Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
-        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.1.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.2.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
     </section>
 </footer>
 

@@ -156,27 +156,41 @@ https://github.com/arkbriar/awrace2018_messagestore
 <h3 id="核心思路">核心思路</h3>
 <p>为了减少系统开销，我们在 agent 之间都只保持一个 udp 信道，在 PA (Provider Agent) 和 Provider 之间也只保持一个 tcp 信道。</p>
 <p>整体的架构图如下所示：</p>
-<p><figure style="flex-grow: 133; flex-basis: 320px">
-		<a href="/p/awrace-2018/img/15321002017148.jpg" data-size="1280x960"><img src="/p/awrace-2018/img/15321002017148.jpg"
-				srcset="/p/awrace-2018/img/15321002017148_hua5afa8ce71308f91ef79d2bfc60f7366_105122_480x0_resize_q75_box.jpg 480w, /p/awrace-2018/img/15321002017148_hua5afa8ce71308f91ef79d2bfc60f7366_105122_1024x0_resize_q75_box.jpg 1024w"
-				width="1280"
-				height="960"
-				loading="lazy"
-				>
-		</a>
-		
-	</figure></p>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 133; 
+			flex-basis: 320px"
+	>
+	<a href="/p/awrace-2018/img/15321002017148.jpg" data-size="1280x960">
+		<img src="/p/awrace-2018/img/15321002017148.jpg"
+			width="1280"
+			height="960"
+			srcset="/p/awrace-2018/img/15321002017148_hua5afa8ce71308f91ef79d2bfc60f7366_105122_480x0_resize_q75_box.jpg 480w, /p/awrace-2018/img/15321002017148_hua5afa8ce71308f91ef79d2bfc60f7366_105122_1024x0_resize_q75_box.jpg 1024w"
+			loading="lazy"
+			>
+	</a>
+	
+</figure></p>
 <p>其中，CA (Consumer Agent) 端使用一个 epoll 的 eventloop，loop 的大致流程如下图：</p>
-<p><figure style="flex-grow: 133; flex-basis: 320px">
-		<a href="/p/awrace-2018/img/15321002990709.jpg" data-size="1502x1126"><img src="/p/awrace-2018/img/15321002990709.jpg"
-				srcset="/p/awrace-2018/img/15321002990709_hu0a5db44a40f1a46ca5b546777e717e36_117478_480x0_resize_q75_box.jpg 480w, /p/awrace-2018/img/15321002990709_hu0a5db44a40f1a46ca5b546777e717e36_117478_1024x0_resize_q75_box.jpg 1024w"
-				width="1502"
-				height="1126"
-				loading="lazy"
-				>
-		</a>
-		
-	</figure>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 133; 
+			flex-basis: 320px"
+	>
+	<a href="/p/awrace-2018/img/15321002990709.jpg" data-size="1502x1126">
+		<img src="/p/awrace-2018/img/15321002990709.jpg"
+			width="1502"
+			height="1126"
+			srcset="/p/awrace-2018/img/15321002990709_hu0a5db44a40f1a46ca5b546777e717e36_117478_480x0_resize_q75_box.jpg 480w, /p/awrace-2018/img/15321002990709_hu0a5db44a40f1a46ca5b546777e717e36_117478_1024x0_resize_q75_box.jpg 1024w"
+			loading="lazy"
+			>
+	</a>
+	
+</figure>
 1. 首先接起所有的新的连接，在接到连接的时候，根据 provider 的权重直接分配一个 provider 处理后续该连接的所有请求</p>
 <p>2. 读所有的能读的 socket</p>
 <ul>
@@ -220,26 +234,40 @@ https://github.com/arkbriar/awrace2018_messagestore
 </ol>
 <h4 id="存储设计页式存储">存储设计：页式存储</h4>
 <p>首先我们研究了一个比较类似的产品，Kafka：</p>
-<p><figure style="flex-grow: 215; flex-basis: 516px">
-		<a href="/p/awrace-2018/img/15321022399044.jpg" data-size="904x420"><img src="/p/awrace-2018/img/15321022399044.jpg"
-				srcset="/p/awrace-2018/img/15321022399044_hu4bb4523a07eff2093e6598edd29d0d43_98681_480x0_resize_q75_box.jpg 480w, /p/awrace-2018/img/15321022399044_hu4bb4523a07eff2093e6598edd29d0d43_98681_1024x0_resize_q75_box.jpg 1024w"
-				width="904"
-				height="420"
-				loading="lazy"
-				>
-		</a>
-		
-	</figure></p>
-<p><figure style="flex-grow: 338; flex-basis: 811px">
-		<a href="/p/awrace-2018/img/15321022432192.jpg" data-size="954x282"><img src="/p/awrace-2018/img/15321022432192.jpg"
-				srcset="/p/awrace-2018/img/15321022432192_hu1c06df13f10d3387ac2ac27db6f6fc34_74387_480x0_resize_q75_box.jpg 480w, /p/awrace-2018/img/15321022432192_hu1c06df13f10d3387ac2ac27db6f6fc34_74387_1024x0_resize_q75_box.jpg 1024w"
-				width="954"
-				height="282"
-				loading="lazy"
-				>
-		</a>
-		
-	</figure></p>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 215; 
+			flex-basis: 516px"
+	>
+	<a href="/p/awrace-2018/img/15321022399044.jpg" data-size="904x420">
+		<img src="/p/awrace-2018/img/15321022399044.jpg"
+			width="904"
+			height="420"
+			srcset="/p/awrace-2018/img/15321022399044_hu4bb4523a07eff2093e6598edd29d0d43_98681_480x0_resize_q75_box.jpg 480w, /p/awrace-2018/img/15321022399044_hu4bb4523a07eff2093e6598edd29d0d43_98681_1024x0_resize_q75_box.jpg 1024w"
+			loading="lazy"
+			>
+	</a>
+	
+</figure></p>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 338; 
+			flex-basis: 811px"
+	>
+	<a href="/p/awrace-2018/img/15321022432192.jpg" data-size="954x282">
+		<img src="/p/awrace-2018/img/15321022432192.jpg"
+			width="954"
+			height="282"
+			srcset="/p/awrace-2018/img/15321022432192_hu1c06df13f10d3387ac2ac27db6f6fc34_74387_480x0_resize_q75_box.jpg 480w, /p/awrace-2018/img/15321022432192_hu1c06df13f10d3387ac2ac27db6f6fc34_74387_1024x0_resize_q75_box.jpg 1024w"
+			loading="lazy"
+			>
+	</a>
+	
+</figure></p>
 <p>Kafka 的大致存储模型如上图所示，这里并不展开叙述，有兴趣的同学可以到这个网站继续学习 <a class="link" href="https://thehoard.blog/how-kafkas-storage-internals-work-3a29b02e026"  target="_blank" rel="noopener"
     >https://thehoard.blog/how-kafkas-storage-internals-work-3a29b02e026</a></p>
 <p>但是对于我们来说，照搬它有很多问题：</p>
@@ -264,40 +292,61 @@ https://github.com/arkbriar/awrace2018_messagestore
 <p>如果要理解内置并发这个事情，我们可能需要去了解一些 SSD 的原理，下面这个网站提供了更多的细节，在这里只叙述一部分的东西。</p>
 <p><a class="link" href="http://codecapsule.com/2014/02/12/coding-for-ssds-part-3-pages-blocks-and-the-flash-translation-layer/"  target="_blank" rel="noopener"
     >http://codecapsule.com/2014/02/12/coding-for-ssds-part-3-pages-blocks-and-the-flash-translation-layer/</a></p>
-<p><figure style="flex-grow: 82; flex-basis: 198px">
-		<a href="/p/awrace-2018/img/15321031573324.jpg" data-size="801x967"><img src="/p/awrace-2018/img/15321031573324.jpg"
-				srcset="/p/awrace-2018/img/15321031573324_huea8623adfd433ef5c976570e570bcfa2_160898_480x0_resize_q75_box.jpg 480w, /p/awrace-2018/img/15321031573324_huea8623adfd433ef5c976570e570bcfa2_160898_1024x0_resize_q75_box.jpg 1024w"
-				width="801"
-				height="967"
-				loading="lazy"
-				>
-		</a>
-		
-	</figure></p>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 82; 
+			flex-basis: 198px"
+	>
+	<a href="/p/awrace-2018/img/15321031573324.jpg" data-size="801x967">
+		<img src="/p/awrace-2018/img/15321031573324.jpg"
+			width="801"
+			height="967"
+			srcset="/p/awrace-2018/img/15321031573324_huea8623adfd433ef5c976570e570bcfa2_160898_480x0_resize_q75_box.jpg 480w, /p/awrace-2018/img/15321031573324_huea8623adfd433ef5c976570e570bcfa2_160898_1024x0_resize_q75_box.jpg 1024w"
+			loading="lazy"
+			>
+	</a>
+	
+</figure></p>
 <p>SSD 的读写都是以页 (NAND-flash page) 为单位的，即使只读/写一个 bit，也会同时读/写一个页。相邻的页组成一个块，块大小通常在 256k 到 4m 之间。SSD 的还有些原理会导致一个写放大和 GC 的问题，这里不再展开，有兴趣的同学自行了解。</p>
 <p>SSD 的内置并发指的是，图示上面的不同 channel/package/chip/plane 的访问都是可以并发进行的，不同的 plane 上的 block 组成的访问单位叫做聚簇块 (Clustered Block)，如图示中黄色框中的部分。可以看到，读写聚簇块就能充分地并发访问，而我们接下来要讲的读写模式就是，对齐聚簇块随机读写，性能将完全不输顺序读写。这里额外提一句，通常聚簇块大小为 32/64m。</p>
 <p>这是一张随机写与顺序写的吞吐对比，在 32M/64M 下，随机写已经能够全线等同顺序写。
-<figure style="flex-grow: 151; flex-basis: 362px">
-		<a href="/p/awrace-2018/img/15321036720838.jpg" data-size="810x536"><img src="/p/awrace-2018/img/15321036720838.jpg"
-				srcset="/p/awrace-2018/img/15321036720838_hu7aa2b71d568a824992a6f317ef0fc88d_121802_480x0_resize_q75_box.jpg 480w, /p/awrace-2018/img/15321036720838_hu7aa2b71d568a824992a6f317ef0fc88d_121802_1024x0_resize_q75_box.jpg 1024w"
-				width="810"
-				height="536"
-				loading="lazy"
-				>
-		</a>
-		
-	</figure></p>
+<figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 151; 
+			flex-basis: 362px"
+	>
+	<a href="/p/awrace-2018/img/15321036720838.jpg" data-size="810x536">
+		<img src="/p/awrace-2018/img/15321036720838.jpg"
+			width="810"
+			height="536"
+			srcset="/p/awrace-2018/img/15321036720838_hu7aa2b71d568a824992a6f317ef0fc88d_121802_480x0_resize_q75_box.jpg 480w, /p/awrace-2018/img/15321036720838_hu7aa2b71d568a824992a6f317ef0fc88d_121802_1024x0_resize_q75_box.jpg 1024w"
+			loading="lazy"
+			>
+	</a>
+	
+</figure></p>
 <p>而我们也做了一个小测试，测试 4g 大小的文件读写，单位都是秒：</p>
-<p><figure style="flex-grow: 316; flex-basis: 759px">
-		<a href="/p/awrace-2018/img/15321037598597.jpg" data-size="1906x602"><img src="/p/awrace-2018/img/15321037598597.jpg"
-				srcset="/p/awrace-2018/img/15321037598597_hu24a85cf152ae3fa35fb59282832f4ac6_314186_480x0_resize_q75_box.jpg 480w, /p/awrace-2018/img/15321037598597_hu24a85cf152ae3fa35fb59282832f4ac6_314186_1024x0_resize_q75_box.jpg 1024w"
-				width="1906"
-				height="602"
-				loading="lazy"
-				>
-		</a>
-		
-	</figure></p>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 316; 
+			flex-basis: 759px"
+	>
+	<a href="/p/awrace-2018/img/15321037598597.jpg" data-size="1906x602">
+		<img src="/p/awrace-2018/img/15321037598597.jpg"
+			width="1906"
+			height="602"
+			srcset="/p/awrace-2018/img/15321037598597_hu24a85cf152ae3fa35fb59282832f4ac6_314186_480x0_resize_q75_box.jpg 480w, /p/awrace-2018/img/15321037598597_hu24a85cf152ae3fa35fb59282832f4ac6_314186_1024x0_resize_q75_box.jpg 1024w"
+			loading="lazy"
+			>
+	</a>
+	
+</figure></p>
 <p>其中 concurrent pseudo sequential write 是指多个线程从同一个 atomic int 上获取下一个写 offset。实验结果证明了这个模式的有效性。</p>
 <p>所以我们最后的读写模式为块读块写：</p>
 <ul>
@@ -314,56 +363,84 @@ https://github.com/arkbriar/awrace2018_messagestore
 </ul>
 <h4 id="整体架构">整体架构</h4>
 <p>Queue 与文件的关系如下图：</p>
-<p><figure style="flex-grow: 133; flex-basis: 319px">
-		<a href="/p/awrace-2018/img/15321040869218.jpg" data-size="1390x1044"><img src="/p/awrace-2018/img/15321040869218.jpg"
-				srcset="/p/awrace-2018/img/15321040869218_huacd3f5dc60665b25a2f31db973dbb916_102813_480x0_resize_q75_box.jpg 480w, /p/awrace-2018/img/15321040869218_huacd3f5dc60665b25a2f31db973dbb916_102813_1024x0_resize_q75_box.jpg 1024w"
-				width="1390"
-				height="1044"
-				loading="lazy"
-				>
-		</a>
-		
-	</figure>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 133; 
+			flex-basis: 319px"
+	>
+	<a href="/p/awrace-2018/img/15321040869218.jpg" data-size="1390x1044">
+		<img src="/p/awrace-2018/img/15321040869218.jpg"
+			width="1390"
+			height="1044"
+			srcset="/p/awrace-2018/img/15321040869218_huacd3f5dc60665b25a2f31db973dbb916_102813_480x0_resize_q75_box.jpg 480w, /p/awrace-2018/img/15321040869218_huacd3f5dc60665b25a2f31db973dbb916_102813_1024x0_resize_q75_box.jpg 1024w"
+			loading="lazy"
+			>
+	</a>
+	
+</figure>
 页与消息的结构如下图：</p>
-<p><figure style="flex-grow: 133; flex-basis: 319px">
-		<a href="/p/awrace-2018/img/15321040994886.jpg" data-size="1578x1184"><img src="/p/awrace-2018/img/15321040994886.jpg"
-				srcset="/p/awrace-2018/img/15321040994886_huacd3f5dc60665b25a2f31db973dbb916_76700_480x0_resize_q75_box.jpg 480w, /p/awrace-2018/img/15321040994886_huacd3f5dc60665b25a2f31db973dbb916_76700_1024x0_resize_q75_box.jpg 1024w"
-				width="1578"
-				height="1184"
-				loading="lazy"
-				>
-		</a>
-		
-	</figure>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 133; 
+			flex-basis: 319px"
+	>
+	<a href="/p/awrace-2018/img/15321040994886.jpg" data-size="1578x1184">
+		<img src="/p/awrace-2018/img/15321040994886.jpg"
+			width="1578"
+			height="1184"
+			srcset="/p/awrace-2018/img/15321040994886_huacd3f5dc60665b25a2f31db973dbb916_76700_480x0_resize_q75_box.jpg 480w, /p/awrace-2018/img/15321040994886_huacd3f5dc60665b25a2f31db973dbb916_76700_1024x0_resize_q75_box.jpg 1024w"
+			loading="lazy"
+			>
+	</a>
+	
+</figure>
 Size 的计算采用变长编码：</p>
 <ul>
 <li>Size &lt; 128，使用一个 byte 存储，第一个 bit 为 0</li>
 <li>Size &gt;= 128 并且 &lt; 32768，使用两个 byte 存储，但是由于第一个 bit 也为 0，所以存储 size | 0x8000</li>
 </ul>
 <p>针对每个页的索引大致如下：</p>
-<p><figure style="flex-grow: 133; flex-basis: 320px">
-		<a href="/p/awrace-2018/img/15321041984763.jpg" data-size="1582x1186"><img src="/p/awrace-2018/img/15321041984763.jpg"
-				srcset="/p/awrace-2018/img/15321041984763_hu3b7b820f6188ac43dd748418d36a402e_116922_480x0_resize_q75_box.jpg 480w, /p/awrace-2018/img/15321041984763_hu3b7b820f6188ac43dd748418d36a402e_116922_1024x0_resize_q75_box.jpg 1024w"
-				width="1582"
-				height="1186"
-				loading="lazy"
-				>
-		</a>
-		
-	</figure></p>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 133; 
+			flex-basis: 320px"
+	>
+	<a href="/p/awrace-2018/img/15321041984763.jpg" data-size="1582x1186">
+		<img src="/p/awrace-2018/img/15321041984763.jpg"
+			width="1582"
+			height="1186"
+			srcset="/p/awrace-2018/img/15321041984763_hu3b7b820f6188ac43dd748418d36a402e_116922_480x0_resize_q75_box.jpg 480w, /p/awrace-2018/img/15321041984763_hu3b7b820f6188ac43dd748418d36a402e_116922_1024x0_resize_q75_box.jpg 1024w"
+			loading="lazy"
+			>
+	</a>
+	
+</figure></p>
 <p>每个页存储页编号、文件编号、页内消息数和之前所有页消息数这四项，这样我们在 get 时二分查找就可以获取到对应消息所在的页。所有的索引总量大约为 12byte * 25m = 300m，完全可以放于内存。</p>
 <h4 id="putget-流程">Put/Get 流程</h4>
 <p>这两个流程相对简单，首先是 put 流程：</p>
-<p><figure style="flex-grow: 133; flex-basis: 320px">
-		<a href="/p/awrace-2018/img/15321043391182.jpg" data-size="1308x980"><img src="/p/awrace-2018/img/15321043391182.jpg"
-				srcset="/p/awrace-2018/img/15321043391182_huc5d40804f4c6da7eecc544ca84e32f82_156135_480x0_resize_q75_box.jpg 480w, /p/awrace-2018/img/15321043391182_huc5d40804f4c6da7eecc544ca84e32f82_156135_1024x0_resize_q75_box.jpg 1024w"
-				width="1308"
-				height="980"
-				loading="lazy"
-				>
-		</a>
-		
-	</figure></p>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 133; 
+			flex-basis: 320px"
+	>
+	<a href="/p/awrace-2018/img/15321043391182.jpg" data-size="1308x980">
+		<img src="/p/awrace-2018/img/15321043391182.jpg"
+			width="1308"
+			height="980"
+			srcset="/p/awrace-2018/img/15321043391182_huc5d40804f4c6da7eecc544ca84e32f82_156135_480x0_resize_q75_box.jpg 480w, /p/awrace-2018/img/15321043391182_huc5d40804f4c6da7eecc544ca84e32f82_156135_1024x0_resize_q75_box.jpg 1024w"
+			loading="lazy"
+			>
+	</a>
+	
+</figure></p>
 <ul>
 <li>检查内存中的页还有没有空间
 <ul>
@@ -608,7 +685,7 @@ Size 的计算采用变长编码：</p>
     
     <section class="powerby">
         Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
-        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.1.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.2.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
     </section>
 </footer>
 

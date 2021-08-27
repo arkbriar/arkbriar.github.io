@@ -213,36 +213,50 @@
 <li>原子写，e.g. 写 WAL / B+ 树 / SST 写一半断电，这个记录/页/文件还能不能要了？</li>
 <li>&hellip;</li>
 </ul>
-<p><figure style="flex-grow: 157; flex-basis: 377px">
-		<a href="/p/group-commit-with-direct-io-and-fsync/img/ext4_inode.jpg" data-size="2367x1505"><img src="/p/group-commit-with-direct-io-and-fsync/img/ext4_inode.jpg"
-				srcset="/p/group-commit-with-direct-io-and-fsync/img/ext4_inode_hud9776bdf9876fcbe95ea715c40ddcfae_236370_480x0_resize_q75_box.jpg 480w, /p/group-commit-with-direct-io-and-fsync/img/ext4_inode_hud9776bdf9876fcbe95ea715c40ddcfae_236370_1024x0_resize_q75_box.jpg 1024w"
-				width="2367"
-				height="1505"
-				loading="lazy"
-				alt="ext4_inode">
-		</a>
-		
-		<figcaption>ext4_inode</figcaption>
-		
-	</figure></p>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 157; 
+			flex-basis: 377px"
+	>
+	<a href="/p/group-commit-with-direct-io-and-fsync/img/ext4_inode.jpg" data-size="2367x1505">
+		<img src="/p/group-commit-with-direct-io-and-fsync/img/ext4_inode.jpg"
+			width="2367"
+			height="1505"
+			srcset="/p/group-commit-with-direct-io-and-fsync/img/ext4_inode_hud9776bdf9876fcbe95ea715c40ddcfae_236370_480x0_resize_q75_box.jpg 480w, /p/group-commit-with-direct-io-and-fsync/img/ext4_inode_hud9776bdf9876fcbe95ea715c40ddcfae_236370_1024x0_resize_q75_box.jpg 1024w"
+			loading="lazy"
+			alt="ext4_inode">
+	</a>
+	
+	<figcaption>ext4_inode</figcaption>
+	
+</figure></p>
 <p>实在太多了，这里不一一展开，感兴趣的同学可以了解下 rename 原子操作 和 MySQL InnoDB 的双写，以及南大学长 JYY 之前发表的论文 [7]。</p>
 <h2 id="组提交-group-commit">组提交 (Group Commit)</h2>
 <p>前文提到，我们将修改操作同步到存储设备上之后再进行返回，从而保证持久性，我们将这个操作称为提交（commit）。那假设现在已经有一个数据库系统了，它每次请求都会做一次同步写然后返回，会有什么样的问题呢？</p>
 <p>如 [1][2] 中所示，同步操作的性能可以说是惨不忍睹，且因为同步的缘故，CPU 和 IO 不能充分并行，简直惨上加惨。用 [2] 中的脚本在某台顶配 ECS 上（沾了公司的光）测试下了 ESSD 性能，fsync 也只能获得约 2000 次/s 的性能（对比机械硬盘确实非常不错了）。我本地 macOS 跑 fnctl(F_FULLFSYNC) 可能只有不到 100，不能更惨。而 [1] 中 4k 写在 buffered IO 下能获得 2.5GB/s 写入速度的设备在无脑 fsync 下只剩下可怜的 0.5MB/s 了。这个问题有多严重可见一斑。</p>
 <p>fsync 的每秒执行次数和延迟意味着在单线程请求下，TPS 和延迟一定有个对应的 bound，无法消除，而 fsync + write 的吞吐量则决定了大事务的执行速度，因此优化同步写势在必行。对于单线程请求，实际上没有办法进行优化，因为从原则上必须要同步写之后才能返回。但是对于并发请求，我们可以通过一种叫组提交（group commit）的技术，尽可能的优化 fsync 的执行频率。</p>
 <p>顾名思义，组提交是将一组请求合并到一起提交，然后再返回的方法。通过降低 fsync 的频率，使得 CPU 和 IO 充分并行，同时提升了 TPS 上限和吞吐量。组提交的实现可以有很多参数，比如等待多少时间/多少事务进行提交。我觉得一个比较优雅的实现来自 MySQL 的 binlog，参考 [4] 中描述和代码，以及自己的理解画了一个对应的流程图：</p>
-<p><figure style="flex-grow: 140; flex-basis: 336px">
-		<a href="/p/group-commit-with-direct-io-and-fsync/img/group_commit.jpg" data-size="1764x1260"><img src="/p/group-commit-with-direct-io-and-fsync/img/group_commit.jpg"
-				srcset="/p/group-commit-with-direct-io-and-fsync/img/group_commit_hu4c558425e36484ceebf57c0d1c2e5033_237683_480x0_resize_q75_box.jpg 480w, /p/group-commit-with-direct-io-and-fsync/img/group_commit_hu4c558425e36484ceebf57c0d1c2e5033_237683_1024x0_resize_q75_box.jpg 1024w"
-				width="1764"
-				height="1260"
-				loading="lazy"
-				alt="group commit">
-		</a>
-		
-		<figcaption>group commit</figcaption>
-		
-	</figure></p>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 140; 
+			flex-basis: 336px"
+	>
+	<a href="/p/group-commit-with-direct-io-and-fsync/img/group_commit.jpg" data-size="1764x1260">
+		<img src="/p/group-commit-with-direct-io-and-fsync/img/group_commit.jpg"
+			width="1764"
+			height="1260"
+			srcset="/p/group-commit-with-direct-io-and-fsync/img/group_commit_hu4c558425e36484ceebf57c0d1c2e5033_237683_480x0_resize_q75_box.jpg 480w, /p/group-commit-with-direct-io-and-fsync/img/group_commit_hu4c558425e36484ceebf57c0d1c2e5033_237683_1024x0_resize_q75_box.jpg 1024w"
+			loading="lazy"
+			alt="group commit">
+	</a>
+	
+	<figcaption>group commit</figcaption>
+	
+</figure></p>
 <p>这种实现有着良好的单线程事务效率（即刻提交），也有良好的回压机制（日志文件锁不释放代表 IO 进行中，阻塞提交），非常优雅。</p>
 <p>更简单的实现方式可以通过一个 mpsc 队列和几个固定的消费线程，来避免复杂的 group leader 机制，实现更加简单。</p>
 <p>由于调研时间有限，如果有更优雅的方法希望了解的同学能够不吝赐教。</p>
@@ -342,6 +356,50 @@
 </aside>
 
      
+     
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "crazyark" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (DISQUS) {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
     
 
     <footer class="site-footer">
@@ -355,7 +413,7 @@
     
     <section class="powerby">
         Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
-        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.1.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.2.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
     </section>
 </footer>
 

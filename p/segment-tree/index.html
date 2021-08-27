@@ -149,49 +149,70 @@
 </ul>
 <p>也就是说，线段树的结构和递归计算 $f(1,N)$ 的过程完全相同。</p>
 <p>因此，举个例子，数组 [9,2,6,3,1,5,0,7]的根节点包含数字0 —— 整个数组的最小值。它的左子节点包含[9,2,6,3]中的最小，2；右子节点包含[1,5,0,7]中的最小，0。每个元素对应于一个叶节点，仅仅包含它自己。</p>
-<p><figure style="flex-grow: 196; flex-basis: 471px">
-		<a href="/p/segment-tree/img/Segtree_92631507.png" data-size="367x187"><img src="/p/segment-tree/img/Segtree_92631507.png"
-				srcset="/p/segment-tree/img/Segtree_92631507_hu048eda11744b5690bd60961f9c220a55_7150_480x0_resize_box_3.png 480w, /p/segment-tree/img/Segtree_92631507_hu048eda11744b5690bd60961f9c220a55_7150_1024x0_resize_box_3.png 1024w"
-				width="367"
-				height="187"
-				loading="lazy"
-				>
-		</a>
-		
-	</figure></p>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 196; 
+			flex-basis: 471px"
+	>
+	<a href="/p/segment-tree/img/Segtree_92631507.png" data-size="367x187">
+		<img src="/p/segment-tree/img/Segtree_92631507.png"
+			width="367"
+			height="187"
+			srcset="/p/segment-tree/img/Segtree_92631507_hu048eda11744b5690bd60961f9c220a55_7150_480x0_resize_box_3.png 480w, /p/segment-tree/img/Segtree_92631507_hu048eda11744b5690bd60961f9c220a55_7150_1024x0_resize_box_3.png 1024w"
+			loading="lazy"
+			>
+	</a>
+	
+</figure></p>
 <h3 id="operations">Operations</h3>
 <p>线段树一共有三种基础操作：构建、更新、查询。</p>
 <h4 id="construction">Construction</h4>
 <p>为了进行查询和更新，首先我们需要构建一棵线段树来表示某个数组。我们可以自底向上或是自顶向下地构建。自顶向下的构建是一个递归的过程：尝试填充节点，如果是叶子节点，直接用对应的值填充，否则先填充该节点的两个子节点，然后用子节点中小的值填充该节点。自底向上的构建留作练习。这两种方式在运行速度上的差距几乎可以忽略不计。</p>
 <h4 id="update">Update</h4>
 <p>更新线段树即更新底层数组的某个元素。我们首先更新对应的叶子节点 —— 因为叶子节点只对应数组的一个元素。被更新的节点的父节点也将被影响，因为它对应的区间包含了被修改的元素，对祖父节点同样，直到根节点，但是<strong>不会影响其他节点</strong>。如果要进行自顶向下的更新，首先进行根节点的更新，这将导致两个子节点中的相关的那个递归地更新。对子节点的更新也是同样的，边界为对叶节点的更新。当递归过程完成以后，非叶节点的值更新为两个子节点的较小值。自底向上的更新同样留作练习。</p>
-<p><figure style="flex-grow: 196; flex-basis: 471px">
-		<a href="/p/segment-tree/img/Segtree_92631587.png" data-size="367x187"><img src="/p/segment-tree/img/Segtree_92631587.png"
-				srcset="/p/segment-tree/img/Segtree_92631587_hu7d0797410047cdc4348c852d9c1936ad_6831_480x0_resize_box_3.png 480w, /p/segment-tree/img/Segtree_92631587_hu7d0797410047cdc4348c852d9c1936ad_6831_1024x0_resize_box_3.png 1024w"
-				width="367"
-				height="187"
-				loading="lazy"
-				alt="0 changed to 8">
-		</a>
-		
-		<figcaption>0 changed to 8</figcaption>
-		
-	</figure></p>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 196; 
+			flex-basis: 471px"
+	>
+	<a href="/p/segment-tree/img/Segtree_92631587.png" data-size="367x187">
+		<img src="/p/segment-tree/img/Segtree_92631587.png"
+			width="367"
+			height="187"
+			srcset="/p/segment-tree/img/Segtree_92631587_hu7d0797410047cdc4348c852d9c1936ad_6831_480x0_resize_box_3.png 480w, /p/segment-tree/img/Segtree_92631587_hu7d0797410047cdc4348c852d9c1936ad_6831_1024x0_resize_box_3.png 1024w"
+			loading="lazy"
+			alt="0 changed to 8">
+	</a>
+	
+	<figcaption>0 changed to 8</figcaption>
+	
+</figure></p>
 <h4 id="query">Query</h4>
 <p>在线段树上进行查询即确定底层数组某个区间的函数值，在这里就是区间内的最小元素值。查询操作的执行过程比更新操作复杂的多，我们用一个例子来阐释。假设我们想要知道第1个到第6个元素内的最小值，我们将这个查询表示为 $f(1, 6)$。线段树上每个节点包含了某个区间内的最小值：举例来说，根节点包含了 $f(1, 8)$，它的左子节点 $f(1, 4)$，右子节点 $f(5, 8)$，等等；每个叶节点包含了 $f(x,x)$。没有一个节点是 $f(1,6)$，但是注意到 $f(1, 6) = \min(f(1,4),f(5,6))$，并且存在两个节点包含这两个值（在下图中以黄色标识）。</p>
 <p>因此在线段树上查询时，我们选择所有节点的一个子集，使得它们所表示的区间的并集与我们要查询的区间完全相同。为了找到这些节点，我们首先从根节点开始，递归查询那些与区间至少有一个交集的节点。在我们的例子中，$f(1, 6)$，我们注意到左子树和右子树对应的区间都有交集，因此他们都被递归执行。左子节点是一个base case（以黄色标识），因为它的区间被查询区间整个包含。在右子节点中，我们注意到它的左子节点和查询区间相交，但是右子节点没有，所以我们只递归执行它的左子节点。而它也是一个base case，同样以黄色标识。递归终止，而最终的最小值就是这些被选中的节点的最小值。</p>
-<p><figure style="flex-grow: 196; flex-basis: 471px">
-		<a href="/p/segment-tree/img/Segtree_query_92631587.png" data-size="367x187"><img src="/p/segment-tree/img/Segtree_query_92631587.png"
-				srcset="/p/segment-tree/img/Segtree_query_92631587_hu0d83e9c25b58c00b4903440285ada782_7114_480x0_resize_box_3.png 480w, /p/segment-tree/img/Segtree_query_92631587_hu0d83e9c25b58c00b4903440285ada782_7114_1024x0_resize_box_3.png 1024w"
-				width="367"
-				height="187"
-				loading="lazy"
-				alt="Query (1, 6)">
-		</a>
-		
-		<figcaption>Query (1, 6)</figcaption>
-		
-	</figure></p>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 196; 
+			flex-basis: 471px"
+	>
+	<a href="/p/segment-tree/img/Segtree_query_92631587.png" data-size="367x187">
+		<img src="/p/segment-tree/img/Segtree_query_92631587.png"
+			width="367"
+			height="187"
+			srcset="/p/segment-tree/img/Segtree_query_92631587_hu0d83e9c25b58c00b4903440285ada782_7114_480x0_resize_box_3.png 480w, /p/segment-tree/img/Segtree_query_92631587_hu0d83e9c25b58c00b4903440285ada782_7114_1024x0_resize_box_3.png 1024w"
+			loading="lazy"
+			alt="Query (1, 6)">
+	</a>
+	
+	<figcaption>Query (1, 6)</figcaption>
+	
+</figure></p>
 <h3 id="analysis">Analysis</h3>
 <p>线段树的一些重要的性能指标如下：</p>
 <h4 id="space">Space</h4>
@@ -508,7 +529,7 @@
     
     <section class="powerby">
         Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
-        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.1.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.2.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
     </section>
 </footer>
 

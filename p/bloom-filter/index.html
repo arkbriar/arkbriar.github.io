@@ -125,16 +125,23 @@
 <p>布隆过滤器的结构非常简单，即一个长度为 m 的比特数组，初始化都为0。然后，布隆过滤器需要有 k 个不同的哈希函数，每一个都能将元素映射到 [0, m) 中的一个数字，也就是数组上的一个位置，并呈现均匀分布。</p>
 <p>通常，k 是一个远小于 m 的常数，与将要被加入的元素成比例。精确的 k 和 m 的取值取决于期望的 false positive 率。</p>
 <p>下图是一个布隆过滤器：</p>
-<p><figure style="flex-grow: 278; flex-basis: 668px">
-		<a href="/p/bloom-filter/img/15238556159607.png" data-size="649x233"><img src="/p/bloom-filter/img/15238556159607.png"
-				srcset="/p/bloom-filter/img/15238556159607_hu41c2302f1d9ff2cc9a1d82f9162d2f29_30563_480x0_resize_box_3.png 480w, /p/bloom-filter/img/15238556159607_hu41c2302f1d9ff2cc9a1d82f9162d2f29_30563_1024x0_resize_box_3.png 1024w"
-				width="649"
-				height="233"
-				loading="lazy"
-				>
-		</a>
-		
-	</figure></p>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 278; 
+			flex-basis: 668px"
+	>
+	<a href="/p/bloom-filter/img/15238556159607.png" data-size="649x233">
+		<img src="/p/bloom-filter/img/15238556159607.png"
+			width="649"
+			height="233"
+			srcset="/p/bloom-filter/img/15238556159607_hu41c2302f1d9ff2cc9a1d82f9162d2f29_30563_480x0_resize_box_3.png 480w, /p/bloom-filter/img/15238556159607_hu41c2302f1d9ff2cc9a1d82f9162d2f29_30563_1024x0_resize_box_3.png 1024w"
+			loading="lazy"
+			>
+	</a>
+	
+</figure></p>
 <p>那么介绍下布隆过滤器上的两个操作：</p>
 <ul>
 <li>添加一个元素：对每一个哈希函数，都计算出对应的数组上的位置，并将其置为 1</li>
@@ -307,7 +314,7 @@
     
     <section class="powerby">
         Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
-        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.1.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.2.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
     </section>
 </footer>
 

@@ -303,81 +303,116 @@ $F(x) = F(x_1, &hellip;, x_n) = F_1(x_1) \times {x_2} \times \cdots {x_n} \cup {
 <p>这个游戏的 impartial 版本叫做 Green Hackenbush：图上的每条边都是绿色的，两个玩家都能砍任意边。Partizan 版本的游戏叫做 Blue-Red Hackenbush，其中图上的边有蓝色和红色之分，玩家 I 只能砍蓝色的，而玩家 II 只能砍红色的。更为一般的版本中，边有上述三种，绿色是都能砍的。</p>
 <h4 id="bamboo-stalks">Bamboo Stalks</h4>
 <p>先看一个简单的 Green Hackenbush 的特例，这个特例里，每个有根的联通分支都是一条直线，就跟柱子一样，如下图所示：</p>
-<p><figure style="flex-grow: 96; flex-basis: 231px">
-		<a href="/p/game-theory/img/bamboo_stalks.png" data-size="475x492"><img src="/p/game-theory/img/bamboo_stalks.png"
-				srcset="/p/game-theory/img/bamboo_stalks_hu6954f238b34429d4da7526d1df236f80_13006_480x0_resize_box_3.png 480w, /p/game-theory/img/bamboo_stalks_hu6954f238b34429d4da7526d1df236f80_13006_1024x0_resize_box_3.png 1024w"
-				width="475"
-				height="492"
-				loading="lazy"
-				alt="Bamboo Stalks">
-		</a>
-		
-		<figcaption>Bamboo Stalks</figcaption>
-		
-	</figure></p>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 96; 
+			flex-basis: 231px"
+	>
+	<a href="/p/game-theory/img/bamboo_stalks.png" data-size="475x492">
+		<img src="/p/game-theory/img/bamboo_stalks.png"
+			width="475"
+			height="492"
+			srcset="/p/game-theory/img/bamboo_stalks_hu6954f238b34429d4da7526d1df236f80_13006_480x0_resize_box_3.png 480w, /p/game-theory/img/bamboo_stalks_hu6954f238b34429d4da7526d1df236f80_13006_1024x0_resize_box_3.png 1024w"
+			loading="lazy"
+			alt="Bamboo Stalks">
+	</a>
+	
+	<figcaption>Bamboo Stalks</figcaption>
+	
+</figure></p>
 <p>每一次移动就是选取其中一条边，砍断它并移除所有不连到地面的部分。玩家交替进行移动，最后一个移动的玩家胜利。</p>
 <p>显然，有n根柱子的这个游戏和有n堆的nim游戏是等价的。</p>
 <h4 id="green-hackenbush-on-trees">Green Hackenbush on Trees</h4>
 <p>顾名思义，每棵灌木长的和树一样：</p>
-<p><figure style="flex-grow: 268; flex-basis: 644px">
-		<a href="/p/game-theory/img/green_hackenbush_on_trees.png" data-size="1367x509"><img src="/p/game-theory/img/green_hackenbush_on_trees.png"
-				srcset="/p/game-theory/img/green_hackenbush_on_trees_hu66d277dbc89a2d79fdbc23ae5e3a2a04_60086_480x0_resize_box_3.png 480w, /p/game-theory/img/green_hackenbush_on_trees_hu66d277dbc89a2d79fdbc23ae5e3a2a04_60086_1024x0_resize_box_3.png 1024w"
-				width="1367"
-				height="509"
-				loading="lazy"
-				alt="Green Hackenbush on Trees">
-		</a>
-		
-		<figcaption>Green Hackenbush on Trees</figcaption>
-		
-	</figure></p>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 268; 
+			flex-basis: 644px"
+	>
+	<a href="/p/game-theory/img/green_hackenbush_on_trees.png" data-size="1367x509">
+		<img src="/p/game-theory/img/green_hackenbush_on_trees.png"
+			width="1367"
+			height="509"
+			srcset="/p/game-theory/img/green_hackenbush_on_trees_hu66d277dbc89a2d79fdbc23ae5e3a2a04_60086_480x0_resize_box_3.png 480w, /p/game-theory/img/green_hackenbush_on_trees_hu66d277dbc89a2d79fdbc23ae5e3a2a04_60086_1024x0_resize_box_3.png 1024w"
+			loading="lazy"
+			alt="Green Hackenbush on Trees">
+	</a>
+	
+	<figcaption>Green Hackenbush on Trees</figcaption>
+	
+</figure></p>
 <p>由上一节的定理，这个游戏等价于某个版本的 Bamboo Stalks。我们可以通过以下原则来进行转换，更为普遍地，叫做 Colon Principle：</p>
 <ul>
 <li>当分支交汇于某个顶点时，可以用一条长度为<strong>分支长度 nim-和</strong>的杆来代替</li>
 </ul>
-<p><figure style="flex-grow: 214; flex-basis: 514px">
-		<a href="/p/game-theory/img/colon_principle.png" data-size="1409x657"><img src="/p/game-theory/img/colon_principle.png"
-				srcset="/p/game-theory/img/colon_principle_hu750eba6a4ce35f55e74ad823081f0332_55132_480x0_resize_box_3.png 480w, /p/game-theory/img/colon_principle_hu750eba6a4ce35f55e74ad823081f0332_55132_1024x0_resize_box_3.png 1024w"
-				width="1409"
-				height="657"
-				loading="lazy"
-				alt="Colon Principle">
-		</a>
-		
-		<figcaption>Colon Principle</figcaption>
-		
-	</figure></p>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 214; 
+			flex-basis: 514px"
+	>
+	<a href="/p/game-theory/img/colon_principle.png" data-size="1409x657">
+		<img src="/p/game-theory/img/colon_principle.png"
+			width="1409"
+			height="657"
+			srcset="/p/game-theory/img/colon_principle_hu750eba6a4ce35f55e74ad823081f0332_55132_480x0_resize_box_3.png 480w, /p/game-theory/img/colon_principle_hu750eba6a4ce35f55e74ad823081f0332_55132_1024x0_resize_box_3.png 1024w"
+			loading="lazy"
+			alt="Colon Principle">
+	</a>
+	
+	<figcaption>Colon Principle</figcaption>
+	
+</figure></p>
 <p>Colon Principle 的证明应该比较简单，这里留作思考。</p>
 <h4 id="green-hackenbush-on-general-rooted-graphs">Green Hackenbush on general rooted graphs</h4>
 <p>现在我们来考虑任意的图，这些图中可能存在环等，如下所示：</p>
-<p><figure style="flex-grow: 251; flex-basis: 603px">
-		<a href="/p/game-theory/img/arbitrary_green_hackenbush.png" data-size="1374x546"><img src="/p/game-theory/img/arbitrary_green_hackenbush.png"
-				srcset="/p/game-theory/img/arbitrary_green_hackenbush_hu20c83af8058c6bce94bac3d9e87e1226_53980_480x0_resize_box_3.png 480w, /p/game-theory/img/arbitrary_green_hackenbush_hu20c83af8058c6bce94bac3d9e87e1226_53980_1024x0_resize_box_3.png 1024w"
-				width="1374"
-				height="546"
-				loading="lazy"
-				alt="Arbitrary Green Hackenbush">
-		</a>
-		
-		<figcaption>Arbitrary Green Hackenbush</figcaption>
-		
-	</figure></p>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 251; 
+			flex-basis: 603px"
+	>
+	<a href="/p/game-theory/img/arbitrary_green_hackenbush.png" data-size="1374x546">
+		<img src="/p/game-theory/img/arbitrary_green_hackenbush.png"
+			width="1374"
+			height="546"
+			srcset="/p/game-theory/img/arbitrary_green_hackenbush_hu20c83af8058c6bce94bac3d9e87e1226_53980_480x0_resize_box_3.png 480w, /p/game-theory/img/arbitrary_green_hackenbush_hu20c83af8058c6bce94bac3d9e87e1226_53980_1024x0_resize_box_3.png 1024w"
+			loading="lazy"
+			alt="Arbitrary Green Hackenbush">
+	</a>
+	
+	<figcaption>Arbitrary Green Hackenbush</figcaption>
+	
+</figure></p>
 <p>这图看着复杂，其实同样对于每个联通分支都可以转换为 Nim 游戏中的一个堆。考虑如果能将每个分支转换成一棵树，那就可以用上面的方法转换成等价的堆了。</p>
 <p>这里介绍一种转换方式，叫做 Fusion Principle：
 在不改变图上 SG-函数值的情况下，回路上的点可以进行合并。</p>
 <p>如下图所示，我们可以将门形状的回路转换为长度为1的杆：</p>
-<p><figure style="flex-grow: 648; flex-basis: 1556px">
-		<a href="/p/game-theory/img/fusion_principle_ex1.png" data-size="1271x196"><img src="/p/game-theory/img/fusion_principle_ex1.png"
-				srcset="/p/game-theory/img/fusion_principle_ex1_hude38f068e013fc66183009c5b4503194_28795_480x0_resize_box_3.png 480w, /p/game-theory/img/fusion_principle_ex1_hude38f068e013fc66183009c5b4503194_28795_1024x0_resize_box_3.png 1024w"
-				width="1271"
-				height="196"
-				loading="lazy"
-				alt="Fusion Principle Example">
-		</a>
-		
-		<figcaption>Fusion Principle Example</figcaption>
-		
-	</figure></p>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 648; 
+			flex-basis: 1556px"
+	>
+	<a href="/p/game-theory/img/fusion_principle_ex1.png" data-size="1271x196">
+		<img src="/p/game-theory/img/fusion_principle_ex1.png"
+			width="1271"
+			height="196"
+			srcset="/p/game-theory/img/fusion_principle_ex1_hude38f068e013fc66183009c5b4503194_28795_480x0_resize_box_3.png 480w, /p/game-theory/img/fusion_principle_ex1_hude38f068e013fc66183009c5b4503194_28795_1024x0_resize_box_3.png 1024w"
+			loading="lazy"
+			alt="Fusion Principle Example">
+	</a>
+	
+	<figcaption>Fusion Principle Example</figcaption>
+	
+</figure></p>
 <p>首先，地上的两个点事实上可以合并成一个点；然后应用fusion principle，这个三角形等价于三个独立的自环；而每个自环又等价于一个大小为1的nim堆，最终合并为一个大小为1的堆。</p>
 <p>更一般地，奇数长度的回路都可以转换为一条边，偶数长度的回路转换为一个点。</p>
 <p>关于 fusion principle 的证明比较长，有兴趣的同学可以参考 <em><strong>《Winning Ways》</strong></em> 的第七章。</p>
@@ -564,7 +599,7 @@ $F(x) = F(x_1, &hellip;, x_n) = F_1(x_1) \times {x_2} \times \cdots {x_n} \cup {
     
     <section class="powerby">
         Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
-        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.1.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.2.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
     </section>
 </footer>
 
