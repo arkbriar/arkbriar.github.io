@@ -1,10 +1,8 @@
 ---
 title: "数据库系统: 聊聊存储和组提交 (group commit)"
 date: 2021-08-21T12:36:51+08:00
-draft: false
 categories: ["Database", "Operating System", "File System"]
 tags: ["direct io", "sync", "group commit"]
-comments: true
 slug: group-commit-with-direct-io-and-fsync
 image: img/transaction_commit.png
 ---
