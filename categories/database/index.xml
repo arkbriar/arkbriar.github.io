@@ -13,9 +13,7 @@
       <pubDate>Sat, 21 Aug 2021 12:36:51 +0800</pubDate>
       
       <guid>https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/</guid>
-      <description>众所周知，数据库管理系统需要满足数据操作的持久性，即保证操作的请求在返回之前，对应的数据一定是已经保存在非易失性存储中 &amp;ndash; 通常来说，就是磁盘。而大多数数据库系统都是构建在操作系统提供的文件系统之上的，因为不同的存储设备往往有着不同的特性和交互方式，操作系统和文件系统帮助屏蔽了物理细节。当然也不排除直接使用块设备操作或是使用用户空间驱动 (e.g. SPDK) 操作的，其优化思想应当是一样的，本文不做额外讨论。
-存储 Buffered / Direct IO 操作系统和文件系统对存储做了层层封装，最终提供给我们这些通用的操作方式，如下 C 函数所示（摘抄自 macOS 的 manual）：
-// 打开文件描述符 int open(const char *path, int oflag, ...); // 关闭文件描述符 int close(int fd); // 顺序读写 ssize_t read(int fd, void *buf, size_t nbyte); ssize_t write(int fd, const void *buf, size_t nbyte); // 指定 offset 读写 ssize_t pread(int fd, void *buf, size_t nbyte, off_t offset); ssize_t pwrite(int fd, const void *buf, size_t nbyte, off_t offset); 这里面有个不可避免的问题：当我进行一次文件操作的时候，它是否已经写入了磁盘，aka.</description>
+      <description>众所周知，数据库管理系统需要满足数据操作的持久性，即保证操作的请求在返回之前，对应的数据一定是已经保存在非易失性存储中 &amp;ndash; 通常来说，就是磁盘。</description>
     </item>
     
     <item>
@@ -24,11 +22,7 @@
       <pubDate>Tue, 17 Aug 2021 00:00:00 +0000</pubDate>
       
       <guid>https://blog.crazyark.xyz/p/raft-and-share-log/</guid>
-      <description>自上次更新博客起已经有三年时间了，这期间经历了留学、毕业、工作等很多事情，个中滋味只有自己知道。博客重开，希望文笔和思路上能比以前进步一点点。同时因为学识有限，也希望各位大佬能不吝赐教。
-背景 上个月为了学习 rust 语言，参加了阿里云 ECS 团队举办的 CloudBuild 性能挑战赛，用 rust 实现一个聊天室服务器。因为 rust 不熟练初赛只提交了一次，居然也闯进复赛了，也挺有意思的。复赛题目要求服务要部署在三台机器上，同时提供完整的读写服务，且要求宕机一台不影响服务。看到题目后，我直观地想到了使用一致性协议让三台机器关于存储的数据达成一致就可。分布式系统中常用的一致性协议有 Paxos 和 Raft 等，其中 Raft 从原理上来说是一种特化的 Paxos，而且简单易懂。因此我最终决定采用 Raft + RocksDB 的方案进行实现。
-问题 Raft 是一个分布式一致性协议，而 RocksDB 是一个 K-V 数据库，在各自的领域应该都是闻名遐迩，在此不再多做介绍。在方案的实现过程中，碰到不少问题，其中的一个主要问题是：Raft 协议运行过程中需要维护一份日志，而 RocksDB 为了保障持久性，也会维护一份 WAL，这两份日志在数据内容上是高度重合的。这意味着在写入数据的过程中，需要再多写一份，这对于任何关注性能的系统来说都是不能接受的。
-事实上很多分布式数据库系统都已经合并了这两条日志，比如某些魔改的分布式 MySQL 系统，以及 tikv（？我没调研）。他们采用的方案或是将存储引擎的 WAL 扩展支持一致性协议的特殊事件，或是在一致性协议的日志中嵌入一条存储引擎的 WAL，或者对某些特化的系统比如分布式日志系统，干脆直接将 Raft 的日志改造成存储引擎。在 Google 解决方案的过程中，我发现了 eBay 以前的一篇文章[1]，讲的就是如何把日志存储的日志和 Raft 的日志相结合起来，虽然只是一篇 workshop 的文章，但图文讲解还是让我茅塞顿开。
-由于我采用了 RocksDB 作为存储引擎，显然我不希望去修改 RocksDB 的 WAL，这工程量太大了，不够回本的。因此我决定尝试定制 Raft 日志、关闭 RocksDB 的 WAL 的方案。在崩溃恢复的时候，使用 Raft 的日志去进行 RocksDB 的恢复。因为 RocksDB 是一个 LSMT 结构的系统，它在磁盘上持久化的 SST（Sorted String Table）都是只读的，即使崩溃也只是丢失内存中还没有刷盘的 memtable，这大大简化了崩溃恢复的工作量。</description>
+      <description>自上次更新博客起已经有三年时间了，这期间经历了留学、毕业、工作等很多事情，个中滋味只有自己知道。博客重开，希望文笔和思路上能比以前进步一点点</description>
     </item>
     
   </channel>

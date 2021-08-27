@@ -13,9 +13,7 @@
       <pubDate>Sat, 21 Aug 2021 12:36:51 +0800</pubDate>
       
       <guid>https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/</guid>
-      <description>众所周知，数据库管理系统需要满足数据操作的持久性，即保证操作的请求在返回之前，对应的数据一定是已经保存在非易失性存储中 &amp;ndash; 通常来说，就是磁盘。而大多数数据库系统都是构建在操作系统提供的文件系统之上的，因为不同的存储设备往往有着不同的特性和交互方式，操作系统和文件系统帮助屏蔽了物理细节。当然也不排除直接使用块设备操作或是使用用户空间驱动 (e.g. SPDK) 操作的，其优化思想应当是一样的，本文不做额外讨论。
-存储 Buffered / Direct IO 操作系统和文件系统对存储做了层层封装，最终提供给我们这些通用的操作方式，如下 C 函数所示（摘抄自 macOS 的 manual）：
-// 打开文件描述符 int open(const char *path, int oflag, ...); // 关闭文件描述符 int close(int fd); // 顺序读写 ssize_t read(int fd, void *buf, size_t nbyte); ssize_t write(int fd, const void *buf, size_t nbyte); // 指定 offset 读写 ssize_t pread(int fd, void *buf, size_t nbyte, off_t offset); ssize_t pwrite(int fd, const void *buf, size_t nbyte, off_t offset); 这里面有个不可避免的问题：当我进行一次文件操作的时候，它是否已经写入了磁盘，aka.</description>
+      <description>众所周知，数据库管理系统需要满足数据操作的持久性，即保证操作的请求在返回之前，对应的数据一定是已经保存在非易失性存储中 &amp;ndash; 通常来说，就是磁盘。</description>
     </item>
     
     <item>
@@ -24,11 +22,7 @@
       <pubDate>Tue, 17 Aug 2021 00:00:00 +0000</pubDate>
       
       <guid>https://blog.crazyark.xyz/p/raft-and-share-log/</guid>
-      <description>自上次更新博客起已经有三年时间了，这期间经历了留学、毕业、工作等很多事情，个中滋味只有自己知道。博客重开，希望文笔和思路上能比以前进步一点点。同时因为学识有限，也希望各位大佬能不吝赐教。
-背景 上个月为了学习 rust 语言，参加了阿里云 ECS 团队举办的 CloudBuild 性能挑战赛，用 rust 实现一个聊天室服务器。因为 rust 不熟练初赛只提交了一次，居然也闯进复赛了，也挺有意思的。复赛题目要求服务要部署在三台机器上，同时提供完整的读写服务，且要求宕机一台不影响服务。看到题目后，我直观地想到了使用一致性协议让三台机器关于存储的数据达成一致就可。分布式系统中常用的一致性协议有 Paxos 和 Raft 等，其中 Raft 从原理上来说是一种特化的 Paxos，而且简单易懂。因此我最终决定采用 Raft + RocksDB 的方案进行实现。
-问题 Raft 是一个分布式一致性协议，而 RocksDB 是一个 K-V 数据库，在各自的领域应该都是闻名遐迩，在此不再多做介绍。在方案的实现过程中，碰到不少问题，其中的一个主要问题是：Raft 协议运行过程中需要维护一份日志，而 RocksDB 为了保障持久性，也会维护一份 WAL，这两份日志在数据内容上是高度重合的。这意味着在写入数据的过程中，需要再多写一份，这对于任何关注性能的系统来说都是不能接受的。
-事实上很多分布式数据库系统都已经合并了这两条日志，比如某些魔改的分布式 MySQL 系统，以及 tikv（？我没调研）。他们采用的方案或是将存储引擎的 WAL 扩展支持一致性协议的特殊事件，或是在一致性协议的日志中嵌入一条存储引擎的 WAL，或者对某些特化的系统比如分布式日志系统，干脆直接将 Raft 的日志改造成存储引擎。在 Google 解决方案的过程中，我发现了 eBay 以前的一篇文章[1]，讲的就是如何把日志存储的日志和 Raft 的日志相结合起来，虽然只是一篇 workshop 的文章，但图文讲解还是让我茅塞顿开。
-由于我采用了 RocksDB 作为存储引擎，显然我不希望去修改 RocksDB 的 WAL，这工程量太大了，不够回本的。因此我决定尝试定制 Raft 日志、关闭 RocksDB 的 WAL 的方案。在崩溃恢复的时候，使用 Raft 的日志去进行 RocksDB 的恢复。因为 RocksDB 是一个 LSMT 结构的系统，它在磁盘上持久化的 SST（Sorted String Table）都是只读的，即使崩溃也只是丢失内存中还没有刷盘的 memtable，这大大简化了崩溃恢复的工作量。</description>
+      <description>自上次更新博客起已经有三年时间了，这期间经历了留学、毕业、工作等很多事情，个中滋味只有自己知道。博客重开，希望文笔和思路上能比以前进步一点点</description>
     </item>
     
     <item>
@@ -37,14 +31,7 @@
       <pubDate>Thu, 16 Aug 2018 14:55:23 +0800</pubDate>
       
       <guid>https://blog.crazyark.xyz/p/hash-table-collision/</guid>
-      <description>Hash table &amp;ndash; Collision 在计算机科学中，哈希表 (hash table) 是一个非常重要的数据结构，它帮助我们快速的进行插入和查询。理论上来说，在表中查询一次的耗时应该是 O(1) 的。这里假设大家对于哈希 (hash) 都已经了解，如果你以前没有接触过这个概念，这篇文章或许是一个很好的开始。
-假设你有一个完美的哈希函数 (perfect hashing) 和无穷大的内存，那么哈希表中每一个哈希值都对应了一个原始的元素。显然此时要进行查找，我们只需要算出哈希值，然后找到表中对应的项就可以了。然而现实中不存在无穷大的内存，也不是很容易去找到一个“优秀”的完美哈希，比如最小完美哈希 (minimal perfect hashing)。
-所以实际中，我们不可避免的会碰到哈希冲突 (hash collision) ，也就是两个不同的元素被映射到同一个哈希值上。当一个哈希表碰到哈希冲突的时候，有几种办法去解决它，它们各有优劣，且容我一一道来。
-Hash collision 哈希冲突的解决办法通常是两种，一种叫拉链法 (separate chaining) ，一种叫开地址法 (open addressing)。当然不仅限于这两种，其他的比如 multiple-choice hashing, cuckoo hashing, hopscotch hashing, robin hood hashing 等等，本文挑几种介绍一下。
-Separate chaining 拉链法核心思想就是将哈希冲突的元素存入都存入到链表中，如下图所示，
- Separate Chaining 
-在每个哈希表的单元格中 (hash table cell, 或者我们也称为桶 bucket)，都存放了一个链表头。当哈希冲突发生时，只需要把冲突的元素放到链表中。当需要查找时，先通过哈希值找到对应的单元格，再遍历链表找到想要的元素，此时查找时间是 O(N) 的。这里 N 是链表长度，通常链表不会很长，所以可以认为整体查询时间还是 O(1) 的。大多数标准库中的哈希表时间都是采用了这种方式，因为足够通用，性能也还不错。
-当然我们也可以用一棵 BST 来代替链表，此时查询时间是 O(lgN) 的，但是插入和空间开销要比链表大。Java 的 HashMap 的实现中，当一个哈希单元格的链表长度超过 8 时，就会自动转成一颗红黑树来降低查询开销。</description>
+      <description>Hash table &amp;ndash; Collision 在计算机科学中，哈希表 (hash table) 是一个非常重要的数据结构，它帮助我们快速的进行插入和查询。理论上来说，在表中查询一次的耗时应该是 O(1) 的。这里</description>
     </item>
     
     <item>
@@ -53,12 +40,7 @@ Separate chaining 拉链法核心思想就是将哈希冲突的元素存入都�
       <pubDate>Wed, 01 Aug 2018 19:59:45 +0800</pubDate>
       
       <guid>https://blog.crazyark.xyz/p/awrace-2018/</guid>
-      <description>从报名比赛开始到现在将近四个月了，终于告一段落，最终拿到了季军也很开心。这三个月中我学到了很多有用的工程知识，顺便把 C++ 又摸熟了。初赛代码实在写太丑就不放出来了，复赛的代码托管在 github 上：
-https://github.com/arkbriar/awrace2018_messagestore
-下面是本次大赛初赛和复赛部分的思考过程和最终方案。
-初赛部分 赛题背景分析及理解  实现一个高性能的 Service Mesh Agent 组件，并包含如下一些功能：1. 服务注册与发现, 2. 协议转换, 3. 负载均衡
- 本题要求我们能够尽可能的高性能，我们首先对场景和大致思路进行了一个重述：
- Consumer 将接受超过 500 个连接：想到使用 IO multiplex Http = TCP 连接：禁用 Nagle 算法 Dubbo provider 只有 200 个处理线程，超过 200 个并发请求会快速失败： 负载均衡尽量避免 provider 过载 线上网络性能 (pps) 较差：批量发送 request/response，使用 UDP 进行 Agent 间通信 Consumer 性能较差：将协议转换等放到 provider agent 上去做  核心思路 为了减少系统开销，我们在 agent 之间都只保持一个 udp 信道，在 PA (Provider Agent) 和 Provider 之间也只保持一个 tcp 信道。</description>
+      <description>从报名比赛开始到现在将近四个月了，终于告一段落，最终拿到了季军也很开心。这三个月中我学到了很多有用的工程知识，顺便把 C++ 又摸熟了。初赛代码实在</description>
     </item>
     
     <item>
