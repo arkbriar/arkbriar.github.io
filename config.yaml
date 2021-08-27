@@ -3,6 +3,7 @@ languageCode: zh-cn
 theme: hugo-theme-stack
 paginate: 5
 title: "石沉溪洞 -- Ark's Blog"
+hasCJKLanguage: true
 
 # Change it to your Disqus shortname before using
 disqusShortname: crazyark
