@@ -161,7 +161,7 @@
 <h4 id="pseudocode">Pseudocode</h4>
 <p>匈牙利算法有两种实现，分别基于 DFS 和 BFS，时间复杂度都是 $\mathcal{O}(|V||E|)$。</p>
 <p>下面是 BFS 版本的伪代码：</p>
-<pre><code class="language-pascal" data-lang="pascal">Algorithm MaximumBigartiteMatching(G)
+<pre tabindex="0"><code class="language-pascal" data-lang="pascal">Algorithm MaximumBigartiteMatching(G)
     initialize set M of edges // can be the empty set
     initialize queue Q with all the free vertices in V
     while not Empty(Q) do
@@ -203,7 +203,7 @@
 <p>每一次循环，BFS 所找到的最短增广路径的长度至少增加1，所以在 $\sqrt{|V|}$ 次循环以后，能找到的最短增广路径长度至少为 $\sqrt{|V|}$。假设当前的部分匹配集合为 $M$ (边集)，$M$ 和最大匹配的对称差组成了一组点不相交的增广路径和交替环。如果这个集合内所有的路径的长度都至少为 $\sqrt{|V|}$，那么最多只有 $\sqrt{|V|}$ 条路径，那么最大匹配的大小与 $|M|$ 最多为 $\sqrt{|V|}$。而每次循环至少将匹配大小增加1，所以直到算法结束最多还有 $\sqrt{|V|}$ 次循环。</p>
 <p>每次循环中，BFS 最多遍历图中每条边，DFS 也是最多遍历每条边，所以每一轮循环的时间复杂度为 $\mathcal{O}({|E|})$，总时间复杂度为 $\mathcal{O}({|E|\sqrt{|V|}})$。</p>
 <h4 id="pseudocode-1">Pseudocode</h4>
-<pre><code class="language-pascal" data-lang="pascal">/* 
+<pre tabindex="0"><code class="language-pascal" data-lang="pascal">/* 
  G = U ∪ V ∪ {NIL}
  where U and V are partition of graph and NIL is a special null vertex
 */

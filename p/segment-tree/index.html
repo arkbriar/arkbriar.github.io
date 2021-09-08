@@ -225,7 +225,7 @@
 <h5 id="query-1">Query</h5>
 <p>考虑所有被选中的节点 (上节图中黄色的节点)。查询 $f(1, N - 1)$ 的情况下，有 $\lg N$ 那么多。那么是否会有更多呢？答案是否定的。一个可能最简单的证明是，将选中节点的算法展开，将在 $\mathcal{O}(\lg N)$ 步内终止，也就是之前暗示过的非递归的方式。所以一个查询操作耗时 $\mathcal{O}(\lg N)$ 。对递归版本的证明留作练习。</p>
 <h3 id="implementation">Implementation</h3>
-<pre><code>object rmq_segtree
+<pre tabindex="0"><code>object rmq_segtree
      private function build_rec(node,begin,end,a[])
           if begin = end
                A[node] = a[begin];

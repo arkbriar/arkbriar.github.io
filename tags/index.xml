@@ -6,7 +6,34 @@
     <description>Recent content in Tags on 石沉溪洞 -- Ark&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sat, 21 Aug 2021 12:36:51 +0800</lastBuildDate><atom:link href="https://blog.crazyark.xyz/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 09 Sep 2021 00:37:00 +0800</lastBuildDate><atom:link href="https://blog.crazyark.xyz/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>coroutine</title>
+      <link>https://blog.crazyark.xyz/tags/coroutine/</link>
+      <pubDate>Thu, 09 Sep 2021 00:37:00 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/tags/coroutine/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>go</title>
+      <link>https://blog.crazyark.xyz/tags/go/</link>
+      <pubDate>Thu, 09 Sep 2021 00:37:00 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/tags/go/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>rust</title>
+      <link>https://blog.crazyark.xyz/tags/rust/</link>
+      <pubDate>Thu, 09 Sep 2021 00:37:00 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/tags/rust/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>direct io</title>
       <link>https://blog.crazyark.xyz/tags/direct-io/</link>

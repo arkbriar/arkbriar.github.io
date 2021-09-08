@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>coroutine on 石沉溪洞 -- Ark&#39;s Blog</title>
+    <link>https://blog.crazyark.xyz/tags/coroutine/</link>
+    <description>Recent content in coroutine on 石沉溪洞 -- Ark&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Thu, 09 Sep 2021 00:37:00 +0800</lastBuildDate><atom:link href="https://blog.crazyark.xyz/tags/coroutine/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>代码杂谈：协程</title>
+      <link>https://blog.crazyark.xyz/p/coroutines-rust-and-go/</link>
+      <pubDate>Thu, 09 Sep 2021 00:37:00 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/p/coroutines-rust-and-go/</guid>
+      <description>协程是对子程序（subroutine）的一种扩展，它允许执行流程被挂起和恢复 [1]。 随着越来越多的编程语言的支持，协程这个概念也被更多的人所</description>
+    </item>
+    
+  </channel>
+</rss>

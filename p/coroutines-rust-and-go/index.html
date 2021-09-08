@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='协程是对子程序（subroutine）的一种扩展，它允许执行流程被挂起和恢复 [1]。 随着越来越多的编程语言的支持，协程这个概念也被更多的人所'><title>代码杂谈：协程</title>
+
+<link rel='canonical' href='https://blog.crazyark.xyz/p/coroutines-rust-and-go/'>
+
+<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='代码杂谈：协程'>
+<meta property='og:description' content='协程是对子程序（subroutine）的一种扩展，它允许执行流程被挂起和恢复 [1]。 随着越来越多的编程语言的支持，协程这个概念也被更多的人所'>
+<meta property='og:url' content='https://blog.crazyark.xyz/p/coroutines-rust-and-go/'>
+<meta property='og:site_name' content='石沉溪洞 -- Ark&#39;s Blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='coroutine' /><meta property='article:tag' content='rust' /><meta property='article:tag' content='go' /><meta property='article:published_time' content='2021-09-09T00:37:00&#43;08:00'/><meta property='article:modified_time' content='2021-09-09T00:37:00&#43;08:00'/><meta property='og:image' content='https://blog.crazyark.xyz/p/coroutines-rust-and-go/img/coroutines_how.jpg' />
+<meta name="twitter:site" content="@ImperiusDs">
+    <meta name="twitter:creator" content="@ImperiusDs"><meta name="twitter:title" content="代码杂谈：协程">
+<meta name="twitter:description" content="协程是对子程序（subroutine）的一种扩展，它允许执行流程被挂起和恢复 [1]。 随着越来越多的编程语言的支持，协程这个概念也被更多的人所"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://blog.crazyark.xyz/p/coroutines-rust-and-go/img/coroutines_how.jpg' />
+    </head>
+    <body class="
+    article-page has-toc
+">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex 
+    
+        extended
+    
+">
+    
+        <div id="article-toolbar">
+            <a href="https://blog.crazyark.xyz" class="back-home">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="15 6 9 12 15 18" />
+</svg>
+
+
+
+                <span>返回</span>
+            </a>
+        </div>
+    
+<main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/p/coroutines-rust-and-go/">
+                <img src="/p/coroutines-rust-and-go/img/coroutines_how_hu2f1e02e515e351c311ec896043222feb_132661_800x0_resize_q75_box.jpg"
+                        srcset="/p/coroutines-rust-and-go/img/coroutines_how_hu2f1e02e515e351c311ec896043222feb_132661_800x0_resize_q75_box.jpg 800w, /p/coroutines-rust-and-go/img/coroutines_how_hu2f1e02e515e351c311ec896043222feb_132661_1600x0_resize_q75_box.jpg 1600w"
+                        width="800" 
+                        height="386" 
+                        loading="lazy"
+                        alt="Featured image of post 代码杂谈：协程" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/coroutine/" >
+                Coroutine
+            </a>
+        
+    </header>
+    
+
+    <h2 class="article-title">
+        <a href="/p/coroutines-rust-and-go/">代码杂谈：协程</a>
+    </h2>
+
+    
+
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Sep 09, 2021</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 11 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+</div>
+</header>
+
+    <section class="article-content">
+    <blockquote>
+<p>协程是对子程序（subroutine）的一种扩展，它允许执行流程被挂起和恢复 [1]。</p>
+</blockquote>
+<p>随着越来越多的编程语言的支持，协程这个概念也被更多的人所知晓。协程定义了一种通用的控制流的交互方式。
+通常来说（根据最初的定义），协程的执行是协作式的。换句话说，控制流的转移是主动的、协作的，这与线程的抢占式调度有着很大的区别。
+使用协程可以很优雅地实现一些概念，比如事件循环、迭代器、无限长的列表（generator）等，举一个经典的 Python 的例子：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python3" data-lang="python3"><span class="c1"># 实现一个无限长的从 0 开始的 range</span>
+<span class="c1"># yield 时挂起当前协程，并把控制权交给 caller</span>
+<span class="k">def</span> <span class="nf">infinite_range</span><span class="p">():</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+      <span class="k">yield</span> <span class="n">i</span>
+      <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+</code></pre></div><p>目前已经有很多语言原生地支持了协程，比如 Python、Kotlin、Go 和 Rust 等。本文主要想聊一下其中的两个语言：Go 和 Rust。这两个语言典型地代表了协程的呈现和实现方式，对于理解协程有比较好的帮助。</p>
+<p>注：虽然 Go 的 goroutine 通常也被归类为协程，但是协程的古典概念还是应该是协作式子例程。Go 在 1.14 版本实现了 [3] 中提出的非协作式抢占，也就是抢占式调度。Go 官方为了和进程、线程、协程等已有概念作区别新创了 goroutine 这个词 [2]。我个人也更喜欢用 goroutine 来指代 Go 中实现的轻量级并发的概念。</p>
+<h2 id="协程">协程</h2>
+<p>关于支持协程的理由不再过多介绍，本文主要想以 Rust 和 Go 为例，聊一下协程的几种形式、实现和现状。</p>
+<p>协程的编程模型有很多种，最常见的就是 async/await 模型，Rust 提供的就是这种。相对而言，Go 提供的 <code>go</code> 关键字更像启动一个用户态线程，使用起来比 async/await 更加简洁。</p>
+<p>在实现上，通常分为两种，也就是常说的有栈协程和无栈协程。这里的栈指的是每个协程是否拥有独立的栈空间，像 Go 提供的 goroutine 是典型的有栈实现，每一个 goroutine 在自己的栈空间上执行。而 Rust 提供的则是典型的无栈协程，无栈协程的运行方式类似于一个巨大的状态机。这么说你可能不能一下子在脑中构建运行时的状态，待会会展开讲讲 Rust 是如何运行它的协程的。</p>
+<p>如前文所说，协程通常是协作式的，但现代的一些高级编程语言还是实现了抢占式的调度。在介绍 goroutine 的过程中，本文也会大概介绍下协作式和抢占式的原理，以及相应的理由和演进过程。</p>
+<h3 id="go----just-go">Go &ndash; Just go</h3>
+<p>熟悉 Go 语言的同学都知道，它提供了一个简单易用的并发使用方式 &ndash; <code>go</code>。通过在函数调用前加上 <code>go</code> 关键字，就可以并发地执行它的逻辑：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">handleTasks</span><span class="p">(</span><span class="nx">ctx</span><span class="p">:</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span> <span class="nx">taskChan</span><span class="p">:</span> <span class="o">&lt;-</span> <span class="kd">chan</span> <span class="nx">Task</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="p">{</span>
+        <span class="k">select</span> <span class="p">{</span>
+            <span class="k">case</span> <span class="o">&lt;-</span> <span class="nx">ctx</span><span class="p">.</span><span class="nf">Done</span><span class="p">():</span>
+                <span class="k">return</span>
+            <span class="k">case</span> <span class="nx">task</span> <span class="o">:=</span> <span class="o">&lt;-</span> <span class="nx">taskChan</span><span class="p">:</span>
+                <span class="nf">handle</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="nx">task</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">startTaskHandler</span><span class="p">(</span><span class="nx">ctx</span><span class="p">:</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">,</span> <span class="nx">taskChan</span><span class="p">:</span> <span class="o">&lt;-</span> <span class="kd">chan</span> <span class="nx">Task</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// With simple `go`, we start a task handler which runs in the 
+</span><span class="c1"></span>    <span class="c1">// background asynchronously and concurrently.
+</span><span class="c1"></span>    <span class="k">go</span> <span class="nf">handleTasks</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="nx">taskChan</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div><p>上面的示例中启动了一个异步的任务处理器。Go 将它启动的异步单元称为 goroutine &ndash; 它看上去更像是一个线程。当然，本文还是以协程的视角来描述 Go 中 goroutine 的模型和运行方式，因此以下的协程也代指 goroutine。</p>
+<p>Go 的协程实现是所谓的有栈协程。每一个协程在启动的时候，runtime 都需要为它分配一块栈内存 &ndash; 之后协程的运行就发生在这一块栈上。有栈协程的运行方式很像线程，因此相比于抽象的无栈协程，也更加的容易理解。在有栈协程的实现中，每一个协程都可以是一个可调度的单元，也就是说只要环境支持，可以并行（而非并发）地运行。</p>
+<p>同操作系统提供的线程一样，协程在执行一些阻塞调用的时候会陷入 runtime，由 runtime 来负责阻塞调用的转换/执行、以及后续的调度。同样，当对应调用完成时 runtime 会唤醒对应的协程，重新调度执行它。当然实际上的情况要更加复杂一点，比如，思考一下 Linux 上文件 IO 和网络 IO 的调用会有什么不同？</p>
+<p>当然，Go 中协程的切换方式并不是只有阻塞调用这一种。Go 为了协程调度的公平起见（防止 CPU 密集协程占满计算资源把其他协程饿死），设计了一些切换点（suspend point），经典的比如：</p>
+<ul>
+<li>函数调用检查：调用函数时检查是否应该让出控制权</li>
+<li>循环回边检查：下一次循环开始前检查是否应该让出控制权</li>
+</ul>
+<p>早期的 Go 没有循环回边检查，导致了在一些场景下程序整个 hang 死的情况。这些切换点被 Go 的编译器自动地编织到代码中。通过这种方式，Go 实现了所谓的“协作式”调度。可以想见，为了性能考虑，这些检查的实现方式无非是通过计数器来判断当前调用/循环累计次数是否到达阈值，或是当前已执行时间是否达到阈值，从而判断该不该切换了。（思考一下，为啥不能统统判断执行时间？）</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="c1">// Cooperative Preemption
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">doSomething</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// Compiler inserts (Just example).
+</span><span class="c1"></span>    <span class="nx">runtime</span><span class="p">.</span><span class="nf">CheckIfWeAreGoingToBeSched</span><span class="p">()</span> 
+
+    <span class="c1">// Do something...
+</span><span class="c1"></span><span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">doSomethingInLoop</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mf">1e8</span><span class="p">;</span> <span class="nx">i</span> <span class="o">++</span> <span class="p">{</span>
+        <span class="c1">// Compiler inserts (Just example).
+</span><span class="c1"></span>        <span class="k">if</span> <span class="nx">i</span> <span class="o">%</span> <span class="mf">1e7</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+            <span class="nx">runtime</span><span class="p">.</span><span class="nf">GoSched</span><span class="p">()</span>
+        <span class="p">}</span>
+        <span class="c1">// Do something...
+</span><span class="c1"></span>    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p>这种方式虽然在能解决问题，但在一些紧的循环（tight loop）还是会造成无法接受的性能下降。因此在 [3] 中 Austin 提出了非协作式的调度，并且 Go 在 1.14 中首次实现了基于 signal 的抢占式调度。个人认为，从这里开始 goroutine 和经典协程的定义越来越远，更接近于用户态线程。</p>
+<p>Go 的调度模型 MPG 相信也是大名鼎鼎了，这里不再赘述，放一张从 [8] 中借鉴的图：</p>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 214; 
+			flex-basis: 514px"
+	>
+	<a href="/p/coroutines-rust-and-go/img/go_pmg_model.png" data-size="1096x511">
+		<img src="/p/coroutines-rust-and-go/img/go_pmg_model.png"
+			width="1096"
+			height="511"
+			srcset="/p/coroutines-rust-and-go/img/go_pmg_model_hu52f8e98d226cf3189a3251cab0119b0c_24280_480x0_resize_box_3.png 480w, /p/coroutines-rust-and-go/img/go_pmg_model_hu52f8e98d226cf3189a3251cab0119b0c_24280_1024x0_resize_box_3.png 1024w"
+			loading="lazy"
+			alt="Go Runtime">
+	</a>
+	
+	<figcaption>Go Runtime</figcaption>
+	
+</figure></p>
+<p>当然，Go 目前的调度实现和诸如 Linux 的线程调度实现还是有所区别的，例如它还无法支持 goroutine 的优先级设置。根据 TYGG 的说法，TiDB 在项目过程中因为 TSO goroutine 的阻塞导致了系统整体性能的下降，这仍然是一个值得优化的点。</p>
+<h3 id="rust----asyncawait">Rust &ndash; async/await</h3>
+<p>相信每一个 Rust 新手都看过这篇介绍 Asynchronous Programming 的文档 [4]，但是这篇文档属实有一点新手不友好，看完以后还是一头雾水。因此我决定在本篇中着重介绍下 Rust 的模型，以及它是如何被运行起来的。</p>
+<p>Rust 的协程采用的是常见的 async/await 模型。<code>async</code> 标志了对应的代码块是可以异步运行的，对应了一个协程。<code>await</code> 则代表等待异步执行结束，对应异步代码块中对协程的调用。采用 async/await 可以让开发者用一种同步的方式编写异步代码，因此颇受欢迎。但是 async 和 sync 的不同的编程模型，使得对同步代码的异步化改造将会非常困难，通常需要从底层开始重写。相比之下，Go 在这方面更加友好。</p>
+<h4 id="future">Future</h4>
+<p>Async/Await 的模型的通常是通过无栈协程实现的。如前文所述，无栈指的是协程没有一个独立的栈。在协程运行时，是和其他协程用的同一块栈空间。Rust 的 async 语义实现非常直接，它就是一个编译器提供的语法糖 &ndash; 将 async 的代码块/函数等价转成返回一个 Future 的代码块/函数，如下所示：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="k">async</span><span class="w"> </span><span class="k">fn</span> <span class="nf">do_something_async</span><span class="p">()</span><span class="w"> </span>-&gt; <span class="kt">u32</span> <span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="c1">// user codes
+</span><span class="c1"></span><span class="w">    </span><span class="c1">// ...
+</span><span class="c1"></span><span class="p">}</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="c1">// 等价于
+</span><span class="c1"></span><span class="k">fn</span> <span class="nf">do_something_async</span><span class="p">()</span><span class="w"> </span>-&gt; <span class="nc">impl</span><span class="w"> </span><span class="n">Future</span><span class="o">&lt;</span><span class="n">Output</span>: <span class="kt">u32</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="n">Future</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">        </span><span class="c1">// compiler specific transform
+</span><span class="c1"></span><span class="w">        </span><span class="c1">// ...
+</span><span class="c1"></span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span></code></pre></div><p>这个 Future 就代表了协程，它内部是一个状态机。Future 在 Rust 里是一个 trait：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="k">pub</span><span class="w"> </span><span class="k">trait</span><span class="w"> </span><span class="n">Future</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="k">type</span> <span class="nc">Output</span><span class="p">;</span><span class="w">
+</span><span class="w">    </span><span class="k">fn</span> <span class="nf">poll</span><span class="p">(</span><span class="bp">self</span>: <span class="nc">Pin</span><span class="o">&lt;&amp;</span><span class="k">mut</span><span class="w"> </span><span class="n">Self</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">cx</span>: <span class="kp">&amp;</span><span class="nc">mut</span><span class="w"> </span><span class="n">Context</span><span class="o">&lt;</span><span class="na">&#39;_</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">Poll</span><span class="o">&lt;</span><span class="n">Self</span>::<span class="n">Output</span><span class="o">&gt;</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="k">pub</span><span class="w"> </span><span class="k">enum</span> <span class="nc">Poll</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="n">Ready</span><span class="p">(</span><span class="n">T</span><span class="p">),</span><span class="w">
+</span><span class="w">    </span><span class="n">Pending</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span></code></pre></div><p>Future 提供了一个 poll 函数，我们先不管参数里面 Pin 和 Context 是什么意思。从声明上看，它的执行方式就是循环地调用 Future::poll，直到返回 Ready 表示执行完成。</p>
+<p>到目前为止，我们并不需要关心 Future 内部是如何实现的，只要知道执行 poll 它就能运行下去了。显然，poll 是一个被动式的接口，需要一个 runtime 不停地驱动它执行。遗憾的是，在 Rust 的标准库中这一部分是缺失的。目前在 Rust 上能提供 runtime 的有几个三方库，其中包括著名的 tokio 和 async-std。以后聊 Rust 异步并发的时候，tokio 的实现是我重点参考的对象。</p>
+<p>假设我们已经有一个 runtime 能够调用 poll 来驱动 Future 所代表的的协程往前推进了，那么很有可能 Future::poll 的第一次调用并不会返回 Ready。这个时候我们需要考虑一个问题：什么时候需要再次执行这个 Future？</p>
+<p>Rust 显然已经考虑过这个问题了，它在标准库里提供了一个叫 Waker 的类型：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="k">pub</span><span class="w"> </span><span class="k">struct</span> <span class="nc">Waker</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* fields omitted */</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="k">impl</span><span class="w"> </span><span class="n">Waker</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="c1">// 当 wake 或者 wake_by_ref 被调用时，意味着对应的 Future 需要被再次执行
+</span><span class="c1"></span><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">wake</span><span class="p">(</span><span class="bp">self</span><span class="p">);</span><span class="w">
+</span><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">wake_by_ref</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">);</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span></code></pre></div><p>直观地想，好像不同的 Future 需要有不同的 Waker。但实际上不是这个意思，Waker 只是通知 runtime 某个协程可以继续执行了，因此 runtime 只需要把协程加入待运行队列就好。Rust 中 Waker 的自定义方式比较特殊，它需要手动地绑定对应的数据和函数的指针（vtable），从而达到自定义 Waker 的目的，有兴趣的同学可以自行了解下。有了 Waker 之后，我们就可以定义什么时候将 Future 再次唤醒并执行了。当然里面还涉及到一些问题，大家先有这么一个概念就好，待会会一一细说。</p>
+<p>现在来看一个简单的 async 代码：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="k">use</span><span class="w"> </span><span class="n">tokio</span>::<span class="n">io</span>::<span class="p">{</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">AsyncReadExt</span><span class="p">};</span><span class="w">
+</span><span class="w"></span><span class="k">use</span><span class="w"> </span><span class="n">tokio</span>::<span class="n">net</span>::<span class="n">TcpStream</span><span class="p">;</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="k">async</span><span class="w"> </span><span class="k">fn</span> <span class="nf">echo_handle</span><span class="p">(</span><span class="n">socket</span>: <span class="nc">TcpStream</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">io</span>::<span class="nb">Result</span><span class="o">&lt;</span><span class="p">()</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">buf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vec</span><span class="o">!</span><span class="p">[</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="mi">1024</span><span class="p">];</span><span class="w">
+</span><span class="w">    </span><span class="c1">// Loop writing everything read from socket.
+</span><span class="c1"></span><span class="w">    </span><span class="k">loop</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">        </span><span class="k">match</span><span class="w"> </span><span class="n">socket</span><span class="p">.</span><span class="n">read</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="n">buf</span><span class="p">).</span><span class="k">await</span><span class="o">?</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">            </span><span class="nb">Ok</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">                </span><span class="c1">// Remote has closed, break loop.
+</span><span class="c1"></span><span class="w">                </span><span class="k">break</span><span class="p">;</span><span class="w">
+</span><span class="w">            </span><span class="p">}</span><span class="w">
+</span><span class="w">            </span><span class="nb">Ok</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">                </span><span class="c1">// Copy the data back to socket.
+</span><span class="c1"></span><span class="w">                </span><span class="n">socket</span><span class="p">.</span><span class="n">write_all</span><span class="p">(</span><span class="o">&amp;</span><span class="n">buf</span><span class="p">[..</span><span class="n">n</span><span class="p">]).</span><span class="k">await</span><span class="o">?</span><span class="p">;</span><span class="w">
+</span><span class="w">            </span><span class="p">}</span><span class="w">
+</span><span class="w">        </span><span class="p">}</span><span class="w">
+</span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w">    </span><span class="nb">Ok</span><span class="p">(())</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span></code></pre></div><p>这段代码实现了一个简易 echo server 的 handler，其中出现了 await 这个关键字。众所周知，await 语义上表示异步等待 async 完成，在 Rust 的实现中也就是等待对应的 Future 完成。我们稍微抽象一下，上面的代码从运行结构上来说大概长这样：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="k">async</span><span class="w"> </span><span class="k">fn</span> <span class="nf">echo_handle</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="c1">// Do something synchronous here.
+</span><span class="c1"></span><span class="w">    </span><span class="c1">// ...
+</span><span class="c1"></span><span class="w">
+</span><span class="w"></span><span class="n">LOOP</span>:
+    <span class="c1">// Create the first future.
+</span><span class="c1"></span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">fut1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">create_socket_read_fut</span><span class="p">();</span><span class="w">
+</span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fut1</span><span class="p">.</span><span class="k">await</span><span class="p">;</span><span class="w">
+</span><span class="w">
+</span><span class="w">    </span><span class="c1">// Do something else synchronous here.
+</span><span class="c1"></span><span class="w">    </span><span class="c1">// ...
+</span><span class="c1"></span><span class="w">
+</span><span class="w">    </span><span class="c1">// Create the second future.
+</span><span class="c1"></span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">fut2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">create_socket_write_all_fut</span><span class="p">();</span><span class="w">
+</span><span class="w">    </span><span class="n">fut2</span><span class="p">.</span><span class="k">await</span><span class="p">;</span><span class="w">
+</span><span class="w">
+</span><span class="w">    </span><span class="c1">// Do something synchronous here.
+</span><span class="c1"></span><span class="w">    </span><span class="c1">// ...
+</span><span class="c1"></span><span class="w">
+</span><span class="w">    </span><span class="n">goto</span><span class="w"> </span><span class="n">LOOP</span><span class="p">;</span><span class="w">
+</span><span class="w">
+</span><span class="w">    </span><span class="c1">// Do the left, either synchronously or asynchronously, 
+</span><span class="c1"></span><span class="w">    </span><span class="c1">// or loop from the some block above.
+</span><span class="c1"></span><span class="w">    </span><span class="c1">// ...
+</span><span class="c1"></span><span class="p">}</span><span class="w">
+</span></code></pre></div><p>所以 await 是怎么实现的？与 async 一样，await 是 Rust 语言提供的另一个语法糖，编译器会自动将它转换成对 poll 的调用。最终这段代码将变成如下的样子：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="k">enum</span> <span class="nc">State</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="nb">Sync</span><span class="p">(</span><span class="kt">u32</span><span class="p">),</span><span class="w">
+</span><span class="w">    </span><span class="n">Async</span><span class="p">(</span><span class="kt">u32</span><span class="p">),</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="k">struct</span> <span class="nc">EchoHandleFuture</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="n">state</span>: <span class="nc">State</span><span class="p">,</span><span class="w">
+</span><span class="w">    </span><span class="n">fut1</span>: <span class="nc">Pin</span><span class="o">&lt;&amp;</span><span class="k">mut</span><span class="w"> </span><span class="n">SocketRead</span><span class="o">&gt;</span><span class="p">,</span><span class="w">
+</span><span class="w">    </span><span class="n">fut2</span>: <span class="nc">Pin</span><span class="o">&lt;&amp;</span><span class="k">mut</span><span class="w"> </span><span class="n">SocketWrite</span><span class="o">&gt;</span><span class="p">,</span><span class="w">
+</span><span class="w">    </span><span class="c1">// other contexts...
+</span><span class="c1"></span><span class="p">}</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="k">impl</span><span class="w"> </span><span class="n">Future</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">EchoHandleFuture</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="k">type</span> <span class="nc">Output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">();</span><span class="w">
+</span><span class="w">
+</span><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">poll</span><span class="p">(</span><span class="bp">self</span>: <span class="nc">Pin</span><span class="o">&lt;&amp;</span><span class="k">mut</span><span class="w"> </span><span class="n">Self</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">cx</span>: <span class="kp">&amp;</span><span class="nc">mut</span><span class="w"> </span><span class="n">Context</span><span class="o">&lt;</span><span class="na">&#39;_</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">Poll</span><span class="o">&lt;</span><span class="n">Self</span>::<span class="n">Output</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">        </span><span class="k">loop</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">            </span><span class="k">match</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">state</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">                </span><span class="nb">Sync</span><span class="p">(</span><span class="n">STATE_1</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">                    </span><span class="bp">self</span><span class="p">.</span><span class="n">sync_block_1</span><span class="p">();</span><span class="w">
+</span><span class="w">                    </span><span class="bp">self</span><span class="p">.</span><span class="n">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Sync</span><span class="p">(</span><span class="n">STATE_2</span><span class="p">);</span><span class="w">     </span><span class="c1">// Go to STATE_2 sync;
+</span><span class="c1"></span><span class="w">                </span><span class="p">}</span><span class="w">
+</span><span class="w">                </span><span class="nb">Sync</span><span class="p">(</span><span class="n">STATE_2</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">                    </span><span class="bp">self</span><span class="p">.</span><span class="n">fut1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pin</span><span class="o">!</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">create_socket_read_fut</span><span class="p">());</span><span class="w">
+</span><span class="w">                    </span><span class="bp">self</span><span class="p">.</span><span class="n">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Async</span><span class="p">(</span><span class="n">STATE_3</span><span class="p">);</span><span class="w">    </span><span class="c1">// Go to STATE_3 async;
+</span><span class="c1"></span><span class="w">                </span><span class="p">}</span><span class="w">
+</span><span class="w">                </span><span class="n">Async</span><span class="p">(</span><span class="n">STATE_3</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">match</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">fut1</span><span class="p">.</span><span class="n">poll</span><span class="p">(</span><span class="n">cx</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">                    </span><span class="n">Pending</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">Pending</span><span class="p">,</span><span class="w">      </span><span class="c1">// Wait until fut1 ready;
+</span><span class="c1"></span><span class="w">                    </span><span class="n">Ready</span><span class="p">(</span><span class="n">_</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">                        </span><span class="c1">// Record the result here.  
+</span><span class="c1"></span><span class="w">                        </span><span class="bp">self</span><span class="p">.</span><span class="n">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Sync</span><span class="p">(</span><span class="n">STATE_4</span><span class="p">);</span><span class="w"> </span><span class="c1">// Go to STATE_4 sync;
+</span><span class="c1"></span><span class="w">                    </span><span class="p">}</span><span class="w">
+</span><span class="w">                </span><span class="p">},</span><span class="w">
+</span><span class="w">                </span><span class="nb">Sync</span><span class="p">(</span><span class="n">STATE_4</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">                    </span><span class="bp">self</span><span class="p">.</span><span class="n">sync_block_2</span><span class="p">();</span><span class="w">            
+</span><span class="w">                    </span><span class="bp">self</span><span class="p">.</span><span class="n">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Sync</span><span class="p">(</span><span class="n">STATE_5</span><span class="p">);</span><span class="w">     </span><span class="c1">// Go to STATE_5 sync;
+</span><span class="c1"></span><span class="w">                </span><span class="p">}</span><span class="w">
+</span><span class="w">                </span><span class="nb">Sync</span><span class="p">(</span><span class="n">STATE_5</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">                    </span><span class="bp">self</span><span class="p">.</span><span class="n">fut2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pin</span><span class="o">!</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">create_socket_write_all_fut</span><span class="p">());</span><span class="w">
+</span><span class="w">                    </span><span class="bp">self</span><span class="p">.</span><span class="n">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Async</span><span class="p">(</span><span class="n">STATE_6</span><span class="p">);</span><span class="w">    </span><span class="c1">// Go to STATE_6 async;
+</span><span class="c1"></span><span class="w">                </span><span class="p">}</span><span class="w">
+</span><span class="w">                </span><span class="n">Async</span><span class="p">(</span><span class="n">STATE_6</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">match</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">fut2</span><span class="p">.</span><span class="n">poll</span><span class="p">(</span><span class="n">cx</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">                    </span><span class="n">Pending</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">Pending</span><span class="p">,</span><span class="w">      </span><span class="c1">// Wait until fut2 ready;
+</span><span class="c1"></span><span class="w">                    </span><span class="n">Ready</span><span class="p">(</span><span class="n">_</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">                        </span><span class="bp">self</span><span class="p">.</span><span class="n">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Sync</span><span class="p">(</span><span class="n">STATE_7</span><span class="p">);</span><span class="w"> </span><span class="c1">// Go to STATE_7 sync;
+</span><span class="c1"></span><span class="w">                    </span><span class="p">}</span><span class="w">
+</span><span class="w">                </span><span class="p">},</span><span class="w">
+</span><span class="w">                </span><span class="nb">Sync</span><span class="p">(</span><span class="n">STATE_7</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">                    </span><span class="bp">self</span><span class="p">.</span><span class="n">sync_block_3</span><span class="p">();</span><span class="w">
+</span><span class="w">                    </span><span class="bp">self</span><span class="p">.</span><span class="n">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Sync</span><span class="p">(</span><span class="n">STATE_2</span><span class="p">);</span><span class="w">     </span><span class="c1">// Loop from STATE_2, i.e. fut1;
+</span><span class="c1"></span><span class="w">                </span><span class="p">},</span><span class="w">
+</span><span class="w">                </span><span class="c1">// Other states, either sync or async.
+</span><span class="c1"></span><span class="w">                </span><span class="c1">// ...
+</span><span class="c1"></span><span class="w">            </span><span class="p">}</span><span class="w">
+</span><span class="w">        </span><span class="p">}</span><span class="w">
+</span><span class="w">        </span><span class="n">Ready</span><span class="p">(())</span><span class="w"> </span><span class="c1">// Finally we are ready.
+</span><span class="c1"></span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span></code></pre></div><p>这一段代码是我人肉翻译的，没有细究 Rust 编译器的真实行为，但基本的思想是一致的。可以看到上述的状态机中，因为在展开过程中无法得知 runtime，context 是简单地从父 Future 一路传递给子 Future。同样，Rust 在编译时也无法得知 runtime 的存在，因此无法做出额外的操作，也是简单的传递 context，这在特殊情况下会引起奇怪的问题 [7]。
+既然我们已经知道的状态机的形状，我们可以得知以下两个信息：</p>
+<ul>
+<li>async 代码块/函数是顺序执行的，它内部可以存在两个 future 是并发的，但绝对不会是并行（in parallel）的
+<ul>
+<li>细心的同学会发现 await 并不能实现并发，例子中 fut1 和 fut2 就是顺序执行的，但实际上我们可以简单用如下方式实现两个 Future 的交替执行（并发），用这种思想我们可以实现很多有意思的语义，比如 select / join all 等；</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="k">struct</span> <span class="nc">JoinFuture</span><span class="o">&lt;</span><span class="n">F1</span><span class="p">,</span><span class="w"> </span><span class="n">F2</span><span class="o">&gt;</span><span class="w">
+</span><span class="w"></span><span class="k">where</span><span class="w">
+</span><span class="w">    </span><span class="n">F1</span>: <span class="nc">Future</span><span class="o">&lt;</span><span class="n">Output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">()</span><span class="o">&gt;</span><span class="p">,</span><span class="w">
+</span><span class="w">    </span><span class="n">F2</span>: <span class="nc">Future</span><span class="o">&lt;</span><span class="n">Output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">()</span><span class="o">&gt;</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="n">fut1</span>: <span class="nc">Pin</span><span class="o">&lt;&amp;</span><span class="k">mut</span><span class="w"> </span><span class="n">F1</span><span class="o">&gt;</span><span class="p">,</span><span class="w">
+</span><span class="w">    </span><span class="n">fut1_done</span>: <span class="kt">bool</span><span class="p">,</span><span class="w">
+</span><span class="w">    </span><span class="n">fut2</span>: <span class="nc">Pin</span><span class="o">&lt;&amp;</span><span class="k">mut</span><span class="w"> </span><span class="n">F2</span><span class="o">&gt;</span><span class="p">,</span><span class="w">
+</span><span class="w">    </span><span class="n">fut2_done</span>: <span class="kt">bool</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="k">impl</span><span class="o">&lt;</span><span class="n">F1</span><span class="p">,</span><span class="w"> </span><span class="n">F2</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Future</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">JoinFuture</span><span class="o">&lt;</span><span class="n">F1</span><span class="p">,</span><span class="w"> </span><span class="n">F2</span><span class="o">&gt;</span><span class="w">
+</span><span class="w"></span><span class="k">where</span><span class="w">
+</span><span class="w">    </span><span class="n">F1</span>: <span class="nc">Future</span><span class="o">&lt;</span><span class="n">Output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">()</span><span class="o">&gt;</span><span class="p">,</span><span class="w">
+</span><span class="w">    </span><span class="n">F2</span>: <span class="nc">Future</span><span class="o">&lt;</span><span class="n">Output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">()</span><span class="o">&gt;</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="k">type</span> <span class="nc">Output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">();</span><span class="w">
+</span><span class="w">
+</span><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="k">fn</span> <span class="nf">poll</span><span class="p">(</span><span class="bp">self</span>: <span class="nc">Pin</span><span class="o">&lt;&amp;</span><span class="k">mut</span><span class="w"> </span><span class="n">Self</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">cx</span>: <span class="kp">&amp;</span><span class="nc">mut</span><span class="w"> </span><span class="n">Context</span><span class="o">&lt;</span><span class="na">&#39;_</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">Poll</span><span class="o">&lt;</span><span class="n">Self</span>::<span class="n">Output</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">!</span><span class="bp">self</span><span class="p">.</span><span class="n">fut1_done</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="kd">let</span><span class="w"> </span><span class="n">Ready</span><span class="p">(</span><span class="n">_</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">fut1</span><span class="p">.</span><span class="n">poll</span><span class="p">(</span><span class="n">cx</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">                </span><span class="n">fut1_done</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span><span class="w">
+</span><span class="w">            </span><span class="p">}</span><span class="w">
+</span><span class="w">        </span><span class="p">}</span><span class="w">
+</span><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="o">!</span><span class="bp">self</span><span class="p">.</span><span class="n">fut2_done</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="kd">let</span><span class="w"> </span><span class="n">Ready</span><span class="p">(</span><span class="n">_</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">fut2</span><span class="p">.</span><span class="n">poll</span><span class="p">(</span><span class="n">cx</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">                </span><span class="n">fut2_done</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span><span class="w">
+</span><span class="w">            </span><span class="p">}</span><span class="w">
+</span><span class="w">        </span><span class="p">}</span><span class="w">
+</span><span class="w">
+</span><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">fut1_done</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">fut2_done</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">            </span><span class="n">Ready</span><span class="p">(())</span><span class="w">
+</span><span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">            </span><span class="n">Pending</span><span class="w">
+</span><span class="w">        </span><span class="p">}</span><span class="w">
+</span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span></code></pre></div><ul>
+<li>runtime 在没有运行起来前，是无法感知 async 代码块中的子 Future 的存在的</li>
+</ul>
+<p>所以，所有的 async runtime 的基本调度单位都是顶层的 Future，通常它们会被封装成一个 Task。Task 内部的运行一定不是并行的，Task 间才能并行。因此类似 tokio 等运行时实现都提供了和线程一样的 <code>spawn</code> 方法用来启动一个可以并行执行的协程。为了方便起见，之后将 runtime 能感知的顶层 Future 统称为任务（Task），它是 runtime 的基本调度单位。</p>
+<h4 id="waker">Waker</h4>
+<p>在了解了 Rust 中协程的呈现形式 &ndash; async/await 的基本原理之后，我们来看一下之前所说的 Waker。</p>
+<p>在任务的完整运行过程中，可能会涉及到多次暂停、恢复的过程。显然，每次的任务的唤醒条件都可能不同。以上面的代码为例，socket.read 需要在对应的 socket 有读事件时唤醒，而 socket.write 需要在有写事件时唤醒，因此运行时是无法在一开始就得知任务需要在何时唤醒的。现在我们可以关注 Future::poll 的 Context 参数了，从文档中我们可以得知 Context 主要用于获取自身 waker 的引用。调用 waker.wake() 可以将所在的任务唤醒，即重新加入调度队列。Rust 的这种设计将 Waker 和事件驱动器的绑定下推给了一些基本的 Future，例如 SocketRead。当 SocketRead 需要让出控制权前，需要将它的 Waker 和事件驱动器绑定起来，从而保证事件驱动器中的事件发生时会将它所在的任务唤醒起来。当然，这些基本 Future 和事件驱动器都需要有人实现，并由运行时启动起来。</p>
+<p>在运行期间，Future 获取的 Waker 是由运行时传递进来的，理论上来说它仅能感知 Future 所在的任务。设想我们有如下代码：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="k">async</span><span class="w"> </span><span class="k">fn</span> <span class="nf">do</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">fut1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">do_action1</span><span class="p">();</span><span class="w">
+</span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">fut2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">do_action2</span><span class="p">();</span><span class="w">
+</span><span class="w">
+</span><span class="w">    </span><span class="n">join_all</span><span class="o">!</span><span class="p">(</span><span class="n">fut1</span><span class="p">,</span><span class="w"> </span><span class="n">fut2</span><span class="p">).</span><span class="k">await</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span></code></pre></div><p>其中 <code>join_all</code> 的语义是完成所有的子任务。在上文中有一个该语义的简单实现：每当任务被唤醒时，poll 一下所有的子 Future 来推进运行状态。显然，当子 Future 数量多时，这个实现会出现性能问题。在 <code>futures</code> 这个 crate 中提供了一个实现 <code>FuturesUnordered</code>，它针对大量子 Future 的 join 做了一个优化：任务被唤醒的时候只有相应的 Future 被再次 poll，也就是实现了对任务内部 Future 的感知。简单来说，<code>FuturesUnordered</code> 维护了一个 active 的 Future 的队列，且在 poll 内部 Future 时使用了它增强过后的 Waker &ndash; 在 wake 的同时将 Future 放入 active 队列中。实现细节可以参考代码，这里不再赘述。</p>
+<h4 id="yield">Yield</h4>
+<p>Future 的执行是一种被动拉取的方式，其中的控制权转移也是在执行时隐式地发生。如果我们想要显示地转移控制权呢？分为以下三种情况：</p>
+<ol>
+<li>控制权交还给运行时</li>
+<li>控制权立即交给另一个协程</li>
+<li>控制权交给调用者，通常同时返回一个值由调用者处理</li>
+</ol>
+<p>对应的伪代码如下所示：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="kr">yield</span><span class="w">           </span><span class="c1">// 1
+</span><span class="c1"></span><span class="kr">yield</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">A</span><span class="w">      </span><span class="c1">// 2
+</span><span class="c1"></span><span class="kr">yield</span><span class="w"> </span><span class="n">a</span><span class="w">         </span><span class="c1">// 3
+</span></code></pre></div><p>第一种控制权转交给运行时在 Rust 中时刻在发生，根据之前所述的原理，我们也可以简单地实现一个 yield。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="k">pub</span><span class="w"> </span><span class="k">struct</span> <span class="nc">Yield</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="n">yielded</span>: <span class="kt">bool</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="k">impl</span><span class="w"> </span><span class="n">Future</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">Yield</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="k">type</span> <span class="nc">Output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">();</span><span class="w">
+</span><span class="w">
+</span><span class="w">    </span><span class="k">fn</span> <span class="nf">poll</span><span class="p">(</span><span class="bp">self</span>: <span class="nc">Pin</span><span class="o">&lt;&amp;</span><span class="k">mut</span><span class="w"> </span><span class="n">Self</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">cx</span>: <span class="kp">&amp;</span><span class="nc">mut</span><span class="w"> </span><span class="n">Context</span><span class="o">&lt;</span><span class="na">&#39;_</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">Poll</span><span class="o">&lt;</span><span class="n">Self</span>::<span class="n">Output</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">yielded</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">Poll</span>::<span class="n">Ready</span><span class="p">(());</span><span class="w">
+</span><span class="w">        </span><span class="p">}</span><span class="w">
+</span><span class="w">        </span><span class="bp">self</span><span class="p">.</span><span class="n">yielded</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span><span class="w">
+</span><span class="w">        </span><span class="n">cx</span><span class="p">.</span><span class="n">waker</span><span class="p">().</span><span class="n">wake_by_ref</span><span class="p">();</span><span class="w">
+</span><span class="w">        </span><span class="n">Poll</span>::<span class="n">Pending</span><span class="w">
+</span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="k">fn</span> <span class="nf">yield</span><span class="p">()</span><span class="w"> </span>-&gt; <span class="nc">Yield</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="n">Yield</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">yielded</span><span class="w"> </span>: <span class="nc">false</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="k">async</span><span class="w"> </span><span class="k">fn</span> <span class="nf">with_yield</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="c1">// Yield once.
+</span><span class="c1"></span><span class="w">    </span><span class="kr">yield</span><span class="p">().</span><span class="k">await</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span></code></pre></div><p>第二种立即转交控制权的一个典型的例子就是两个协程 ping-pong，目前我还没有了解到 Rust 下有什么方式实现这种控制权转移。</p>
+<p>第三种通常特化成 generator，在 Rust 中对应的模型是 Stream，可以理解为是一个异步的迭代器。Stream 目前还不是一个稳定的 feature。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="k">pub</span><span class="w"> </span><span class="k">trait</span><span class="w"> </span><span class="n">Stream</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="k">type</span> <span class="nc">Item</span><span class="p">;</span><span class="w">
+</span><span class="w">
+</span><span class="w">    </span><span class="k">fn</span> <span class="nf">poll_next</span><span class="p">(</span><span class="w">
+</span><span class="w">        </span><span class="bp">self</span>: <span class="nc">Pin</span><span class="o">&lt;&amp;</span><span class="k">mut</span><span class="w"> </span><span class="n">Self</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> 
+</span><span class="w">        </span><span class="n">cx</span>: <span class="kp">&amp;</span><span class="nc">mut</span><span class="w"> </span><span class="n">Context</span><span class="o">&lt;</span><span class="na">&#39;_</span><span class="o">&gt;</span><span class="w">
+</span><span class="w">    </span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">Poll</span><span class="o">&lt;</span><span class="nb">Option</span><span class="o">&lt;</span><span class="n">Self</span>::<span class="n">Item</span><span class="o">&gt;&gt;</span><span class="p">;</span><span class="w">
+</span><span class="w">
+</span><span class="w">    </span><span class="k">fn</span> <span class="nf">size_hint</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="p">(</span><span class="kt">usize</span><span class="p">,</span><span class="w"> </span><span class="nb">Option</span><span class="o">&lt;</span><span class="kt">usize</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="k">async</span><span class="w"> </span><span class="k">fn</span> <span class="nf">handle</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">stream</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">new_stream</span><span class="p">();</span><span class="w">
+</span><span class="w">
+</span><span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="kd">let</span><span class="w"> </span><span class="nb">Some</span><span class="p">(</span><span class="n">item</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">stream</span><span class="p">.</span><span class="n">next</span><span class="p">().</span><span class="k">await</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">        </span><span class="n">process</span><span class="p">(</span><span class="n">item</span><span class="p">).</span><span class="k">await</span><span class="p">;</span><span class="w">
+</span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span></code></pre></div><h4 id="runtime">Runtime</h4>
+<p>总结一下，Rust 的协程的运行时大概如下图所示（仅以 IO 为例）：</p>
+<p><figure 
+	>
+	<a href="/p/coroutines-rust-and-go/img/rust_async_runtime.svg" >
+		<img src="/p/coroutines-rust-and-go/img/rust_async_runtime.svg"
+			
+			
+			
+			loading="lazy"
+			alt="Async Runtime &ndash; Task, Worker and Waker">
+	</a>
+	
+	<figcaption>Async Runtime – Task, Worker and Waker</figcaption>
+	
+</figure></p>
+<h2 id="总结">总结</h2>
+<p>本文主要聊了聊 Rust 和 Go 两种编程语言中协程的编程模型和大致原理，也算是补全了我对无栈协程运行方式的了解。由于篇幅受限，这里有一些方面无法一一展现，比如 Rust 协程的取消、并发模型的对比等，可能会在后续的文章中讨论。</p>
+<p>水平有限，错误疏漏在所难免，还希望各路大佬不吝赐教。</p>
+<p>P.S. 评论系统换成了 beaudar，感觉还不错，欢迎留言探讨 😀。</p>
+<h2 id="参考文献">参考文献</h2>
+<p>[1] <a class="link" href="https://en.wikipedia.org/wiki/Coroutine"  target="_blank" rel="noopener"
+    >https://en.wikipedia.org/wiki/Coroutine</a></p>
+<p>[2] <a class="link" href="https://golang.org/doc/effective_go#goroutines"  target="_blank" rel="noopener"
+    >https://golang.org/doc/effective_go#goroutines</a></p>
+<p>[3] <a class="link" href="https://github.com/golang/proposal/blob/master/design/24543-non-cooperative-preemption.md"  target="_blank" rel="noopener"
+    >https://github.com/golang/proposal/blob/master/design/24543-non-cooperative-preemption.md</a></p>
+<p>[4] <a class="link" href="https://rust-lang.github.io/async-book/"  target="_blank" rel="noopener"
+    >https://rust-lang.github.io/async-book/</a></p>
+<p>[5] <a class="link" href="https://samsartor.com/coroutines-1/"  target="_blank" rel="noopener"
+    >https://samsartor.com/coroutines-1/</a></p>
+<p>[6] <a class="link" href="https://en.wikipedia.org/wiki/Async/await"  target="_blank" rel="noopener"
+    >https://en.wikipedia.org/wiki/Async/await</a></p>
+<p>[7] <a class="link" href="https://stackoverflow.com/questions/60964709/why-do-i-not-get-a-wakeup-for-multiple-futures-when-they-use-the-same-underlying"  target="_blank" rel="noopener"
+    >https://stackoverflow.com/questions/60964709/why-do-i-not-get-a-wakeup-for-multiple-futures-when-they-use-the-same-underlying</a></p>
+<p>[8] <a class="link" href="https://riteeksrivastava.medium.com/a-complete-journey-with-goroutines-8472630c7f5c"  target="_blank" rel="noopener"
+    >https://riteeksrivastava.medium.com/a-complete-journey-with-goroutines-8472630c7f5c</a></p>
+<p>[9] <a class="link" href="https://rakyll.org/scheduler/"  target="_blank" rel="noopener"
+    >https://rakyll.org/scheduler/</a></p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/coroutine/">coroutine</a>
+        
+            <a href="/tags/rust/">rust</a>
+        
+            <a href="/tags/go/">go</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    <aside class="related-contents--wrapper">
+    
+    
+</aside>
+
+     
+     
+        
+    <script src="https://beaudar.lipk.org/client.js"
+        repo="arkbriar/blog"
+        issue-term="pathname"
+        
+        label="comments"
+        
+        comment-order="desc"
+        input-position="top"
+        crossorigin="anonymous"
+        async
+        >
+</script>
+
+<style>
+    .beaudar {
+        max-width: unset;
+    }
+</style>
+
+<script>
+    function setUtterancesTheme(theme) {
+        let beaudar = document.querySelector('.beaudar iframe');
+        if (beaudar) {
+            beaudar.contentWindow.postMessage(
+                {
+                    type: 'set-theme',
+                    theme: `github-${theme}`
+                },
+                'https://beaudar.lipk.org'
+            );
+        }
+    }
+
+    addEventListener('message', event => {
+        if (event.origin !== 'https://beaudar.lipk.org') return;
+        setUtterancesTheme(document.documentElement.dataset.scheme)
+    });
+
+    window.addEventListener('onColorSchemeChange', (e) => {
+        setUtterancesTheme(e.detail)
+    })
+</script>
+
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2018 - 
+        
+        2021 石沉溪洞 -- Ark&#39;s Blog
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.2.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+            >
+
+            </main>
+    
+        <aside class="sidebar right-sidebar sticky">
+            <section class="widget archives">
+                <div class="widget-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+                </div>
+                <h2 class="widget-title section-title">目录</h2>
+                
+                <div class="widget--toc">
+                    <nav id="TableOfContents">
+  <ol>
+    <li><a href="#协程">协程</a>
+      <ol>
+        <li><a href="#go----just-go">Go &ndash; Just go</a></li>
+        <li><a href="#rust----asyncawait">Rust &ndash; async/await</a>
+          <ol>
+            <li><a href="#future">Future</a></li>
+            <li><a href="#waker">Waker</a></li>
+            <li><a href="#yield">Yield</a></li>
+            <li><a href="#runtime">Runtime</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#总结">总结</a></li>
+    <li><a href="#参考文献">参考文献</a></li>
+  </ol>
+</nav>
+                </div>
+            </section>
+        </aside>
+    
+
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

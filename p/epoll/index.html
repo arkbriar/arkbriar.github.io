@@ -184,7 +184,7 @@
 <p><code>epoll_pwait</code> 多设置一个 sigmask，代表不想被这些信号打断，其余的相当于 <code>epoll_wait</code>。</p>
 <h3 id="性能测试">性能测试</h3>
 <p>对 poll/selelct 和 epoll 在监听不同数量文件描述符时的系统调用消耗对比，参考自参考文献表中的第一个网站。</p>
-<pre><code># operations  |  poll  |  select   | epoll
+<pre tabindex="0"><code># operations  |  poll  |  select   | epoll
 10            |   0.61 |    0.73   | 0.41
 100           |   2.9  |    3.0    | 0.42
 1000          |  35    |   35      | 0.53
