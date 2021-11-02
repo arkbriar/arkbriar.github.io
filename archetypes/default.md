@@ -2,10 +2,9 @@
 title: "{{ replace .Name "-" " " | title }}"
 description: 
 date: {{ .Date }}
-image: 
-math: 
-license: 
-hidden: false
-comments: true
+slug: {{ .Name }}
+image: img/card.png
 draft: true
+categories:
+tags:
 ---
