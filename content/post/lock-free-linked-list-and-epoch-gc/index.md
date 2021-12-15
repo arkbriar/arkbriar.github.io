@@ -4,7 +4,7 @@ description:
 date: 2021-11-28T20:44:45+08:00
 slug: lock-free-linked-list-and-epoch-gc
 image: img/card.png
-draft: true
+draft: false
 categories: ["Lock-Free Programming"]
 tags: ["lock free linked list", "epoch gc" ]
 ---
@@ -15,11 +15,13 @@ tags: ["lock free linked list", "epoch gc" ]
 
 本文主要记录我拿 Rust 折腾几个无锁数据结构的经验和教训，这样以后不记得了还能翻一翻，并告诉自己：
 
-> 没事别瞎折腾什么劳什子无锁编程！
+**没事别瞎折腾什么劳什子无锁编程！**
 
 ## 数据结构
 
-通常，无锁数据结构的实现都要求有一些特殊的硬件支持，例如支持原子 compare-and-swap (CAS) 操作的处理器，或是[事务型内存（transactional memory）](https://en.wikipedia.org/wiki/Transactional_memory)。目前，主流的处理器都已经支持了 CAS 操作，因此大部分无锁数据结构是基于 CAS 操作设计的。通常来说，CAS 操作只能作用于 32/64 位整数，正好放下一个指针，因此各种无锁结构都围绕着指针的原子操作而设计。本文也将主要介绍一种无锁链表在 Rust 中的实现，链表算法主要基于 Zhang et al. 在 2013 年提出的一种无锁无序链表 [1]。
+通常，无锁数据结构的实现都要求有一些特殊的硬件支持，例如支持原子 [CAS](https://en.wikipedia.org/wiki/Compare-and-swap) 、[LL/SC](https://en.wikipedia.org/wiki/Load-link/store-conditional) 指令的处理器，或是[事务型内存（transactional memory）](https://en.wikipedia.org/wiki/Transactional_memory)。目前，主流的处理器都已经支持了 CAS 操作，因此大部分无锁数据结构是基于 CAS 操作设计的。通常来说，CAS 操作只能作用于 32/64 位整数，正好放下一个指针，因此各种无锁结构都围绕着指针的原子操作而设计。本文也将主要介绍一种无锁链表在 Rust 中的实现，链表算法主要基于 Zhang et al. 在 2013 年提出的一种无锁无序链表 [1]。
+
+> 注：也存在支持 multi-word CAS 的 CPU。
 
 ### 无锁链表（Unordered Set)
 
@@ -120,10 +122,48 @@ CAS(prev.next, cur_ptr, cur.next)
 
 ### Epoch-based Reclaimation
 
+EBR 的主要思路是将操作分代（epoch），在 epoch 不断推进的过程中使得在老 epoch 中删除的对象在新的 epoch 中不可能再被访问到，因此找到一个安全的时刻去回收对象。EBR 的工作方式如下图所示：
+
+![Epoch GC](img/epochgc.png)
+
+通常的 EBR 实现方式中：
+
++ 全局有一个唯一的 epoch，它会不断地增长，并且在增长后加 memory fence 保证之前的所有修改可见；
++ 每个线程在操作时进入当前 epoch，在结束时退出当前 epoch，实现上来说就是每个线程维护一个本地的 epoch，在每次操作时进行同步；
+  + 为了效率考虑，真正实现时可以在数次操作后再同步；
++ 在线程从无锁数据结构中删除一个对象时，将这个对象加到 retire 列表中，并标记回收 epoch 为当前的全局 epoch，同时尝试抬高全局 epoch；
+  + 同样效率起见，实现时可以在数次操作后再抬高全局 epoch；
+
+显然，在 epoch 抬高之后，之前的删除操作都应该对所有线程可见了，那么只要所有的线程都退出了删除发生的 epoch，就一定能安全的回收那些被删除的对象。因此，安全 epoch（在小于等于这个 epoch 的删除的对象可以安全回收）的是所有线程的本地 epoch 中最小的那个减 1。这种策略下全局 epoch 可能会很快的增长上去，还有另外一种方式：在抬高全局 epoch 时，检查是否所有线程的本地 epoch 都已经等于全局 epoch 了，如果是才进行抬高。因为在这种情况下全局 epoch 和本地 epoch 最多差不超过 1，因此安全 epoch 可以简单的用全局 epoch 减 2 来计算。所以这种策略下也可以将 epoch 简化成只有 3 代。
+
+> 注：图中虽然也保证了代差不超过 1，但是使用的是本地 epoch 作为 retire 的代，因此安全 epoch 应该是全局 epoch - 3。
+
+EBR 通过分代的方式有效地找出了可安全回收的 grace period，但是也存在一些问题：
+
++ 如果有一些操作比较慢，可能会导致安全 epoch / 全局 epoch（三代）无法推进，从而导致内存始终无法释放；
++ 其中进行的删除操作一定要完全发生，不能被取消或是失效使得在后续的操作中还能够访问到；
+
+上文描述的无锁链表在配合 EBR 时就存在第二个问题，因为并发删除会导致节点删除的取消。这里感谢 [@zzy590](https://github.com/zzy590) 指出这个问题，在和他讨论后得出了一个解决办法 -- 做指针标记，两阶段删除节点。方法大概原理为：
+
++ 删除前在对应节点的 `next` 指针上做标记：`CAS(node.next, unmark(next), mark(next))`；
++ 禁止删除标记过的节点的下一个节点，也就是禁止了并发删除；
+  + 删除操作的 CAS 改为 `CAS(prev.next, unmark(cur), unmark(next))`；
++ 所有线程遇到标记过指针的节点都可以尝试进行删除操作；
++ 删除操作中遇到禁止删除的情况则跳过节点；
+
+如下图所示：
+
+![Remove on Linked List](img/refined-remove-on-linked-list-with-epoch-gc.svg)
+
+除了进行对象回收之外，EBR 还可以成为保护其他并发访问问题的框架，例如 Faster 中就使用它来推进 Hybrid Log 中 fuzzy region，具有比较强的通用性。
 
 ## 实现
 
+最后，我将文中所描述到的无锁链表、哈希表使用 Rust 进行了实现。EBR 框架使用了 `crossbeam-epoch` 这个 crate 提供，然后参考内部的结构实现了 Faster 中提到的前 16 位作为标记、后 48 位作为地址的原子指针。
 
+代码开放在 github 上：[https://github.com/ruaaadb/lock-free](https://github.com/ruaaadb/lock-free)。感兴趣的同学可以下下来玩一下。
+
+> 注：编译要求本地有 tcmalloc 链接库，tcmalloc 可以适应极高的本地内存分配速率。
 
 ## 参考文献
 
@@ -136,3 +176,5 @@ CAS(prev.next, cur_ptr, cur.next)
 [4] <https://github.com/crossbeam-rs/crossbeam>
 
 [5] <https://en.wikipedia.org/wiki/ABA_problem>
+
+[6] <https://www.youtube.com/watch?v=trsmyznC2I8&ab_channel=ACMSIGPLAN>
