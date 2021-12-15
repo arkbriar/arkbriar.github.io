@@ -372,7 +372,7 @@ Carl Lerche 尝试在 tokio 的 issue [4] 中提出了一个结构化并发的�
 </span><span class="w">
 </span><span class="w">    </span><span class="c1">// Not allowed
 </span><span class="c1"></span><span class="w">    </span><span class="n">tokio</span>::<span class="n">spawn</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="p">{</span><span class="w">
-</span><span class="w">        </span><span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="o">*</span><span class="n">x_ref</span><span class="p">);</span><span class="w">
+</span><span class="w">        </span><span class="fm">println!</span><span class="p">(</span><span class="o">*</span><span class="n">x_ref</span><span class="p">);</span><span class="w">
 </span><span class="w">    </span><span class="p">}).</span><span class="k">await</span><span class="p">;</span><span class="w">
 </span><span class="w"></span><span class="p">}</span><span class="w">
 </span></code></pre></div><p>那现在问题在哪呢？假如 Rust / tokio 中已经支持了结构化并发，我们尝试来反推一下。这要求我们了解 Rust 协程和运行时的真正执行流程，不熟悉的同学可以参考我上一篇<a class="link" href="../coroutines-rust-and-go" >介绍协程的文章</a>。</p>

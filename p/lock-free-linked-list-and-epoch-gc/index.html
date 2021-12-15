@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='缘起 俗话说的好，作为一个在数据库团队做 Kubernetes 开发的同学，不能做到编写 B 树至少要做到心里有 B 数。因此最近闲暇时间一直在研究可持久化的 B 树怎么写，接'><title>代码杂谈：无锁编程（一）</title>
+
+<link rel='canonical' href='https://blog.crazyark.xyz/p/lock-free-linked-list-and-epoch-gc/'>
+
+<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='代码杂谈：无锁编程（一）'>
+<meta property='og:description' content='缘起 俗话说的好，作为一个在数据库团队做 Kubernetes 开发的同学，不能做到编写 B 树至少要做到心里有 B 数。因此最近闲暇时间一直在研究可持久化的 B 树怎么写，接'>
+<meta property='og:url' content='https://blog.crazyark.xyz/p/lock-free-linked-list-and-epoch-gc/'>
+<meta property='og:site_name' content='石沉溪洞 -- Ark&#39;s Blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='lock free linked list' /><meta property='article:tag' content='epoch gc' /><meta property='article:published_time' content='2021-11-28T20:44:45&#43;08:00'/><meta property='article:modified_time' content='2021-11-28T20:44:45&#43;08:00'/><meta property='og:image' content='https://blog.crazyark.xyz/p/lock-free-linked-list-and-epoch-gc/img/card.png' />
+<meta name="twitter:site" content="@ImperiusDs">
+    <meta name="twitter:creator" content="@ImperiusDs"><meta name="twitter:title" content="代码杂谈：无锁编程（一）">
+<meta name="twitter:description" content="缘起 俗话说的好，作为一个在数据库团队做 Kubernetes 开发的同学，不能做到编写 B 树至少要做到心里有 B 数。因此最近闲暇时间一直在研究可持久化的 B 树怎么写，接"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://blog.crazyark.xyz/p/lock-free-linked-list-and-epoch-gc/img/card.png' />
+    </head>
+    <body class="
+    article-page has-toc
+">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex 
+    
+        extended
+    
+">
+    
+        <div id="article-toolbar">
+            <a href="https://blog.crazyark.xyz" class="back-home">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="15 6 9 12 15 18" />
+</svg>
+
+
+
+                <span>返回</span>
+            </a>
+        </div>
+    
+<main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/p/lock-free-linked-list-and-epoch-gc/">
+                <img src="/p/lock-free-linked-list-and-epoch-gc/img/card_hu7135dc73c6958f5f4d22636ae49c04db_104583_800x0_resize_box_3.png"
+                        srcset="/p/lock-free-linked-list-and-epoch-gc/img/card_hu7135dc73c6958f5f4d22636ae49c04db_104583_800x0_resize_box_3.png 800w, /p/lock-free-linked-list-and-epoch-gc/img/card_hu7135dc73c6958f5f4d22636ae49c04db_104583_1600x0_resize_box_3.png 1600w"
+                        width="800" 
+                        height="261" 
+                        loading="lazy"
+                        alt="Featured image of post 代码杂谈：无锁编程（一）" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/lock-free-programming/" >
+                Lock-Free Programming
+            </a>
+        
+    </header>
+    
+
+    <h2 class="article-title">
+        <a href="/p/lock-free-linked-list-and-epoch-gc/">代码杂谈：无锁编程（一）</a>
+    </h2>
+
+    
+
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Nov 28, 2021</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 9 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+</div>
+</header>
+
+    <section class="article-content">
+    <h2 id="缘起">缘起</h2>
+<p>俗话说的好，作为一个在数据库团队做 Kubernetes 开发的同学，不能做到编写 B 树至少要做到心里有 B 数。因此最近闲暇时间一直在研究可持久化的 B 树怎么写，接着就了解到了 BwTree（微软 14 年提出的无锁 B 树），然后开始思考其中的 mapping table 怎么实现，然后开始看 FasterKV（微软 18 年提出的可持久化无锁 KV），然后就彻底跑偏了&hellip;</p>
+<p>本文主要记录我拿 Rust 折腾几个无锁数据结构的经验和教训，这样以后不记得了还能翻一翻，并告诉自己：</p>
+<p><strong>没事别瞎折腾什么劳什子无锁编程！</strong></p>
+<h2 id="数据结构">数据结构</h2>
+<p>通常，无锁数据结构的实现都要求有一些特殊的硬件支持，例如支持原子 <a class="link" href="https://en.wikipedia.org/wiki/Compare-and-swap"  target="_blank" rel="noopener"
+    >CAS</a> 、<a class="link" href="https://en.wikipedia.org/wiki/Load-link/store-conditional"  target="_blank" rel="noopener"
+    >LL/SC</a> 指令的处理器，或是<a class="link" href="https://en.wikipedia.org/wiki/Transactional_memory"  target="_blank" rel="noopener"
+    >事务型内存（transactional memory）</a>。目前，主流的处理器都已经支持了 CAS 操作，因此大部分无锁数据结构是基于 CAS 操作设计的。通常来说，CAS 操作只能作用于 32/64 位整数，正好放下一个指针，因此各种无锁结构都围绕着指针的原子操作而设计。本文也将主要介绍一种无锁链表在 Rust 中的实现，链表算法主要基于 Zhang et al. 在 2013 年提出的一种无锁无序链表 [1]。</p>
+<blockquote>
+<p>注：也存在支持 multi-word CAS 的 CPU。</p>
+</blockquote>
+<h3 id="无锁链表unordered-set">无锁链表（Unordered Set)</h3>
+<p>首先介绍一下上述提到的无锁链表，它其实是一个结构为单向链表的无序集合，包含以下 3 种操作：</p>
+<ul>
+<li><code>insert(k)</code>，插入一个元素 <code>k</code> 并返回是否成功；</li>
+<li><code>remove(k)</code>，删除一个元素 <code>k</code> 并返回是否成功；</li>
+<li><code>contains(k)</code>，判断一个元素 <code>k</code> 是否在集合（链表）中；</li>
+</ul>
+<p>链表的节点和整体结构如下图所示：</p>
+<p><figure 
+	>
+	<a href="/p/lock-free-linked-list-and-epoch-gc/img/linked-set-structure-and-operations.svg" >
+		<img src="/p/lock-free-linked-list-and-epoch-gc/img/linked-set-structure-and-operations.svg"
+			
+			
+			
+			loading="lazy"
+			alt="Lock Free Linked List">
+	</a>
+	
+	<figcaption>Lock Free Linked List</figcaption>
+	
+</figure></p>
+<p>其中每个节点除了包含本身的元素以外，还有两个原子变量：</p>
+<ul>
+<li>state，代表了当前节点的状态，论文中状态的定义有 4 种：
+<ul>
+<li>DAT，表示可见的元素（节点）</li>
+<li>INS，表示插入中的元素</li>
+<li>REM，表示删除中的元素</li>
+<li>INV，表示无效的元素（节点）</li>
+</ul>
+</li>
+<li>next，存储了下一个节点的指针</li>
+</ul>
+<p>和通常的单向链表一样，链表有一个 <code>head</code> 指针指向链表头，然后通过节点上 <code>next</code> 中存储的指针串联起来。当需要插入一个新节点的时候，使用 CAS 原子操作将 <code>head</code> 修改为新节点的地址，如图所示。当然 CAS 操作是可能会失败的，此时我们只需要重新进行图中的步骤。Rust 代码大致如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="k">fn</span> <span class="nf">enlist</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">node_ptr</span>: <span class="nc">SharedNodePtr</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">g</span>: <span class="kp">&amp;</span><span class="nc">Guard</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="fm">debug_assert!</span><span class="p">(</span><span class="o">!</span><span class="n">node_ptr</span><span class="p">.</span><span class="n">is_null</span><span class="p">());</span><span class="w">
+</span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">unsafe</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">node_ptr</span><span class="p">.</span><span class="n">deref</span><span class="p">()</span><span class="w"> </span><span class="p">};</span><span class="w">
+</span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="k">mut</span><span class="w"> </span><span class="n">head_ptr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">head</span><span class="p">.</span><span class="n">load</span><span class="p">(</span><span class="n">Ordering</span>::<span class="n">Acquire</span><span class="p">,</span><span class="w"> </span><span class="n">g</span><span class="p">);</span><span class="w">
+</span><span class="w">    </span><span class="k">loop</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">        </span><span class="c1">// Set node.next to untagged(head).
+</span><span class="c1"></span><span class="w">        </span><span class="n">node</span><span class="p">.</span><span class="n">next</span><span class="p">.</span><span class="n">store</span><span class="p">(</span><span class="n">head_ptr</span><span class="p">.</span><span class="n">with_tag</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"> </span><span class="n">Ordering</span>::<span class="n">Release</span><span class="p">);</span><span class="w">   
+</span><span class="w">        </span><span class="k">match</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">head</span><span class="p">.</span><span class="n">compare_exchange</span><span class="p">(</span><span class="w">
+</span><span class="w">            </span><span class="c1">// Keep head&#39;s tag.
+</span><span class="c1"></span><span class="w">            </span><span class="n">head_ptr</span><span class="p">,</span><span class="w"> </span><span class="n">node_ptr</span><span class="p">.</span><span class="n">with_tag</span><span class="p">(</span><span class="n">head_ptr</span><span class="p">.</span><span class="n">tag</span><span class="p">()),</span><span class="w">                      
+</span><span class="w">            </span><span class="n">Ordering</span>::<span class="n">AcqRel</span><span class="p">,</span><span class="w"> </span><span class="n">Ordering</span>::<span class="n">Acquire</span><span class="p">,</span><span class="w"> </span><span class="n">g</span><span class="w">
+</span><span class="w">        </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">            </span><span class="nb">Ok</span><span class="p">(</span><span class="n">_</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">return</span><span class="p">,</span><span class="w">
+</span><span class="w">            </span><span class="nb">Err</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">head_ptr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">err</span><span class="p">.</span><span class="n">current</span><span class="p">,</span><span class="w">
+</span><span class="w">        </span><span class="p">}</span><span class="w">
+</span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span></code></pre></div><p>假如不考虑链表节点的删除，基于无锁链表的无序集合其实很容易实现 &ndash; 添加只需要在链表头插入对应元素的节点 (DAT)，删除同样插入一个节点，只不过标记状态为删除 (REM)。集合元素的查找只要顺序遍历链表，直到找到第一个拥有相同元素的节点，那么节点的状态就是元素的存在状态。这种简单的方式显然有一个比较大的问题，那就是链表会越来越长，而集合操作的复杂度和链表长度是正相关的。因此 Zhang et al. 提出的算法引入了 INS 和 INV 两种状态，并包含了节点的删除操作。</p>
+<p>在上述 3 种操作中，<code>contains</code> 是一个只读操作，因此实现它只需要按照链表无脑向下寻找就可，直到找到第一个可见的元素。在不考虑 GC 的情况下，只读操作永远都能正常运行。另外两个操作是比较类似的：它们都在链表头插入了一个包含了对应元素的节点，然后从该节点开始往后探查是否操作成功。算法流程大致为：</p>
+<ul>
+<li><code>insert</code> 插入状态为 <code>INS</code> 的节点，并向后找到第一个元素相同的节点
+<ul>
+<li>节点状态为 <code>INS</code> 或者 <code>DAT</code> 则表明链表中已经存在该元素了，表明插入失败；</li>
+<li>节点状态为 <code>REM</code> 则表明链表中该元素已经被删除了，表明插入成功；</li>
+<li>节点状态为 <code>INV</code> 的忽略；</li>
+<li>未找到，则插入成功；</li>
+</ul>
+</li>
+<li><code>remove</code> 插入状态为 <code>REM</code> 的节点，并向后找到第一个元素相同的节点
+<ul>
+<li>节点状态为 <code>REM</code> 则表明链表中该元素已经被删除了，表明删除失败；</li>
+<li>节点状态为 <code>INS</code> 则表明有另一个线程正在插入该元素，尝试使用 CAS 标记为 <code>REM</code>；
+<ul>
+<li>成功，表明删除成功；</li>
+<li>失败，则重新读取节点状态重试；</li>
+</ul>
+</li>
+<li>节点状态为 <code>INV</code> 的忽略；</li>
+<li>节点状态为 <code>DAT</code> 则尝试用 CAS 标记为 <code>REM</code>，CAS 的成功/失败代表删除的成功/失败；</li>
+</ul>
+</li>
+</ul>
+<p>在插入和删除的向后查找过程中，如果遇到 <code>INV</code> 的无效节点，则会尝试使用 CAS 删除该节点，从而达到缩短链表的目的。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="n">CAS</span><span class="p">(</span><span class="n">prev</span><span class="p">.</span><span class="n">next</span><span class="p">,</span><span class="w"> </span><span class="n">cur_ptr</span><span class="p">,</span><span class="w"> </span><span class="n">cur</span><span class="p">.</span><span class="n">next</span><span class="p">)</span><span class="w">
+</span></code></pre></div><p>在基于 CAS 的无锁链表算法中，通常会遇到两个问题：</p>
+<ol>
+<li>ABA 问题：即在一个线程 1 进行原子 CAS 操作前，它看到的是 A，此时另一个线程 2将它修改为 B，然后又修改回 A，然后线程 1 再进行 CAS 操作时将会成功完成操作并可能破坏数据结构；
+<ul>
+<li>在本文描述的算法中不会出现 ABA 问题，因为其中的任意一个原子变量都不会出现值循环的修改（state 是有顺序的，next 一定是间隔向后修改，而链表中间不会有插入）；</li>
+</ul>
+</li>
+<li>并发删除问题：当链表为 A -&gt; B -&gt; C -&gt; D 时，线程 1 和线程 2 并发删除 B 和 C 可能会导致 C 的删除无效化/被取消：
+<ul>
+<li>无效化：线程 1 删除 B，此时链表为 A -&gt; C -&gt; D，此时链表 2 看到的链表还是 B -&gt; C -&gt; D，它将 B.next 设置为 D 对原链表无影响；</li>
+<li>被取消：线程 1 读取 B.next 为 C，此时 线程 2 删除 C，链表为 A -&gt; B -&gt; D，然后线程 1 执行 CAS(A.next, B, C) 成功，链表又恢复到了 A -&gt; C -&gt; D；</li>
+<li>并发删除问题在该算法中是存在的，但是并不影响正确性，因为被删除的节点一定是 <code>INV</code> 状态的，而该状态的节点不会影响任何操作；</li>
+</ul>
+</li>
+</ol>
+<p>在 Java 等 GC 语言中，并发删除问题并不是一个大问题，而在无 GC 的语言中，并发删除会让节点 GC 变得更难，这在后续的 GC 小节中会分析问题和解决。</p>
+<p>上述算法三个操作的时间复杂度都是 O(n) 的，因此在集合大的时候性能不是很好。同样，指针本身会带来巨量的 cpu cache miss，因此无锁算法通常单线程性能比普通的非并发算法要差的多。</p>
+<h3 id="无锁哈希表">无锁哈希表</h3>
+<p>在哈希表中通常使用链表来解决哈希冲突的问题，那当我们拥有一个无锁链表，自然而然的可以构建一个无锁的哈希表，它包含以下几个操作：</p>
+<ul>
+<li><code>put(k, v)</code>，将 k 映射到 v</li>
+<li><code>remove(k)</code>，删除 k 上的映射</li>
+<li><code>get(k)</code>，获取 k 上映射的值</li>
+</ul>
+<p>显然，我们只需要和普通的哈希表一样准备一组 buckets，每一个 bucket 指向一个无锁链表就可以轻松地构建出一个无锁哈希表。这样的无锁建立在无法增加或是减少 buckets 的基础上。在 SIGMOD 2018 上微软发表了关于 FasterKV 的论文[3]中提到，通过结合 epoch 框架提出了一种无锁扩缩容的方式，按照我的理解仍然是一个变相的自旋锁，这里不做详细介绍。</p>
+<p>为了进行实验，我也用 Rust 实现了 FasterKV 的内存版本（不带扩缩容的能力），在实现小节中会呈现实验结果。</p>
+<h2 id="垃圾回收gc">垃圾回收（GC)</h2>
+<p>现代的高级编程语言通常都会提供内存 GC 的能力，例如 Java、Go、Python 以及一众基于 JVM 的语言等等。只有一些偏向底层的“倒霉”语言才没有 GC，Rust 是属于新晋的这一类编程语言之一。在 Rust 中，编译器会自动将内存释放的相关代码编织到程序中，这种方式大约是借鉴的 C++ 的 RAII。但是在无锁数据结构中，无锁的并发访问会带来一个额外的问题：什么时候对象以及它的内存才是可以安全回收的？</p>
+<p>考虑这样一个场景：线程 1 删除了链表中的一个节点，但线程 2 此时还在访问这个节点，这在无锁并发场景下是成立的。此时，这个节点还不能被安全回收，但我们都知道它最终将不可能被访问到。因此无锁情况下的垃圾回收方法主要需要解决的如何找到一个时刻，此时被删除的对象已经不可能在访问到了。著名的 GC 方法有 QSBR（Quiescent-state-based Reclaimation）、EBR（Epoch-based Reclaimation）和 HPBR（Hazard-pointer-based Reclaimation）等，本文主要介绍和使用其中的 EBR 这一种方法。</p>
+<h3 id="epoch-based-reclaimation">Epoch-based Reclaimation</h3>
+<p>EBR 的主要思路是将操作分代（epoch），在 epoch 不断推进的过程中使得在老 epoch 中删除的对象在新的 epoch 中不可能再被访问到，因此找到一个安全的时刻去回收对象。EBR 的工作方式如下图所示：</p>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 237; 
+			flex-basis: 570px"
+	>
+	<a href="/p/lock-free-linked-list-and-epoch-gc/img/epochgc.png" data-size="2186x920">
+		<img src="/p/lock-free-linked-list-and-epoch-gc/img/epochgc.png"
+			width="2186"
+			height="920"
+			srcset="/p/lock-free-linked-list-and-epoch-gc/img/epochgc_hu14bcae44c83482a9060282e204aff52e_671965_480x0_resize_box_3.png 480w, /p/lock-free-linked-list-and-epoch-gc/img/epochgc_hu14bcae44c83482a9060282e204aff52e_671965_1024x0_resize_box_3.png 1024w"
+			loading="lazy"
+			alt="Epoch GC">
+	</a>
+	
+	<figcaption>Epoch GC</figcaption>
+	
+</figure></p>
+<p>通常的 EBR 实现方式中：</p>
+<ul>
+<li>全局有一个唯一的 epoch，它会不断地增长，并且在增长后加 memory fence 保证之前的所有修改可见；</li>
+<li>每个线程在操作时进入当前 epoch，在结束时退出当前 epoch，实现上来说就是每个线程维护一个本地的 epoch，在每次操作时进行同步；
+<ul>
+<li>为了效率考虑，真正实现时可以在数次操作后再同步；</li>
+</ul>
+</li>
+<li>在线程从无锁数据结构中删除一个对象时，将这个对象加到 retire 列表中，并标记回收 epoch 为当前的全局 epoch，同时尝试抬高全局 epoch；
+<ul>
+<li>同样效率起见，实现时可以在数次操作后再抬高全局 epoch；</li>
+</ul>
+</li>
+</ul>
+<p>显然，在 epoch 抬高之后，之前的删除操作都应该对所有线程可见了，那么只要所有的线程都退出了删除发生的 epoch，就一定能安全的回收那些被删除的对象。因此，安全 epoch（在小于等于这个 epoch 的删除的对象可以安全回收）的是所有线程的本地 epoch 中最小的那个减 1。这种策略下全局 epoch 可能会很快的增长上去，还有另外一种方式：在抬高全局 epoch 时，检查是否所有线程的本地 epoch 都已经等于全局 epoch 了，如果是才进行抬高。因为在这种情况下全局 epoch 和本地 epoch 最多差不超过 1，因此安全 epoch 可以简单的用全局 epoch 减 2 来计算。所以这种策略下也可以将 epoch 简化成只有 3 代。</p>
+<blockquote>
+<p>注：图中虽然也保证了代差不超过 1，但是使用的是本地 epoch 作为 retire 的代，因此安全 epoch 应该是全局 epoch - 3。</p>
+</blockquote>
+<p>EBR 通过分代的方式有效地找出了可安全回收的 grace period，但是也存在一些问题：</p>
+<ul>
+<li>如果有一些操作比较慢，可能会导致安全 epoch / 全局 epoch（三代）无法推进，从而导致内存始终无法释放；</li>
+<li>其中进行的删除操作一定要完全发生，不能被取消或是失效使得在后续的操作中还能够访问到；</li>
+</ul>
+<p>上文描述的无锁链表在配合 EBR 时就存在第二个问题，因为并发删除会导致节点删除的取消。这里感谢 <a class="link" href="https://github.com/zzy590"  target="_blank" rel="noopener"
+    >@zzy590</a> 指出这个问题，在和他讨论后得出了一个解决办法 &ndash; 做指针标记，两阶段删除节点。方法大概原理为：</p>
+<ul>
+<li>删除前在对应节点的 <code>next</code> 指针上做标记：<code>CAS(node.next, unmark(next), mark(next))</code>；</li>
+<li>禁止删除标记过的节点的下一个节点，也就是禁止了并发删除；
+<ul>
+<li>删除操作的 CAS 改为 <code>CAS(prev.next, unmark(cur), unmark(next))</code>；</li>
+</ul>
+</li>
+<li>所有线程遇到标记过指针的节点都可以尝试进行删除操作；</li>
+<li>删除操作中遇到禁止删除的情况则跳过节点；</li>
+</ul>
+<p>如下图所示：</p>
+<p><figure 
+	>
+	<a href="/p/lock-free-linked-list-and-epoch-gc/img/refined-remove-on-linked-list-with-epoch-gc.svg" >
+		<img src="/p/lock-free-linked-list-and-epoch-gc/img/refined-remove-on-linked-list-with-epoch-gc.svg"
+			
+			
+			
+			loading="lazy"
+			alt="Remove on Linked List">
+	</a>
+	
+	<figcaption>Remove on Linked List</figcaption>
+	
+</figure></p>
+<p>除了进行对象回收之外，EBR 还可以成为保护其他并发访问问题的框架，例如 Faster 中就使用它来推进 Hybrid Log 中 fuzzy region，具有比较强的通用性。</p>
+<h2 id="实现">实现</h2>
+<p>最后，我将文中所描述到的无锁链表、哈希表使用 Rust 进行了实现。EBR 框架使用了 <code>crossbeam-epoch</code> 这个 crate 提供，然后参考内部的结构实现了 Faster 中提到的前 16 位作为标记、后 48 位作为地址的原子指针。</p>
+<p>代码开放在 github 上：<a class="link" href="https://github.com/ruaaadb/lock-free"  target="_blank" rel="noopener"
+    >https://github.com/ruaaadb/lock-free</a>。感兴趣的同学可以下下来玩一下。</p>
+<blockquote>
+<p>注：编译要求本地有 tcmalloc 链接库，tcmalloc 可以适应极高的本地内存分配速率。</p>
+</blockquote>
+<h2 id="参考文献">参考文献</h2>
+<p>[1] Zhang, Kunlong, et al. &ldquo;Practical non-blocking unordered lists.&rdquo; International Symposium on Distributed Computing. Springer, Berlin, Heidelberg, 2013.</p>
+<p>[2] Harris, Timothy L. &ldquo;A pragmatic implementation of non-blocking linked-lists.&rdquo; International Symposium on Distributed Computing. Springer, Berlin, Heidelberg, 2001.</p>
+<p>[3] Chandramouli, Badrish, et al. &ldquo;Faster: A concurrent key-value store with in-place updates.&rdquo; Proceedings of the 2018 International Conference on Management of Data. 2018.</p>
+<p>[4] <a class="link" href="https://github.com/crossbeam-rs/crossbeam"  target="_blank" rel="noopener"
+    >https://github.com/crossbeam-rs/crossbeam</a></p>
+<p>[5] <a class="link" href="https://en.wikipedia.org/wiki/ABA_problem"  target="_blank" rel="noopener"
+    >https://en.wikipedia.org/wiki/ABA_problem</a></p>
+<p>[6] <a class="link" href="https://www.youtube.com/watch?v=trsmyznC2I8&amp;ab_channel=ACMSIGPLAN"  target="_blank" rel="noopener"
+    >https://www.youtube.com/watch?v=trsmyznC2I8&ab_channel=ACMSIGPLAN</a></p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/lock-free-linked-list/">lock free linked list</a>
+        
+            <a href="/tags/epoch-gc/">epoch gc</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    <aside class="related-contents--wrapper">
+    
+    
+</aside>
+
+     
+     
+        
+    <script src="https://beaudar.lipk.org/client.js"
+        repo="arkbriar/blog"
+        issue-term="pathname"
+        
+        label="comments"
+        
+        comment-order="desc"
+        input-position="top"
+        crossorigin="anonymous"
+        async
+        >
+</script>
+
+<style>
+    .beaudar {
+        max-width: unset;
+    }
+</style>
+
+<script>
+    function setUtterancesTheme(theme) {
+        let beaudar = document.querySelector('.beaudar iframe');
+        if (beaudar) {
+            beaudar.contentWindow.postMessage(
+                {
+                    type: 'set-theme',
+                    theme: `github-${theme}`
+                },
+                'https://beaudar.lipk.org'
+            );
+        }
+    }
+
+    addEventListener('message', event => {
+        if (event.origin !== 'https://beaudar.lipk.org') return;
+        setUtterancesTheme(document.documentElement.dataset.scheme)
+    });
+
+    window.addEventListener('onColorSchemeChange', (e) => {
+        setUtterancesTheme(e.detail)
+    })
+</script>
+
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2018 - 
+        
+        2021 石沉溪洞 -- Ark&#39;s Blog
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.2.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+            >
+
+            </main>
+    
+        <aside class="sidebar right-sidebar sticky">
+            <section class="widget archives">
+                <div class="widget-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+                </div>
+                <h2 class="widget-title section-title">目录</h2>
+                
+                <div class="widget--toc">
+                    <nav id="TableOfContents">
+  <ol>
+    <li><a href="#缘起">缘起</a></li>
+    <li><a href="#数据结构">数据结构</a>
+      <ol>
+        <li><a href="#无锁链表unordered-set">无锁链表（Unordered Set)</a></li>
+        <li><a href="#无锁哈希表">无锁哈希表</a></li>
+      </ol>
+    </li>
+    <li><a href="#垃圾回收gc">垃圾回收（GC)</a>
+      <ol>
+        <li><a href="#epoch-based-reclaimation">Epoch-based Reclaimation</a></li>
+      </ol>
+    </li>
+    <li><a href="#实现">实现</a></li>
+    <li><a href="#参考文献">参考文献</a></li>
+  </ol>
+</nav>
+                </div>
+            </section>
+        </aside>
+    
+
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
