@@ -143,9 +143,9 @@
     >[2]</a>。这篇文章介绍了作者对结构化并发的思考和一个 Python 的结构化并发开发工具 nursery，感兴趣的同学可以读一读。</p>
 <h2 id="由来----抽象破坏者">由来 &ndash; 抽象破坏者</h2>
 <p>为了使开发者能够高效地开发程序，现代编程语言通常都遵循结构化编程的模式，并提供了这样的一个抽象：你可以将程序的一部分当做黑盒来使用，且控制流一定遵循 <strong>调用者 -&gt; 黑盒 -&gt; 调用者</strong> 的方式进行转移。举个例子：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="c1">// Go
-</span><span class="c1"></span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Hello world&#34;</span><span class="p">)</span>
-</code></pre></div><p>我们不需要关心 Println 里面到底做了什么，只需要知道最后它完成输出之后会将控制权交还，在这之中发生的所有的事情都是 <strong>受控制的</strong>。这种抽象使得开发者不需要记住程序的所有实现细节，而只需要关注在我们想要的事情之上。如果没有这个抽象，我们就必须了解程序的所有细节，显然对于现代的编程工作来说是不可能的。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Go
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Hello world&#34;</span><span class="p">)</span>
+</span></span></code></pre></div><p>我们不需要关心 Println 里面到底做了什么，只需要知道最后它完成输出之后会将控制权交还，在这之中发生的所有的事情都是 <strong>受控制的</strong>。这种抽象使得开发者不需要记住程序的所有实现细节，而只需要关注在我们想要的事情之上。如果没有这个抽象，我们就必须了解程序的所有细节，显然对于现代的编程工作来说是不可能的。</p>
 <h3 id="goto">goto</h3>
 <p>第一个抽象破坏者出现在编程时代的早期，或者说它是这种抽象的原因之一，它就是大名鼎鼎的 <code>goto</code>。在上个世纪 50 年代，人们开始研发一类新的编程语言。有别于更贴近机器的语言（像汇编），这类编程语言的目的是让人能更好地编写程序。其中一种语言叫 FLOW-MATIC。</p>
 <p>FLOW-MATIC 中没有 if，没有循环，也没有函数调用，但它有一个操作叫 JUMP &ndash; 可以跳转到指定的任何一个位置。同样，FLOW-MATIC 中也没有函数的概念，因此一个用该语言编写的程序，它的控制流可能长这样[2]&hellip;</p>
@@ -178,58 +178,58 @@
 <li>可以中止新控制流的执行么？</li>
 </ul>
 <p>我们以 Go 为例，举一个简单的例子。假设有一个第三方库提供了这样一组结构体/函数：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="c1">// Go
-</span><span class="c1"></span><span class="kd">type</span> <span class="nx">Result</span> <span class="kd">struct</span> <span class="p">{}</span>
-<span class="kd">func</span> <span class="p">(</span><span class="nx">r</span> <span class="o">*</span><span class="nx">Result</span><span class="p">)</span> <span class="nf">Read</span><span class="p">(</span><span class="nx">p</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)</span> <span class="p">(</span><span class="nx">n</span> <span class="kt">int</span><span class="p">,</span> <span class="nx">err</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{}</span>
-<span class="kd">func</span> <span class="nf">HttpGet</span><span class="p">(</span><span class="nx">url</span> <span class="kt">string</span><span class="p">)</span> <span class="nx">Result</span> <span class="p">{}</span>
-</code></pre></div><p>当我们遵循最初的抽象的时候，我们可以直接的做出如下理解：<code>HttpGet</code> 是请求给定 URL 并读取结果返回给调用者，调用者可以通过调用 <code>Result.read</code> 来获取结果的内容。在编写代码的时候，我们就可以简单地调用 <code>HttpGet</code>。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="c1">// Go
-</span><span class="c1"></span><span class="kd">func</span> <span class="nf">JustGet</span><span class="p">(</span><span class="nx">url</span> <span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">lib</span><span class="p">.</span><span class="nf">HttpGet</span><span class="p">(</span><span class="nx">url</span><span class="p">)</span>
-<span class="p">}</span>
-</code></pre></div><p>当代码完全是同步实现的时候，so far so good。然而，当面临并发编程原语 go 时，事情一下子变的复杂了起来。假设上述结构体/方法的实现是下面这样的：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="c1">// Go
-</span><span class="c1"></span><span class="kd">type</span> <span class="nx">Result</span> <span class="kd">struct</span> <span class="p">{</span>
-    <span class="nx">ch</span>    <span class="kd">chan</span> <span class="p">[]</span><span class="kt">byte</span>
-    <span class="nx">buf</span>   <span class="o">*</span><span class="nx">bytes</span><span class="p">.</span><span class="nx">Buffer</span>
-<span class="p">}</span>
-
-<span class="c1">// Implement io.Reader.
-</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">r</span> <span class="o">*</span><span class="nx">Result</span><span class="p">)</span> <span class="nf">Read</span><span class="p">(</span><span class="nx">p</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)</span> <span class="p">(</span><span class="nx">n</span> <span class="kt">int</span><span class="p">,</span> <span class="nx">err</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="nx">r</span><span class="p">.</span><span class="nx">buf</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="nx">buf</span><span class="p">,</span> <span class="nx">ok</span> <span class="p">=</span> <span class="nx">bytes</span><span class="p">.</span><span class="nf">NewBuffer</span><span class="p">(</span><span class="o">&lt;-</span><span class="nx">r</span><span class="p">.</span><span class="nx">ch</span><span class="p">);</span> <span class="nx">ok</span> <span class="p">{</span>
-            <span class="nx">r</span><span class="p">.</span><span class="nx">buf</span> <span class="p">=</span> <span class="nx">buf</span>
-        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-            <span class="nx">r</span><span class="p">.</span><span class="nx">buf</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">bytes</span><span class="p">.</span><span class="nx">Buffer</span><span class="p">{}</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-    <span class="k">return</span> <span class="nx">r</span><span class="p">.</span><span class="nx">buf</span><span class="p">.</span><span class="nf">Read</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span>
-<span class="p">}</span>
-
-<span class="kd">func</span> <span class="nf">HttpGet</span><span class="p">(</span><span class="nx">url</span> <span class="kt">string</span><span class="p">)</span> <span class="nx">Result</span> <span class="p">{</span>
-    <span class="nx">ch</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)</span>
-
-    <span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
-        <span class="k">defer</span> <span class="nb">close</span><span class="p">(</span><span class="nx">ch</span><span class="p">)</span>
-
-        <span class="nx">resp</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">http</span><span class="p">.</span><span class="nf">Get</span><span class="p">(</span><span class="nx">url</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-            <span class="k">return</span>
-        <span class="p">}</span>
-        <span class="k">defer</span> <span class="nx">resp</span><span class="p">.</span><span class="nx">Body</span><span class="p">.</span><span class="nf">Close</span><span class="p">()</span>
-        <span class="nx">content</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">io</span><span class="p">.</span><span class="nf">ReadAll</span><span class="p">(</span><span class="nx">resp</span><span class="p">.</span><span class="nx">Body</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-            <span class="k">return</span>
-        <span class="p">}</span>
-
-        <span class="nx">ch</span> <span class="o">&lt;-</span> <span class="nx">content</span>
-    <span class="p">}()</span>
-
-    <span class="k">return</span> <span class="nx">Result</span><span class="p">{</span>
-        <span class="nx">ch</span><span class="p">:</span> <span class="nx">ch</span><span class="p">,</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div><p>HttpGet 在执行时启动了一个 goroutine 用于异步进行 HTTP 请求，但是立即返回了当前函数！而我们知道，在面对网络 IO 的时候，令人担忧的事情总是会发生：这个 HTTP 请求可能会卡很久，也可能永远不会结束（暂不考虑超时）。极端情况下，当越来越多的 <code>JustGet</code> 被执行时，我们的主控制流虽然总是能结束，但后台会堆积越来越多的 goroutine &ndash; 程序的行为开始不受控制了！</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Go
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">type</span> <span class="nx">Result</span> <span class="kd">struct</span> <span class="p">{}</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">r</span> <span class="o">*</span><span class="nx">Result</span><span class="p">)</span> <span class="nf">Read</span><span class="p">(</span><span class="nx">p</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)</span> <span class="p">(</span><span class="nx">n</span> <span class="kt">int</span><span class="p">,</span> <span class="nx">err</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{}</span>
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">HttpGet</span><span class="p">(</span><span class="nx">url</span> <span class="kt">string</span><span class="p">)</span> <span class="nx">Result</span> <span class="p">{}</span>
+</span></span></code></pre></div><p>当我们遵循最初的抽象的时候，我们可以直接的做出如下理解：<code>HttpGet</code> 是请求给定 URL 并读取结果返回给调用者，调用者可以通过调用 <code>Result.read</code> 来获取结果的内容。在编写代码的时候，我们就可以简单地调用 <code>HttpGet</code>。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Go
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">JustGet</span><span class="p">(</span><span class="nx">url</span> <span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">lib</span><span class="p">.</span><span class="nf">HttpGet</span><span class="p">(</span><span class="nx">url</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>当代码完全是同步实现的时候，so far so good。然而，当面临并发编程原语 go 时，事情一下子变的复杂了起来。假设上述结构体/方法的实现是下面这样的：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// Go
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">type</span> <span class="nx">Result</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">ch</span>    <span class="kd">chan</span> <span class="p">[]</span><span class="kt">byte</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">buf</span>   <span class="o">*</span><span class="nx">bytes</span><span class="p">.</span><span class="nx">Buffer</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// Implement io.Reader.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">r</span> <span class="o">*</span><span class="nx">Result</span><span class="p">)</span> <span class="nf">Read</span><span class="p">(</span><span class="nx">p</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)</span> <span class="p">(</span><span class="nx">n</span> <span class="kt">int</span><span class="p">,</span> <span class="nx">err</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">r</span><span class="p">.</span><span class="nx">buf</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="nx">buf</span><span class="p">,</span> <span class="nx">ok</span> <span class="p">=</span> <span class="nx">bytes</span><span class="p">.</span><span class="nf">NewBuffer</span><span class="p">(</span><span class="o">&lt;-</span><span class="nx">r</span><span class="p">.</span><span class="nx">ch</span><span class="p">);</span> <span class="nx">ok</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">r</span><span class="p">.</span><span class="nx">buf</span> <span class="p">=</span> <span class="nx">buf</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">r</span><span class="p">.</span><span class="nx">buf</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">bytes</span><span class="p">.</span><span class="nx">Buffer</span><span class="p">{}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">r</span><span class="p">.</span><span class="nx">buf</span><span class="p">.</span><span class="nf">Read</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">HttpGet</span><span class="p">(</span><span class="nx">url</span> <span class="kt">string</span><span class="p">)</span> <span class="nx">Result</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">ch</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">defer</span> <span class="nb">close</span><span class="p">(</span><span class="nx">ch</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="nx">resp</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">http</span><span class="p">.</span><span class="nf">Get</span><span class="p">(</span><span class="nx">url</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">defer</span> <span class="nx">resp</span><span class="p">.</span><span class="nx">Body</span><span class="p">.</span><span class="nf">Close</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">content</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">io</span><span class="p">.</span><span class="nf">ReadAll</span><span class="p">(</span><span class="nx">resp</span><span class="p">.</span><span class="nx">Body</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="nx">ch</span> <span class="o">&lt;-</span> <span class="nx">content</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">Result</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">ch</span><span class="p">:</span> <span class="nx">ch</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>HttpGet 在执行时启动了一个 goroutine 用于异步进行 HTTP 请求，但是立即返回了当前函数！而我们知道，在面对网络 IO 的时候，令人担忧的事情总是会发生：这个 HTTP 请求可能会卡很久，也可能永远不会结束（暂不考虑超时）。极端情况下，当越来越多的 <code>JustGet</code> 被执行时，我们的主控制流虽然总是能结束，但后台会堆积越来越多的 goroutine &ndash; 程序的行为开始不受控制了！</p>
 <p>在这里，go 对控制流的抽象进行了第二次破坏。对比 goto 和 go，你会发现它们是极为相似的[2]。</p>
 <p><figure 
 	>
@@ -255,11 +255,11 @@
 </ul>
 </li>
 </ul>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="c1"># Python</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;/some/file&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-    <span class="o">...</span>
-<span class="c1"># Async flow outlives here</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># Python</span>
+</span></span><span class="line"><span class="cl"><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;/some/file&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="o">...</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Async flow outlives here</span>
+</span></span></code></pre></div><blockquote>
 <p>最后，我想同学可能会对这个例子有疑问：如果文档足够详尽或者方法改名为 AsyncHttpGet 会不会使得开发者避免这样的错误？</p>
 <p>我个人的见解是：没错，但是并不能解决所有问题。现实往往比理想更让人无奈：</p>
 <ul>
@@ -350,32 +350,32 @@ Carl Lerche 尝试在 tokio 的 issue [4] 中提出了一个结构化并发的�
 <li>tokio 中只支持 spawn 一个 static 生命周期（没有局部变量引用）的 Future，与之相对应的就是 scoped spawn</li>
 </ul>
 <p>举两个简单的例子方便理解，熟悉的同学可以直接跳过：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="c1">// Rust
-</span><span class="c1"></span><span class="k">async</span><span class="w"> </span><span class="k">fn</span> <span class="nf">request_or_timeout</span><span class="p">(</span><span class="n">tiemout</span>: <span class="nc">time</span>::<span class="n">Duration</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nb">Result</span><span class="o">&lt;</span><span class="p">()</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
-</span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">timer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tokio</span>::<span class="n">time</span>::<span class="n">sleep</span><span class="p">(</span><span class="n">timeout</span><span class="p">));</span><span class="w">
-</span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">request_fut</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">async_do_request</span><span class="p">();</span><span class="w">
-</span><span class="w">
-</span><span class="w">    </span><span class="n">tokio</span>::<span class="n">select</span><span class="o">!</span><span class="w"> </span><span class="p">{</span><span class="w">
-</span><span class="w">        </span><span class="n">_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">timer</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
-</span><span class="w">            </span><span class="c1">// request_fut is dropped immediately before exiting current block
-</span><span class="c1"></span><span class="w">            </span><span class="nb">Err</span><span class="p">(</span><span class="s">&#34;timeout&#34;</span><span class="p">)</span><span class="w">
-</span><span class="w">        </span><span class="p">},</span><span class="w">
-</span><span class="w">        </span><span class="n">_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">request_fut</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
-</span><span class="w">            </span><span class="nb">Ok</span><span class="p">(())</span><span class="w">
-</span><span class="w">        </span><span class="p">}</span><span class="w">
-</span><span class="w">    </span><span class="p">}</span><span class="w">
-</span><span class="w"></span><span class="p">}</span><span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="k">async</span><span class="w"> </span><span class="k">fn</span> <span class="nf">scoped_spawn</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
-</span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">
-</span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">x_ref</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">x</span><span class="p">;</span><span class="w">
-</span><span class="w">
-</span><span class="w">    </span><span class="c1">// Not allowed
-</span><span class="c1"></span><span class="w">    </span><span class="n">tokio</span>::<span class="n">spawn</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="p">{</span><span class="w">
-</span><span class="w">        </span><span class="fm">println!</span><span class="p">(</span><span class="o">*</span><span class="n">x_ref</span><span class="p">);</span><span class="w">
-</span><span class="w">    </span><span class="p">}).</span><span class="k">await</span><span class="p">;</span><span class="w">
-</span><span class="w"></span><span class="p">}</span><span class="w">
-</span></code></pre></div><p>那现在问题在哪呢？假如 Rust / tokio 中已经支持了结构化并发，我们尝试来反推一下。这要求我们了解 Rust 协程和运行时的真正执行流程，不熟悉的同学可以参考我上一篇<a class="link" href="../coroutines-rust-and-go" >介绍协程的文章</a>。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="c1">// Rust
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">async</span><span class="w"> </span><span class="k">fn</span> <span class="nf">request_or_timeout</span><span class="p">(</span><span class="n">tiemout</span>: <span class="nc">time</span>::<span class="n">Duration</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nb">Result</span><span class="o">&lt;</span><span class="p">()</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">timer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tokio</span>::<span class="n">time</span>::<span class="n">sleep</span><span class="p">(</span><span class="n">timeout</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">request_fut</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">async_do_request</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">tokio</span>::<span class="n">select</span><span class="o">!</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">timer</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="c1">// request_fut is dropped immediately before exiting current block
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">            </span><span class="nb">Err</span><span class="p">(</span><span class="s">&#34;timeout&#34;</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">},</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">request_fut</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nb">Ok</span><span class="p">(())</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">async</span><span class="w"> </span><span class="k">fn</span> <span class="nf">scoped_spawn</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">x_ref</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">x</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c1">// Not allowed
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">    </span><span class="n">tokio</span>::<span class="n">spawn</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="fm">println!</span><span class="p">(</span><span class="o">*</span><span class="n">x_ref</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}).</span><span class="k">await</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>那现在问题在哪呢？假如 Rust / tokio 中已经支持了结构化并发，我们尝试来反推一下。这要求我们了解 Rust 协程和运行时的真正执行流程，不熟悉的同学可以参考我上一篇<a class="link" href="../coroutines-rust-and-go" >介绍协程的文章</a>。</p>
 <p>首先，假如 Rust / tokio 已经支持了结构化并发，那支持 scoped spawn 应该是一个非常自然的事情 &ndash; 因为控制流永远都会归并，意味着你可以保证 scoped 引用的生命周期一定比 spawned task 要长。因此我们需要来看一下如何支持 scoped spawn。注意到 spawn 出来的任务是异步并发执行的，意味着你无法保证在任意时刻都能够立即中止它的运行。注意到有 select 这种原语的存在，因此任意 Future 都可以在没有执行完前被 drop（强制立即取消 + 销毁）。</p>
 <p>那么这里矛盾来了，以上面的 <code>scoped_spawn</code> 为例：</p>
 <ul>
@@ -384,10 +384,10 @@ Carl Lerche 尝试在 tokio 的 issue [4] 中提出了一个结构化并发的�
 </ul>
 <p>如何保证 scoped_spawn 被 drop 前 println 这个并发任务完成/取消？答案是，很遗憾，没有办法。Rust 没有提供一个异步取消的方式，除非在 drop 中用一种阻塞线程的方式来同步等待，第一这是不可取的（你无法知道要等多久），第二 Rust 的编译器也没有这个能力自动插入跟 runtime 相关的阻塞等待方式。</p>
 <p>显然，这里我们缺少一个异步取消的机制。关于这个机制其实 tokio 社区很早就讨论过。在支持异步 IO 驱动器 io_uring 的过程中发现，io_uring 对传入内核的 buffer 的生命周期有要求：必须保证内核在工作期间 buffer 是存活的。这对使用 Drop 来取消协程的 Rust 来说遇到了和上面一样的问题。因此社区基于此提出了需要一个 AsyncDrop [12] 的 trait 来完成异步 Drop。但同样，即使是 AsyncDrop 也仍然未有定论，比如其通用的形式</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="k">trait</span><span class="w"> </span><span class="n">AsyncDrop</span><span class="w"> </span><span class="p">{</span><span class="w">
-</span><span class="w">    </span><span class="k">async</span><span class="w"> </span><span class="k">fn</span> <span class="nf">drop</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">);</span><span class="w">
-</span><span class="w"></span><span class="p">}</span><span class="w">
-</span></code></pre></div><p>就有好几个问题：async trait 不支持，async trait 的支持需要 GAT（generic associate type），GAT 还没有 stable。Just too many problems ahead。咳，这里不做展开。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="k">trait</span><span class="w"> </span><span class="n">AsyncDrop</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">async</span><span class="w"> </span><span class="k">fn</span> <span class="nf">drop</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span></code></pre></div><p>就有好几个问题：async trait 不支持，async trait 的支持需要 GAT（generic associate type），GAT 还没有 stable。Just too many problems ahead。咳，这里不做展开。</p>
 <p>除了异步取消，我们还面临了错误传播和处理的问题，其中最头疼的应该是 panic 的处理，我想本文已经够长（水）了，就不再继续讨论了。</p>
 <p>总而言之，Rust 的异步编程以及结构化并发的支持还有很长一段路要走。虽然看着隔壁 swift 的完整 proposal 有一点流口水，但还是期待将来能在 Rust 上完整体验结构化并发的魅力。</p>
 <blockquote>
@@ -548,7 +548,7 @@ Carl Lerche 尝试在 tokio 的 issue [4] 中提出了一个结构化并发的�
         
             2018 - 
         
-        2021 石沉溪洞 -- Ark&#39;s Blog
+        2022 石沉溪洞 -- Ark&#39;s Blog
     </section>
     
     <section class="powerby">

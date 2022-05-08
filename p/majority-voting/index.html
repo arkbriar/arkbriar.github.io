@@ -152,27 +152,27 @@
 </ol>
 <p>第二遍遍历，对上次结果中的 candidate 计数，超过一半则存在 majority 为 candidate，否则不存在</p>
 <p>来看一下Python版代码实现：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">boyer_moore_majority</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
-    <span class="n">candidate</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">input</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">candidate</span> <span class="o">=</span> <span class="n">value</span>
-        <span class="k">if</span> <span class="n">candidate</span> <span class="o">==</span> <span class="n">value</span>
-            <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">count</span> <span class="o">-=</span> <span class="mi">1</span>
-
-    <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">input</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">candidate</span> <span class="o">==</span> <span class="n">value</span><span class="p">:</span>
-            <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
-    
-    <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">candidate</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span> <span class="c1"># any value represents NOT FOUND</span>
-</code></pre></div><h3 id="一个简单的证明">一个简单的证明</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">boyer_moore_majority</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">candidate</span> <span class="o">=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">    <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">input</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="n">candidate</span> <span class="o">=</span> <span class="n">value</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="n">candidate</span> <span class="o">==</span> <span class="n">value</span>
+</span></span><span class="line"><span class="cl">            <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">        <span class="k">else</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="n">count</span> <span class="o">-=</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">input</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="n">candidate</span> <span class="o">==</span> <span class="n">value</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">candidate</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span> <span class="c1"># any value represents NOT FOUND</span>
+</span></span></code></pre></div><h3 id="一个简单的证明">一个简单的证明</h3>
 <p>我们只需要考虑在原列表中有 majority 的情况，因为如果没有第二遍遍历会直接 reject。</p>
 <p>所以假设列表 L 中存在majority，记为 M。</p>
 <p>可以看到，上面 candidate 在 count 等于 0 的时候变更，其实将列表分成了一段一段，每一段有一个 candidate。</p>
@@ -207,19 +207,19 @@
 <p>有兴趣的同学可以阅读 <a class="link" href="http://www.crm.umontreal.ca/pub/Rapports/3300-3399/3302.pdf"  target="_blank" rel="noopener"
     >Finding the Majority Element in Parallel</a>。</p>
 <p>主要算法如下：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">distributed_boyer_moore_majority</span><span class="p">(</span><span class="n">parallel_output</span><span class="p">):</span>
-    <span class="n">candidate</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">for</span> <span class="n">candidate_i</span><span class="p">,</span> <span class="n">count_i</span> <span class="ow">in</span> <span class="n">parallel_output</span><span class="p">:</span>
-    <span class="k">if</span> <span class="n">candidate_i</span> <span class="o">=</span> <span class="n">candidate</span><span class="p">:</span>
-        <span class="n">count</span> <span class="o">+=</span> <span class="n">count_i</span>
-    <span class="k">else</span> <span class="k">if</span> <span class="n">count_i</span> <span class="o">&gt;</span> <span class="n">count</span><span class="p">:</span>
-        <span class="n">count</span> <span class="o">=</span> <span class="n">count_i</span> <span class="o">-</span> <span class="n">count</span>
-        <span class="n">candidate</span> <span class="o">=</span> <span class="n">candidate_i</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">count</span> <span class="o">=</span> <span class="n">count</span> <span class="o">-</span> <span class="n">count_i</span>
-    <span class="o">...</span>
-</code></pre></div><h2 id="总结">总结</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">distributed_boyer_moore_majority</span><span class="p">(</span><span class="n">parallel_output</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">candidate</span> <span class="o">=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">    <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="n">candidate_i</span><span class="p">,</span> <span class="n">count_i</span> <span class="ow">in</span> <span class="n">parallel_output</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="n">candidate_i</span> <span class="o">=</span> <span class="n">candidate</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">count</span> <span class="o">+=</span> <span class="n">count_i</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span> <span class="k">if</span> <span class="n">count_i</span> <span class="o">&gt;</span> <span class="n">count</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">count</span> <span class="o">=</span> <span class="n">count_i</span> <span class="o">-</span> <span class="n">count</span>
+</span></span><span class="line"><span class="cl">        <span class="n">candidate</span> <span class="o">=</span> <span class="n">candidate_i</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">count</span> <span class="o">=</span> <span class="n">count</span> <span class="o">-</span> <span class="n">count_i</span>
+</span></span><span class="line"><span class="cl">    <span class="o">...</span>
+</span></span></code></pre></div><h2 id="总结">总结</h2>
 <p>刷 leetcode 时遇到的很有意思的题目 <a class="link" href="https://leetcode.com/problems/majority-element-ii/tabs/description"  target="_blank" rel="noopener"
     >https://leetcode.com/problems/majority-element-ii/tabs/description</a>，知道这个算法就非常容易了。</p>
 </section>
@@ -383,7 +383,7 @@
         
             2018 - 
         
-        2021 石沉溪洞 -- Ark&#39;s Blog
+        2022 石沉溪洞 -- Ark&#39;s Blog
     </section>
     
     <section class="powerby">

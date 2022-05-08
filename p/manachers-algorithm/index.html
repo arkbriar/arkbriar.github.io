@@ -162,52 +162,52 @@
 <p>右边界最多扩展到 2 * n，所以是 O(n) 的，而赋值一共 2 * n + 1 次，所以也是 O(n) 的。</p>
 <p>所以总计时间复杂度为 O(n)。</p>
 <h3 id="cpp">Cpp</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">class</span> <span class="nc">Solution</span> <span class="p">{</span>
-<span class="k">public</span><span class="o">:</span>
-    <span class="n">string</span> <span class="n">longestPalindrome</span><span class="p">(</span><span class="n">string</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span> <span class="k">return</span> <span class="s">&#34;&#34;</span><span class="p">;</span>
-        <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="n">s</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
-        <span class="kt">int</span> <span class="n">res</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">resi</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-        <span class="kt">int</span> <span class="n">N</span> <span class="o">=</span> <span class="n">n</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
-
-        <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">lps</span><span class="p">(</span><span class="n">N</span><span class="p">);</span>
-        <span class="n">lps</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-
-        <span class="kt">int</span> <span class="n">c</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">N</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
-            <span class="kt">int</span> <span class="n">li</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">c</span> <span class="o">-</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">c</span> <span class="o">+</span> <span class="n">lps</span><span class="p">[</span><span class="n">c</span><span class="p">];</span>
-            <span class="kt">int</span> <span class="n">to_r</span> <span class="o">=</span> <span class="n">r</span> <span class="o">-</span> <span class="n">i</span><span class="p">;</span>
-
-            <span class="c1">// set initial lps[i]
-</span><span class="c1"></span>            <span class="n">lps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">min</span><span class="p">(</span><span class="n">lps</span><span class="p">[</span><span class="n">li</span><span class="p">],</span> <span class="n">to_r</span><span class="p">);</span>
-
-            <span class="cm">/* if (lps[li] &gt;= to_r) { */</span>
-
-            <span class="c1">// expand if we can
-</span><span class="c1"></span>            <span class="c1">// i + lps[i] &lt; N - 1 &amp;&amp; i - lps[i] &gt; 0 so that there are spaces for expand
-</span><span class="c1"></span>            <span class="k">while</span> <span class="p">(</span>
-                <span class="n">i</span> <span class="o">+</span> <span class="n">lps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">N</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="n">i</span> <span class="o">-</span> <span class="n">lps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span>
-                <span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="n">lps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">s</span><span class="p">[(</span><span class="n">i</span> <span class="o">-</span> <span class="n">lps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">s</span><span class="p">[(</span><span class="n">i</span> <span class="o">+</span> <span class="n">lps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">]))</span> <span class="p">{</span>
-                <span class="n">lps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">++</span><span class="p">;</span>
-            <span class="p">}</span>
-
-            <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">lps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">r</span><span class="p">)</span> <span class="p">{</span>
-                <span class="n">c</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
-            <span class="p">}</span>
-
-            <span class="cm">/* } */</span>
-
-            <span class="c1">// record result
-</span><span class="c1"></span>            <span class="k">if</span> <span class="p">(</span><span class="n">lps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">res</span><span class="p">)</span> <span class="p">{</span>
-                <span class="n">res</span> <span class="o">=</span> <span class="n">lps</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
-                <span class="n">resi</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-
-        <span class="k">return</span> <span class="n">s</span><span class="p">.</span><span class="n">substr</span><span class="p">((</span><span class="n">resi</span> <span class="o">-</span> <span class="n">res</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">res</span><span class="p">);</span>
-    <span class="p">}</span>
-<span class="p">};</span>
-</code></pre></div><h3 id="reference">Reference</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">Solution</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="k">public</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">string</span> <span class="n">longestPalindrome</span><span class="p">(</span><span class="n">string</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">s</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span> <span class="k">return</span> <span class="s">&#34;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="n">s</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">int</span> <span class="n">res</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">resi</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">int</span> <span class="n">N</span> <span class="o">=</span> <span class="n">n</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">lps</span><span class="p">(</span><span class="n">N</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">lps</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="kt">int</span> <span class="n">c</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">N</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="kt">int</span> <span class="n">li</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">c</span> <span class="o">-</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">c</span> <span class="o">+</span> <span class="n">lps</span><span class="p">[</span><span class="n">c</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">            <span class="kt">int</span> <span class="n">to_r</span> <span class="o">=</span> <span class="n">r</span> <span class="o">-</span> <span class="n">i</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="c1">// set initial lps[i]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">lps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">min</span><span class="p">(</span><span class="n">lps</span><span class="p">[</span><span class="n">li</span><span class="p">],</span> <span class="n">to_r</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="cm">/* if (lps[li] &gt;= to_r) { */</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="c1">// expand if we can
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="c1">// i + lps[i] &lt; N - 1 &amp;&amp; i - lps[i] &gt; 0 so that there are spaces for expand
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="k">while</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">                <span class="n">i</span> <span class="o">+</span> <span class="n">lps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">N</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="n">i</span> <span class="o">-</span> <span class="n">lps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span>
+</span></span><span class="line"><span class="cl">                <span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="n">lps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">s</span><span class="p">[(</span><span class="n">i</span> <span class="o">-</span> <span class="n">lps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">s</span><span class="p">[(</span><span class="n">i</span> <span class="o">+</span> <span class="n">lps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">]))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="n">lps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">lps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">r</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="n">c</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="cm">/* } */</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="c1">// record result
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="k">if</span> <span class="p">(</span><span class="n">lps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">res</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="n">res</span> <span class="o">=</span> <span class="n">lps</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">                <span class="n">resi</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">s</span><span class="p">.</span><span class="n">substr</span><span class="p">((</span><span class="n">resi</span> <span class="o">-</span> <span class="n">res</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">res</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></div><h3 id="reference">Reference</h3>
 <p>[1] <a class="link" href="http://articles.leetcode.com/longest-palindromic-substring-part-ii"  target="_blank" rel="noopener"
     >http://articles.leetcode.com/longest-palindromic-substring-part-ii</a></p>
 <p>[2] <a class="link" href="https://www.felix021.com/blog/read.php?entryid=2040"  target="_blank" rel="noopener"
@@ -396,7 +396,7 @@
         
             2018 - 
         
-        2021 石沉溪洞 -- Ark&#39;s Blog
+        2022 石沉溪洞 -- Ark&#39;s Blog
     </section>
     
     <section class="powerby">

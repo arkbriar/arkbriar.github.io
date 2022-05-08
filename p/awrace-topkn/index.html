@@ -242,53 +242,53 @@
 <p>答案是<strong>每一个线程在读完一份数据后，直接进行处理，然后读取下一份</strong>。</p>
 <p>但是如何安排每一个线程的那份数据，保证线程之间不会有重复读取，也不会有漏读的数据块？</p>
 <p>这里采用 Eric 在复赛里的实现: FileSegment, 通过将一个文件分割为一个一个 Segment，让每一个线程自己请求下一个 Segment，并通过 RandomAccessFile 进行读取。(由于不许用 FileChannel)</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">FileSegment</span> <span class="o">{</span>
-    <span class="kd">private</span> <span class="n">File</span> <span class="n">file</span><span class="o">;</span>
-
-    <span class="kd">private</span> <span class="kt">long</span> <span class="n">offset</span><span class="o">;</span>
-
-    <span class="kd">private</span> <span class="kt">long</span> <span class="n">size</span><span class="o">;</span>
-    <span class="o">...</span>
-<span class="o">}</span>
-</code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">BufferedFileSegmentReadProcessor</span> <span class="kd">implements</span> <span class="n">Runnable</span> <span class="o">{</span>
-    <span class="kd">private</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">bufferMargin</span> <span class="o">=</span> <span class="n">1024</span><span class="o">;</span>
-    <span class="kd">private</span> <span class="n">FileSegmentLoader</span> <span class="n">fileSegmentLoader</span><span class="o">;</span>
-    <span class="kd">private</span> <span class="kt">int</span> <span class="n">bufferSize</span><span class="o">;</span>
-    <span class="kd">private</span> <span class="kt">byte</span><span class="o">[]</span> <span class="n">readBuffer</span><span class="o">;</span>
-
-    <span class="c1">// Here bufferSize must be greater than segments&#39; size got from fileSegmentLoader, 
-</span><span class="c1"></span>    <span class="c1">// otherwise segment will not be fully read/processed!
-</span><span class="c1"></span>    <span class="kd">public</span> <span class="nf">BufferedFileSegmentReadProcessor</span><span class="o">(</span><span class="n">FileSegmentLoader</span> <span class="n">fileSegmentLoader</span><span class="o">,</span> <span class="kt">int</span> <span class="n">bufferSize</span><span class="o">)</span> <span class="o">{</span>
-        <span class="k">this</span><span class="o">.</span><span class="na">bufferSize</span> <span class="o">=</span> <span class="n">bufferSize</span><span class="o">;</span>
-        <span class="k">this</span><span class="o">.</span><span class="na">fileSegmentLoader</span> <span class="o">=</span> <span class="n">fileSegmentLoader</span><span class="o">;</span>
-    <span class="o">}</span>
-
-    <span class="kd">private</span> <span class="kt">int</span> <span class="nf">readSegment</span><span class="o">(</span><span class="n">FileSegment</span> <span class="n">segment</span><span class="o">,</span> <span class="kt">byte</span><span class="o">[]</span> <span class="n">readBuffer</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
-        <span class="kt">int</span> <span class="n">limit</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
-        <span class="k">try</span> <span class="o">(</span><span class="n">RandomAccessFile</span> <span class="n">randomAccessFile</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RandomAccessFile</span><span class="o">(</span><span class="n">segment</span><span class="o">.</span><span class="na">getFile</span><span class="o">(),</span> <span class="s">&#34;r&#34;</span><span class="o">))</span> <span class="o">{</span>
-            <span class="n">randomAccessFile</span><span class="o">.</span><span class="na">seek</span><span class="o">(</span><span class="n">segment</span><span class="o">.</span><span class="na">getOffset</span><span class="o">());</span>
-            <span class="n">limit</span> <span class="o">=</span> <span class="n">randomAccessFile</span><span class="o">.</span><span class="na">read</span><span class="o">(</span><span class="n">readBuffer</span><span class="o">,</span> <span class="n">0</span><span class="o">,</span> <span class="n">readBuffer</span><span class="o">.</span><span class="na">length</span><span class="o">);</span>
-        <span class="o">}</span>
-        <span class="k">return</span> <span class="n">limit</span><span class="o">;</span>
-    <span class="o">}</span>
-
-    <span class="kd">protected</span> <span class="kd">abstract</span> <span class="kt">void</span> <span class="nf">processSegment</span><span class="o">(</span><span class="n">FileSegment</span> <span class="n">segment</span><span class="o">,</span> <span class="kt">byte</span><span class="o">[]</span> <span class="n">readBuffer</span><span class="o">,</span> <span class="kt">int</span> <span class="n">limit</span><span class="o">);</span>
-
-    <span class="nd">@Override</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
-        <span class="n">readBuffer</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="n">bufferSize</span> <span class="o">+</span> <span class="n">bufferMargin</span><span class="o">];</span>
-        <span class="k">try</span> <span class="o">{</span>
-            <span class="n">FileSegment</span> <span class="n">segment</span><span class="o">;</span>
-            <span class="k">while</span> <span class="o">((</span><span class="n">segment</span> <span class="o">=</span> <span class="n">fileSegmentLoader</span><span class="o">.</span><span class="na">nextFileSegment</span><span class="o">())</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-                <span class="kt">int</span> <span class="n">limit</span> <span class="o">=</span> <span class="n">readSegment</span><span class="o">(</span><span class="n">segment</span><span class="o">,</span> <span class="n">readBuffer</span><span class="o">);</span>
-                <span class="n">processSegment</span><span class="o">(</span><span class="n">segment</span><span class="o">,</span> <span class="n">readBuffer</span><span class="o">,</span> <span class="n">limit</span><span class="o">);</span>
-            <span class="o">}</span>
-        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></div><p>这样每一个线程都在读和处理之间循环，先完成的线程会请求下一个 Segment，保证以最短的时间完成调用所有 Core 进行一遍数据处理。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">FileSegment</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">File</span> <span class="n">file</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="kt">long</span> <span class="n">offset</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="kt">long</span> <span class="n">size</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">...</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">BufferedFileSegmentReadProcessor</span> <span class="kd">implements</span> <span class="n">Runnable</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">bufferMargin</span> <span class="o">=</span> <span class="n">1024</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">FileSegmentLoader</span> <span class="n">fileSegmentLoader</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="kt">int</span> <span class="n">bufferSize</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="kt">byte</span><span class="o">[]</span> <span class="n">readBuffer</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// Here bufferSize must be greater than segments&#39; size got from fileSegmentLoader, 
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// otherwise segment will not be fully read/processed!
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kd">public</span> <span class="nf">BufferedFileSegmentReadProcessor</span><span class="o">(</span><span class="n">FileSegmentLoader</span> <span class="n">fileSegmentLoader</span><span class="o">,</span> <span class="kt">int</span> <span class="n">bufferSize</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">this</span><span class="o">.</span><span class="na">bufferSize</span> <span class="o">=</span> <span class="n">bufferSize</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">this</span><span class="o">.</span><span class="na">fileSegmentLoader</span> <span class="o">=</span> <span class="n">fileSegmentLoader</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="kt">int</span> <span class="nf">readSegment</span><span class="o">(</span><span class="n">FileSegment</span> <span class="n">segment</span><span class="o">,</span> <span class="kt">byte</span><span class="o">[]</span> <span class="n">readBuffer</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">int</span> <span class="n">limit</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">try</span> <span class="o">(</span><span class="n">RandomAccessFile</span> <span class="n">randomAccessFile</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RandomAccessFile</span><span class="o">(</span><span class="n">segment</span><span class="o">.</span><span class="na">getFile</span><span class="o">(),</span> <span class="s">&#34;r&#34;</span><span class="o">))</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">randomAccessFile</span><span class="o">.</span><span class="na">seek</span><span class="o">(</span><span class="n">segment</span><span class="o">.</span><span class="na">getOffset</span><span class="o">());</span>
+</span></span><span class="line"><span class="cl">            <span class="n">limit</span> <span class="o">=</span> <span class="n">randomAccessFile</span><span class="o">.</span><span class="na">read</span><span class="o">(</span><span class="n">readBuffer</span><span class="o">,</span> <span class="n">0</span><span class="o">,</span> <span class="n">readBuffer</span><span class="o">.</span><span class="na">length</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">limit</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kd">protected</span> <span class="kd">abstract</span> <span class="kt">void</span> <span class="nf">processSegment</span><span class="o">(</span><span class="n">FileSegment</span> <span class="n">segment</span><span class="o">,</span> <span class="kt">byte</span><span class="o">[]</span> <span class="n">readBuffer</span><span class="o">,</span> <span class="kt">int</span> <span class="n">limit</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nd">@Override</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">readBuffer</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="n">bufferSize</span> <span class="o">+</span> <span class="n">bufferMargin</span><span class="o">];</span>
+</span></span><span class="line"><span class="cl">        <span class="k">try</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">FileSegment</span> <span class="n">segment</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">            <span class="k">while</span> <span class="o">((</span><span class="n">segment</span> <span class="o">=</span> <span class="n">fileSegmentLoader</span><span class="o">.</span><span class="na">nextFileSegment</span><span class="o">())</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">                <span class="kt">int</span> <span class="n">limit</span> <span class="o">=</span> <span class="n">readSegment</span><span class="o">(</span><span class="n">segment</span><span class="o">,</span> <span class="n">readBuffer</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">                <span class="n">processSegment</span><span class="o">(</span><span class="n">segment</span><span class="o">,</span> <span class="n">readBuffer</span><span class="o">,</span> <span class="n">limit</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="o">}</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">        <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><p>这样每一个线程都在读和处理之间循环，先完成的线程会请求下一个 Segment，保证以最短的时间完成调用所有 Core 进行一遍数据处理。</p>
 <p>这个方法保证能够十分稳定的进行读取和处理，并且不需要等待 Reader 和 Processor 通信，在我的实验环境中基本存着cache 3-4s能扫描一遍，清理cache也在 7-8s。</p>
 <p>其实到这里本题已经差不多了，我记得 Eric 在这种处理下比赛的最终结果是 14s 多。</p>
 <h3 id="top-1-的优化">Top 1 的优化</h3>
@@ -300,44 +300,44 @@
 <h2 id="测试">测试</h2>
 <p>仅测试了建 Index</p>
 <h3 id="清理-cache">清理 cache</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash">$ sysctl -w vm.drop_caches<span class="o">=</span><span class="m">3</span>
-vm.drop_caches <span class="o">=</span> <span class="m">3</span>
-$ <span class="nb">time</span> java <span class="si">${</span><span class="nv">JAVA_OPTS</span><span class="si">}</span> -cp /exp/topkn/topkn.jar com.alibaba.middleware.topkn.TopknWorker localhost <span class="m">5527</span> .
-<span class="o">[</span>2017-07-27 14:24:27.512<span class="o">]</span> INFO com.alibaba.middleware.topkn.TopknWorker Connecting to master at localhost:5527
-<span class="o">[</span>2017-07-27 14:24:27.519<span class="o">]</span> INFO com.alibaba.middleware.topkn.TopknWorker Building index ...
-0.673: <span class="o">[</span>GC <span class="o">(</span>Allocation Failure<span class="o">)</span> 0.673: <span class="o">[</span>ParNew: 809135K-&gt;99738K<span class="o">(</span>943744K<span class="o">)</span>, 0.1759305 secs<span class="o">]</span> 809135K-&gt;542134K<span class="o">(</span>3040896K<span class="o">)</span>, 0.1761763 secs<span class="o">]</span> <span class="o">[</span>Times: <span class="nv">user</span><span class="o">=</span>3.15 <span class="nv">sys</span><span class="o">=</span>0.69, <span class="nv">real</span><span class="o">=</span>0.17 secs<span class="o">]</span>
-<span class="o">[</span>2017-07-27 14:24:32.330<span class="o">]</span> INFO com.alibaba.middleware.topkn.TopknWorker Index built.
-Heap
- par new generation   total 943744K, used 903716K <span class="o">[</span>0x0000000700000000, 0x0000000740000000, 0x0000000740000000<span class="o">)</span>
-  eden space 838912K,  95% used <span class="o">[</span>0x0000000700000000, 0x00000007311225e0, 0x0000000733340000<span class="o">)</span>
-  from space 104832K,  95% used <span class="o">[</span>0x00000007399a0000, 0x000000073fb06b38, 0x0000000740000000<span class="o">)</span>
-  to   space 104832K,   0% used <span class="o">[</span>0x0000000733340000, 0x0000000733340000, 0x00000007399a0000<span class="o">)</span>
- concurrent mark-sweep generation total 2097152K, used 442395K <span class="o">[</span>0x0000000740000000, 0x00000007c0000000, 0x00000007c0000000<span class="o">)</span>
- Metaspace       used 3980K, capacity 4638K, committed 4864K, reserved 1056768K
-  class space    used 434K, capacity 462K, committed 512K, reserved 1048576K
-
-real    0m5.238s
-user    1m11.980s
-sys     0m26.324s
-</code></pre></div><h3 id="不清理-cache">不清理 cache</h3>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash">$ <span class="nb">time</span> java <span class="si">${</span><span class="nv">JAVA_OPTS</span><span class="si">}</span> -cp /exp/topkn/topkn.jar com.alibaba.middleware.topkn.TopknWorker localhost <span class="m">5527</span> .
-<span class="o">[</span>2017-07-27 14:25:39.986<span class="o">]</span> INFO com.alibaba.middleware.topkn.TopknWorker Connecting to master at localhost:5527
-<span class="o">[</span>2017-07-27 14:25:39.992<span class="o">]</span> INFO com.alibaba.middleware.topkn.TopknWorker Building index ...
-0.590: <span class="o">[</span>GC <span class="o">(</span>Allocation Failure<span class="o">)</span> 0.590: <span class="o">[</span>ParNew: 838912K-&gt;99751K<span class="o">(</span>943744K<span class="o">)</span>, 0.1851592 secs<span class="o">]</span> 838912K-&gt;591302K<span class="o">(</span>3040896K<span class="o">)</span>, 0.1855308 secs<span class="o">]</span> <span class="o">[</span>Times: <span class="nv">user</span><span class="o">=</span>3.03 <span class="nv">sys</span><span class="o">=</span>0.88, <span class="nv">real</span><span class="o">=</span>0.19 secs<span class="o">]</span>
-<span class="o">[</span>2017-07-27 14:25:44.449<span class="o">]</span> INFO com.alibaba.middleware.topkn.TopknWorker Index built.
-Heap
- par new generation   total 943744K, used 863664K <span class="o">[</span>0x0000000700000000, 0x0000000740000000, 0x0000000740000000<span class="o">)</span>
-  eden space 838912K,  91% used <span class="o">[</span>0x0000000700000000, 0x000000072ea02318, 0x0000000733340000<span class="o">)</span>
-  from space 104832K,  95% used <span class="o">[</span>0x00000007399a0000, 0x000000073fb09e00, 0x0000000740000000<span class="o">)</span>
-  to   space 104832K,   0% used <span class="o">[</span>0x0000000733340000, 0x0000000733340000, 0x00000007399a0000<span class="o">)</span>
- concurrent mark-sweep generation total 2097152K, used 491550K <span class="o">[</span>0x0000000740000000, 0x00000007c0000000, 0x00000007c0000000<span class="o">)</span>
- Metaspace       used 3980K, capacity 4638K, committed 4864K, reserved 1056768K
-  class space    used 434K, capacity 462K, committed 512K, reserved 1048576K
-
-real    0m4.754s
-user    0m57.144s
-sys     0m30.568s
-</code></pre></div><p><strong>UPDATE</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ sysctl -w vm.drop_caches<span class="o">=</span><span class="m">3</span>
+</span></span><span class="line"><span class="cl">vm.drop_caches <span class="o">=</span> <span class="m">3</span>
+</span></span><span class="line"><span class="cl">$ <span class="nb">time</span> java <span class="si">${</span><span class="nv">JAVA_OPTS</span><span class="si">}</span> -cp /exp/topkn/topkn.jar com.alibaba.middleware.topkn.TopknWorker localhost <span class="m">5527</span> .
+</span></span><span class="line"><span class="cl"><span class="o">[</span>2017-07-27 14:24:27.512<span class="o">]</span> INFO com.alibaba.middleware.topkn.TopknWorker Connecting to master at localhost:5527
+</span></span><span class="line"><span class="cl"><span class="o">[</span>2017-07-27 14:24:27.519<span class="o">]</span> INFO com.alibaba.middleware.topkn.TopknWorker Building index ...
+</span></span><span class="line"><span class="cl">0.673: <span class="o">[</span>GC <span class="o">(</span>Allocation Failure<span class="o">)</span> 0.673: <span class="o">[</span>ParNew: 809135K-&gt;99738K<span class="o">(</span>943744K<span class="o">)</span>, 0.1759305 secs<span class="o">]</span> 809135K-&gt;542134K<span class="o">(</span>3040896K<span class="o">)</span>, 0.1761763 secs<span class="o">]</span> <span class="o">[</span>Times: <span class="nv">user</span><span class="o">=</span>3.15 <span class="nv">sys</span><span class="o">=</span>0.69, <span class="nv">real</span><span class="o">=</span>0.17 secs<span class="o">]</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>2017-07-27 14:24:32.330<span class="o">]</span> INFO com.alibaba.middleware.topkn.TopknWorker Index built.
+</span></span><span class="line"><span class="cl">Heap
+</span></span><span class="line"><span class="cl"> par new generation   total 943744K, used 903716K <span class="o">[</span>0x0000000700000000, 0x0000000740000000, 0x0000000740000000<span class="o">)</span>
+</span></span><span class="line"><span class="cl">  eden space 838912K,  95% used <span class="o">[</span>0x0000000700000000, 0x00000007311225e0, 0x0000000733340000<span class="o">)</span>
+</span></span><span class="line"><span class="cl">  from space 104832K,  95% used <span class="o">[</span>0x00000007399a0000, 0x000000073fb06b38, 0x0000000740000000<span class="o">)</span>
+</span></span><span class="line"><span class="cl">  to   space 104832K,   0% used <span class="o">[</span>0x0000000733340000, 0x0000000733340000, 0x00000007399a0000<span class="o">)</span>
+</span></span><span class="line"><span class="cl"> concurrent mark-sweep generation total 2097152K, used 442395K <span class="o">[</span>0x0000000740000000, 0x00000007c0000000, 0x00000007c0000000<span class="o">)</span>
+</span></span><span class="line"><span class="cl"> Metaspace       used 3980K, capacity 4638K, committed 4864K, reserved 1056768K
+</span></span><span class="line"><span class="cl">  class space    used 434K, capacity 462K, committed 512K, reserved 1048576K
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">real    0m5.238s
+</span></span><span class="line"><span class="cl">user    1m11.980s
+</span></span><span class="line"><span class="cl">sys     0m26.324s
+</span></span></code></pre></div><h3 id="不清理-cache">不清理 cache</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ <span class="nb">time</span> java <span class="si">${</span><span class="nv">JAVA_OPTS</span><span class="si">}</span> -cp /exp/topkn/topkn.jar com.alibaba.middleware.topkn.TopknWorker localhost <span class="m">5527</span> .
+</span></span><span class="line"><span class="cl"><span class="o">[</span>2017-07-27 14:25:39.986<span class="o">]</span> INFO com.alibaba.middleware.topkn.TopknWorker Connecting to master at localhost:5527
+</span></span><span class="line"><span class="cl"><span class="o">[</span>2017-07-27 14:25:39.992<span class="o">]</span> INFO com.alibaba.middleware.topkn.TopknWorker Building index ...
+</span></span><span class="line"><span class="cl">0.590: <span class="o">[</span>GC <span class="o">(</span>Allocation Failure<span class="o">)</span> 0.590: <span class="o">[</span>ParNew: 838912K-&gt;99751K<span class="o">(</span>943744K<span class="o">)</span>, 0.1851592 secs<span class="o">]</span> 838912K-&gt;591302K<span class="o">(</span>3040896K<span class="o">)</span>, 0.1855308 secs<span class="o">]</span> <span class="o">[</span>Times: <span class="nv">user</span><span class="o">=</span>3.03 <span class="nv">sys</span><span class="o">=</span>0.88, <span class="nv">real</span><span class="o">=</span>0.19 secs<span class="o">]</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>2017-07-27 14:25:44.449<span class="o">]</span> INFO com.alibaba.middleware.topkn.TopknWorker Index built.
+</span></span><span class="line"><span class="cl">Heap
+</span></span><span class="line"><span class="cl"> par new generation   total 943744K, used 863664K <span class="o">[</span>0x0000000700000000, 0x0000000740000000, 0x0000000740000000<span class="o">)</span>
+</span></span><span class="line"><span class="cl">  eden space 838912K,  91% used <span class="o">[</span>0x0000000700000000, 0x000000072ea02318, 0x0000000733340000<span class="o">)</span>
+</span></span><span class="line"><span class="cl">  from space 104832K,  95% used <span class="o">[</span>0x00000007399a0000, 0x000000073fb09e00, 0x0000000740000000<span class="o">)</span>
+</span></span><span class="line"><span class="cl">  to   space 104832K,   0% used <span class="o">[</span>0x0000000733340000, 0x0000000733340000, 0x00000007399a0000<span class="o">)</span>
+</span></span><span class="line"><span class="cl"> concurrent mark-sweep generation total 2097152K, used 491550K <span class="o">[</span>0x0000000740000000, 0x00000007c0000000, 0x00000007c0000000<span class="o">)</span>
+</span></span><span class="line"><span class="cl"> Metaspace       used 3980K, capacity 4638K, committed 4864K, reserved 1056768K
+</span></span><span class="line"><span class="cl">  class space    used 434K, capacity 462K, committed 512K, reserved 1048576K
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">real    0m4.754s
+</span></span><span class="line"><span class="cl">user    0m57.144s
+</span></span><span class="line"><span class="cl">sys     0m30.568s
+</span></span></code></pre></div><p><strong>UPDATE</strong></p>
 <p>在我的8核小物理机上，跑一边内存文件系统里的数据不要1s&hellip; 看来是机器的问题，云服务器还是不给力啊 🤣</p>
 <h2 id="总结">总结</h2>
 <p>今年的中间件比赛是在很有意思，这个题目对参赛选手有比较高的要求，解题中涉及到多线程并发读写、分布式排序、索引、Socket编程、JVM 调优等多个方面，我这种上来直接挑的果断挂了两个版本的代码，东看西看左问右问终于把最终形式给弄清楚了。</p>
@@ -455,7 +455,7 @@ sys     0m30.568s
         
             2018 - 
         
-        2021 石沉溪洞 -- Ark&#39;s Blog
+        2022 石沉溪洞 -- Ark&#39;s Blog
     </section>
     
     <section class="powerby">

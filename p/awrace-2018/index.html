@@ -186,15 +186,15 @@
 <p>在请求发送和获取回复的过程中，我们始终有一个 id 附在请求中，这个 id 是 consumer 端唯一的，这保证了我们只在 consumer 端有一个 map 来确定回复的归宿，在这里我们的 id 是 handler 的编号。</p>
 <h3 id="关键代码">关键代码</h3>
 <p>批量发送请求代码大致如下：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="n">epoll_event</span> <span class="n">events</span><span class="p">[</span><span class="n">LOWER_LOAD_EVENT_SIZE</span><span class="p">];</span>
-<span class="k">while</span> <span class="p">(</span><span class="n">_event_group</span><span class="p">.</span><span class="n">wait_and_handle</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">LOWER_LOAD_EVENT_SIZE</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="p">{</span>
-    <span class="c1">// check pending write queue, and block write all
-</span><span class="c1"></span>    <span class="k">for</span> <span class="p">(</span><span class="k">auto</span><span class="o">&amp;</span> <span class="nl">entry</span> <span class="p">:</span> <span class="n">_pending_data</span><span class="p">)</span> <span class="p">{</span>
-        <span class="c1">// write all requests to provider agent
-</span><span class="c1"></span>        <span class="c1">// ... 
-</span><span class="c1"></span>    <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div><p>其余代码在 <a class="link" href="https://code.aliyun.com/arkbriar/dubbo-agent-cxx"  target="_blank" rel="noopener"
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">epoll_event</span> <span class="n">events</span><span class="p">[</span><span class="n">LOWER_LOAD_EVENT_SIZE</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="k">while</span> <span class="p">(</span><span class="n">_event_group</span><span class="p">.</span><span class="n">wait_and_handle</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">LOWER_LOAD_EVENT_SIZE</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// check pending write queue, and block write all
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">for</span> <span class="p">(</span><span class="k">auto</span><span class="o">&amp;</span> <span class="nl">entry</span> <span class="p">:</span> <span class="n">_pending_data</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// write all requests to provider agent
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="c1">// ... 
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>其余代码在 <a class="link" href="https://code.aliyun.com/arkbriar/dubbo-agent-cxx"  target="_blank" rel="noopener"
     >https://code.aliyun.com/arkbriar/dubbo-agent-cxx</a> 中。</p>
 <h2 id="复赛部分">复赛部分</h2>
 <h3 id="赛题背景分析及理解-1">赛题背景分析及理解</h3>
@@ -456,95 +456,95 @@ Size 的计算采用变长编码：</p>
 <p>所以不如直接使用页缓存。</p>
 <h3 id="关键代码-1">关键代码</h3>
 <p>队列映射我们使用了 tbb 的 concurrent hash map，最终证明这是最大的 cpu 瓶颈，而我们的 put 完全卡在了 cpu 上。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span> <span class="nc">K</span><span class="p">,</span> <span class="k">class</span> <span class="nc">V</span><span class="p">,</span> <span class="k">class</span> <span class="nc">C</span> <span class="o">=</span> <span class="n">tbb</span><span class="o">::</span><span class="n">tbb_hash_compare</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;</span><span class="p">,</span>
-          <span class="k">class</span> <span class="nc">A</span> <span class="o">=</span> <span class="n">tbb</span><span class="o">::</span><span class="n">cache_aligned_allocator</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">K</span><span class="p">,</span> <span class="n">V</span><span class="o">&gt;&gt;&gt;</span>
-<span class="k">class</span> <span class="nc">ConcurrentHashMapProxy</span> <span class="o">:</span> <span class="k">public</span> <span class="n">tbb</span><span class="o">::</span><span class="n">concurrent_hash_map</span><span class="o">&lt;</span><span class="n">K</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">A</span><span class="o">&gt;</span> <span class="p">{</span>
-<span class="k">public</span><span class="o">:</span>
-    <span class="n">ConcurrentHashMapProxy</span><span class="p">(</span><span class="n">size_t</span> <span class="n">n</span><span class="p">)</span> <span class="o">:</span> <span class="n">tbb</span><span class="o">::</span><span class="n">concurrent_hash_map</span><span class="o">&lt;</span><span class="n">K</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">A</span><span class="o">&gt;</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="p">{}</span>
-    <span class="o">~</span><span class="n">ConcurrentHashMapProxy</span><span class="p">()</span> <span class="p">{</span>
-        <span class="k">this</span><span class="o">-&gt;</span><span class="n">tbb</span><span class="o">::</span><span class="n">concurrent_hash_map</span><span class="o">&lt;</span><span class="n">K</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">A</span><span class="o">&gt;::~</span><span class="n">concurrent_hash_map</span><span class="o">&lt;</span><span class="n">K</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">A</span><span class="o">&gt;</span><span class="p">();</span>
-    <span class="p">}</span>
-    <span class="k">typename</span> <span class="n">tbb</span><span class="o">::</span><span class="n">concurrent_hash_map</span><span class="o">&lt;</span><span class="n">K</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">A</span><span class="o">&gt;::</span><span class="n">const_pointer</span> <span class="n">fast_find</span><span class="p">(</span><span class="k">const</span> <span class="n">K</span><span class="o">&amp;</span> <span class="n">key</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="k">this</span><span class="o">-&gt;</span><span class="n">internal_fast_find</span><span class="p">(</span><span class="n">key</span><span class="p">);</span>
-    <span class="p">}</span>
-<span class="p">};</span>
-
-<span class="n">MessageQueue</span><span class="o">*</span> <span class="n">QueueStore</span><span class="o">::</span><span class="n">find_or_create_queue</span><span class="p">(</span><span class="k">const</span> <span class="n">String</span><span class="o">&amp;</span> <span class="n">queue_name</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">auto</span> <span class="n">q_ptr</span> <span class="o">=</span> <span class="n">queues_</span><span class="p">.</span><span class="n">fast_find</span><span class="p">(</span><span class="n">queue_name</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">q_ptr</span><span class="p">)</span> <span class="k">return</span> <span class="n">q_ptr</span><span class="o">-&gt;</span><span class="n">second</span><span class="p">;</span>
-
-    <span class="k">decltype</span><span class="p">(</span><span class="n">queues_</span><span class="p">)</span><span class="o">::</span><span class="n">const_accessor</span> <span class="n">ac</span><span class="p">;</span>
-    <span class="n">queues_</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="n">ac</span><span class="p">,</span> <span class="n">queue_name</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">ac</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span> <span class="p">{</span>
-        <span class="kt">uint32_t</span> <span class="n">queue_id</span> <span class="o">=</span> <span class="n">next_queue_id_</span><span class="p">.</span><span class="n">next</span><span class="p">();</span>
-        <span class="k">auto</span> <span class="n">queue_ptr</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MessageQueue</span><span class="p">(</span><span class="n">queue_id</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
-        <span class="n">queues_</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">ac</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">make_pair</span><span class="p">(</span><span class="n">queue_name</span><span class="p">,</span> <span class="n">queue_ptr</span><span class="p">));</span>
-        <span class="n">DLOG</span><span class="p">(</span><span class="s">&#34;Created a new queue, id: %d, name: %s&#34;</span><span class="p">,</span> <span class="n">q</span><span class="o">-&gt;</span><span class="n">get_queue_id</span><span class="p">(),</span>
-             <span class="n">q</span><span class="o">-&gt;</span><span class="n">get_queue_name</span><span class="p">().</span><span class="n">c_str</span><span class="p">());</span>
-    <span class="p">}</span>
-    <span class="k">return</span> <span class="n">ac</span><span class="o">-&gt;</span><span class="n">second</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="n">MessageQueue</span><span class="o">*</span> <span class="n">QueueStore</span><span class="o">::</span><span class="n">find_queue</span><span class="p">(</span><span class="k">const</span> <span class="n">String</span><span class="o">&amp;</span> <span class="n">queue_name</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
-    <span class="k">auto</span> <span class="n">q_ptr</span> <span class="o">=</span> <span class="n">queues_</span><span class="p">.</span><span class="n">fast_find</span><span class="p">(</span><span class="n">queue_name</span><span class="p">);</span>
-    <span class="k">return</span> <span class="n">q_ptr</span> <span class="o">?</span> <span class="n">q_ptr</span><span class="o">-&gt;</span><span class="nl">second</span> <span class="p">:</span> <span class="k">nullptr</span><span class="p">;</span>
-
-    <span class="k">decltype</span><span class="p">(</span><span class="n">queues_</span><span class="p">)</span><span class="o">::</span><span class="n">const_accessor</span> <span class="n">ac</span><span class="p">;</span>
-    <span class="n">queues_</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="n">ac</span><span class="p">,</span> <span class="n">queue_name</span><span class="p">);</span>
-    <span class="k">return</span> <span class="n">ac</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span> <span class="o">?</span> <span class="k">nullptr</span> <span class="o">:</span> <span class="n">ac</span><span class="o">-&gt;</span><span class="n">second</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="n">QueueStore</span><span class="o">::</span><span class="n">put</span><span class="p">(</span><span class="k">const</span> <span class="n">String</span><span class="o">&amp;</span> <span class="n">queue_name</span><span class="p">,</span> <span class="k">const</span> <span class="n">MemBlock</span><span class="o">&amp;</span> <span class="n">message</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">message</span><span class="p">.</span><span class="n">ptr</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
-    <span class="k">auto</span> <span class="n">q_ptr</span> <span class="o">=</span> <span class="n">find_or_create_queue</span><span class="p">(</span><span class="n">queue_name</span><span class="p">);</span>
-    <span class="n">q_ptr</span><span class="o">-&gt;</span><span class="n">put</span><span class="p">(</span><span class="n">message</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="n">Vector</span><span class="o">&lt;</span><span class="n">MemBlock</span><span class="o">&gt;</span> <span class="n">QueueStore</span><span class="o">::</span><span class="n">get</span><span class="p">(</span><span class="k">const</span> <span class="n">String</span><span class="o">&amp;</span> <span class="n">queue_name</span><span class="p">,</span> <span class="kt">long</span> <span class="n">offset</span><span class="p">,</span> <span class="kt">long</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">flushed</span><span class="p">)</span> <span class="n">flush_all_before_read</span><span class="p">();</span>
-
-    <span class="k">auto</span> <span class="n">q_ptr</span> <span class="o">=</span> <span class="n">find_queue</span><span class="p">(</span><span class="n">queue_name</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">q_ptr</span><span class="p">)</span> <span class="k">return</span> <span class="n">q_ptr</span><span class="o">-&gt;</span><span class="n">get</span><span class="p">(</span><span class="n">offset</span><span class="p">,</span> <span class="n">size</span><span class="p">);</span>
-    <span class="c1">// return empty list when queue is not found
-</span><span class="c1"></span>    <span class="k">return</span> <span class="n">Vector</span><span class="o">&lt;</span><span class="n">MemBlock</span><span class="o">&gt;</span><span class="p">();</span>
-<span class="p">}</span>
-</code></pre></div><p>然后是我们的主要数据结构 FilePage：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">// File page header
-</span><span class="c1"></span><span class="k">struct</span> <span class="nf">__attribute__</span><span class="p">((</span><span class="n">__packed__</span><span class="p">))</span> <span class="n">FilePageHeader</span> <span class="p">{</span>
-    <span class="kt">uint64_t</span> <span class="n">offset</span> <span class="o">=</span> <span class="n">NEGATIVE_OFFSET</span><span class="p">;</span>
-<span class="p">};</span>
-
-<span class="cp">#define FILE_PAGE_HEADER_SIZE sizeof(FilePageHeader)
-</span><span class="cp">#define FILE_PAGE_AVAILABLE_SIZE (FILE_PAGE_SIZE - FILE_PAGE_HEADER_SIZE)
-</span><span class="cp"></span>
-<span class="c1">// File page
-</span><span class="c1"></span><span class="k">struct</span> <span class="nf">__attribute__</span><span class="p">((</span><span class="n">__packed__</span><span class="p">))</span> <span class="n">FilePage</span> <span class="p">{</span>
-    <span class="n">FilePageHeader</span> <span class="n">header</span><span class="p">;</span>
-    <span class="kt">char</span> <span class="n">content</span><span class="p">[</span><span class="n">FILE_PAGE_AVAILABLE_SIZE</span><span class="p">];</span>
-<span class="p">};</span>
-</code></pre></div><p>双写缓冲有个交换上的同步，我们使用 mutex 去进行这个同步：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">// buffer is full, switch to back
-</span><span class="c1"></span><span class="p">{</span>
-    <span class="c1">// spin wait until back buf is not in scheduled status
-</span><span class="c1"></span>    <span class="k">while</span> <span class="p">(</span><span class="n">back_buf_status</span><span class="o">-&gt;</span><span class="n">load</span><span class="p">()</span> <span class="o">==</span> <span class="n">BACK_BUF_FLUSH_SCHEDULED</span><span class="p">)</span>
-        <span class="p">;</span>
-    <span class="c1">// try swap active and back buffer
-</span><span class="c1"></span>    <span class="n">std</span><span class="o">::</span><span class="n">unique_lock</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lock</span><span class="p">(</span><span class="o">*</span><span class="n">back_buf_mutex</span><span class="p">);</span>
-    <span class="n">std</span><span class="o">::</span><span class="n">swap</span><span class="p">(</span><span class="n">active_buf</span><span class="p">,</span> <span class="n">back_buf</span><span class="p">);</span>
-    <span class="n">assert</span><span class="p">(</span><span class="n">back_buf_status</span><span class="o">-&gt;</span><span class="n">load</span><span class="p">()</span> <span class="o">==</span> <span class="n">BACK_BUF_FREE</span><span class="p">);</span>
-    <span class="kt">uint32_t</span> <span class="n">exp</span> <span class="o">=</span> <span class="n">BACK_BUF_FREE</span><span class="p">;</span>
-    <span class="n">back_buf_status</span><span class="o">-&gt;</span><span class="n">compare_exchange_strong</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">BACK_BUF_FLUSH_SCHEDULED</span><span class="p">);</span>
-<span class="p">}</span>
-</code></pre></div><p>为了使得 OS 充分的跑起来，get 阶段需要释放掉所有无用的内存，然而 tcmalloc 是不会主动释放的，所以需要强制释放：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">// release free memory back to os
-</span><span class="c1"></span><span class="n">MallocExtension</span><span class="o">::</span><span class="n">instance</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">ReleaseFreeMemory</span><span class="p">();</span>
-</code></pre></div><p>由于线上的写入太过于均匀，到了刷盘的时候就是所有页缓存一起刷盘，这会造成所有 put 线程都阻塞并等待的状况，为了缓解这个情况，我们让某些队列的第一页快速写出：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="c1">// first page will hold at most (queue_id / DATA_FILE_SPLITS) % 64 + 1 messages, this make write
-</span><span class="c1">// more average. This leads to 64 timepoints of first flush. I call it flush fast.
-</span><span class="c1"></span><span class="kt">bool</span> <span class="n">flush_fast</span> <span class="o">=</span>
-    <span class="n">paged_message_indices_</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span>
-    <span class="n">paged_message_indices_</span><span class="p">.</span><span class="n">back</span><span class="p">().</span><span class="n">msg_size</span> <span class="o">&gt;=</span> <span class="p">((</span><span class="n">queue_id_</span> <span class="o">/</span> <span class="n">DATA_FILE_SPLITS</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x3f</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
-</code></pre></div><p>其余代码放在 <a class="link" href="https://code.aliyun.com/arkbriar/queue-race-2018-cpp"  target="_blank" rel="noopener"
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span> <span class="nc">K</span><span class="p">,</span> <span class="k">class</span> <span class="nc">V</span><span class="p">,</span> <span class="k">class</span> <span class="nc">C</span> <span class="o">=</span> <span class="n">tbb</span><span class="o">::</span><span class="n">tbb_hash_compare</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">          <span class="k">class</span> <span class="nc">A</span> <span class="o">=</span> <span class="n">tbb</span><span class="o">::</span><span class="n">cache_aligned_allocator</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">K</span><span class="p">,</span> <span class="n">V</span><span class="o">&gt;&gt;&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">ConcurrentHashMapProxy</span> <span class="o">:</span> <span class="k">public</span> <span class="n">tbb</span><span class="o">::</span><span class="n">concurrent_hash_map</span><span class="o">&lt;</span><span class="n">K</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">A</span><span class="o">&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="k">public</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ConcurrentHashMapProxy</span><span class="p">(</span><span class="n">size_t</span> <span class="n">n</span><span class="p">)</span> <span class="o">:</span> <span class="n">tbb</span><span class="o">::</span><span class="n">concurrent_hash_map</span><span class="o">&lt;</span><span class="n">K</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">A</span><span class="o">&gt;</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="p">{}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">~</span><span class="n">ConcurrentHashMapProxy</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">this</span><span class="o">-&gt;</span><span class="n">tbb</span><span class="o">::</span><span class="n">concurrent_hash_map</span><span class="o">&lt;</span><span class="n">K</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">A</span><span class="o">&gt;::~</span><span class="n">concurrent_hash_map</span><span class="o">&lt;</span><span class="n">K</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">A</span><span class="o">&gt;</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">typename</span> <span class="n">tbb</span><span class="o">::</span><span class="n">concurrent_hash_map</span><span class="o">&lt;</span><span class="n">K</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">A</span><span class="o">&gt;::</span><span class="n">const_pointer</span> <span class="n">fast_find</span><span class="p">(</span><span class="k">const</span> <span class="n">K</span><span class="o">&amp;</span> <span class="n">key</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="k">this</span><span class="o">-&gt;</span><span class="n">internal_fast_find</span><span class="p">(</span><span class="n">key</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">MessageQueue</span><span class="o">*</span> <span class="n">QueueStore</span><span class="o">::</span><span class="n">find_or_create_queue</span><span class="p">(</span><span class="k">const</span> <span class="n">String</span><span class="o">&amp;</span> <span class="n">queue_name</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">auto</span> <span class="n">q_ptr</span> <span class="o">=</span> <span class="n">queues_</span><span class="p">.</span><span class="n">fast_find</span><span class="p">(</span><span class="n">queue_name</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">q_ptr</span><span class="p">)</span> <span class="k">return</span> <span class="n">q_ptr</span><span class="o">-&gt;</span><span class="n">second</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">decltype</span><span class="p">(</span><span class="n">queues_</span><span class="p">)</span><span class="o">::</span><span class="n">const_accessor</span> <span class="n">ac</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">queues_</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="n">ac</span><span class="p">,</span> <span class="n">queue_name</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">ac</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">uint32_t</span> <span class="n">queue_id</span> <span class="o">=</span> <span class="n">next_queue_id_</span><span class="p">.</span><span class="n">next</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="k">auto</span> <span class="n">queue_ptr</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MessageQueue</span><span class="p">(</span><span class="n">queue_id</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">queues_</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">ac</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">make_pair</span><span class="p">(</span><span class="n">queue_name</span><span class="p">,</span> <span class="n">queue_ptr</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">        <span class="n">DLOG</span><span class="p">(</span><span class="s">&#34;Created a new queue, id: %d, name: %s&#34;</span><span class="p">,</span> <span class="n">q</span><span class="o">-&gt;</span><span class="n">get_queue_id</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">             <span class="n">q</span><span class="o">-&gt;</span><span class="n">get_queue_name</span><span class="p">().</span><span class="n">c_str</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">ac</span><span class="o">-&gt;</span><span class="n">second</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">MessageQueue</span><span class="o">*</span> <span class="n">QueueStore</span><span class="o">::</span><span class="n">find_queue</span><span class="p">(</span><span class="k">const</span> <span class="n">String</span><span class="o">&amp;</span> <span class="n">queue_name</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">auto</span> <span class="n">q_ptr</span> <span class="o">=</span> <span class="n">queues_</span><span class="p">.</span><span class="n">fast_find</span><span class="p">(</span><span class="n">queue_name</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">q_ptr</span> <span class="o">?</span> <span class="n">q_ptr</span><span class="o">-&gt;</span><span class="nl">second</span> <span class="p">:</span> <span class="k">nullptr</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">decltype</span><span class="p">(</span><span class="n">queues_</span><span class="p">)</span><span class="o">::</span><span class="n">const_accessor</span> <span class="n">ac</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">queues_</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="n">ac</span><span class="p">,</span> <span class="n">queue_name</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">ac</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span> <span class="o">?</span> <span class="k">nullptr</span> <span class="o">:</span> <span class="n">ac</span><span class="o">-&gt;</span><span class="n">second</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="n">QueueStore</span><span class="o">::</span><span class="n">put</span><span class="p">(</span><span class="k">const</span> <span class="n">String</span><span class="o">&amp;</span> <span class="n">queue_name</span><span class="p">,</span> <span class="k">const</span> <span class="n">MemBlock</span><span class="o">&amp;</span> <span class="n">message</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">message</span><span class="p">.</span><span class="n">ptr</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">auto</span> <span class="n">q_ptr</span> <span class="o">=</span> <span class="n">find_or_create_queue</span><span class="p">(</span><span class="n">queue_name</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">q_ptr</span><span class="o">-&gt;</span><span class="n">put</span><span class="p">(</span><span class="n">message</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">Vector</span><span class="o">&lt;</span><span class="n">MemBlock</span><span class="o">&gt;</span> <span class="n">QueueStore</span><span class="o">::</span><span class="n">get</span><span class="p">(</span><span class="k">const</span> <span class="n">String</span><span class="o">&amp;</span> <span class="n">queue_name</span><span class="p">,</span> <span class="kt">long</span> <span class="n">offset</span><span class="p">,</span> <span class="kt">long</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">flushed</span><span class="p">)</span> <span class="n">flush_all_before_read</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">auto</span> <span class="n">q_ptr</span> <span class="o">=</span> <span class="n">find_queue</span><span class="p">(</span><span class="n">queue_name</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">q_ptr</span><span class="p">)</span> <span class="k">return</span> <span class="n">q_ptr</span><span class="o">-&gt;</span><span class="n">get</span><span class="p">(</span><span class="n">offset</span><span class="p">,</span> <span class="n">size</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// return empty list when queue is not found
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">return</span> <span class="n">Vector</span><span class="o">&lt;</span><span class="n">MemBlock</span><span class="o">&gt;</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>然后是我们的主要数据结构 FilePage：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="c1">// File page header
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">struct</span> <span class="nf">__attribute__</span><span class="p">((</span><span class="n">__packed__</span><span class="p">))</span> <span class="n">FilePageHeader</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint64_t</span> <span class="n">offset</span> <span class="o">=</span> <span class="n">NEGATIVE_OFFSET</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cp">#define FILE_PAGE_HEADER_SIZE sizeof(FilePageHeader)
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define FILE_PAGE_AVAILABLE_SIZE (FILE_PAGE_SIZE - FILE_PAGE_HEADER_SIZE)
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="c1">// File page
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">struct</span> <span class="nf">__attribute__</span><span class="p">((</span><span class="n">__packed__</span><span class="p">))</span> <span class="n">FilePage</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">FilePageHeader</span> <span class="n">header</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">char</span> <span class="n">content</span><span class="p">[</span><span class="n">FILE_PAGE_AVAILABLE_SIZE</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></div><p>双写缓冲有个交换上的同步，我们使用 mutex 去进行这个同步：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="c1">// buffer is full, switch to back
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// spin wait until back buf is not in scheduled status
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">while</span> <span class="p">(</span><span class="n">back_buf_status</span><span class="o">-&gt;</span><span class="n">load</span><span class="p">()</span> <span class="o">==</span> <span class="n">BACK_BUF_FLUSH_SCHEDULED</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// try swap active and back buffer
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">std</span><span class="o">::</span><span class="n">unique_lock</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lock</span><span class="p">(</span><span class="o">*</span><span class="n">back_buf_mutex</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">swap</span><span class="p">(</span><span class="n">active_buf</span><span class="p">,</span> <span class="n">back_buf</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">assert</span><span class="p">(</span><span class="n">back_buf_status</span><span class="o">-&gt;</span><span class="n">load</span><span class="p">()</span> <span class="o">==</span> <span class="n">BACK_BUF_FREE</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint32_t</span> <span class="n">exp</span> <span class="o">=</span> <span class="n">BACK_BUF_FREE</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">back_buf_status</span><span class="o">-&gt;</span><span class="n">compare_exchange_strong</span><span class="p">(</span><span class="n">exp</span><span class="p">,</span> <span class="n">BACK_BUF_FLUSH_SCHEDULED</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>为了使得 OS 充分的跑起来，get 阶段需要释放掉所有无用的内存，然而 tcmalloc 是不会主动释放的，所以需要强制释放：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="c1">// release free memory back to os
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">MallocExtension</span><span class="o">::</span><span class="n">instance</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">ReleaseFreeMemory</span><span class="p">();</span>
+</span></span></code></pre></div><p>由于线上的写入太过于均匀，到了刷盘的时候就是所有页缓存一起刷盘，这会造成所有 put 线程都阻塞并等待的状况，为了缓解这个情况，我们让某些队列的第一页快速写出：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="c1">// first page will hold at most (queue_id / DATA_FILE_SPLITS) % 64 + 1 messages, this make write
+</span></span></span><span class="line"><span class="cl"><span class="c1">// more average. This leads to 64 timepoints of first flush. I call it flush fast.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">bool</span> <span class="n">flush_fast</span> <span class="o">=</span>
+</span></span><span class="line"><span class="cl">    <span class="n">paged_message_indices_</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">paged_message_indices_</span><span class="p">.</span><span class="n">back</span><span class="p">().</span><span class="n">msg_size</span> <span class="o">&gt;=</span> <span class="p">((</span><span class="n">queue_id_</span> <span class="o">/</span> <span class="n">DATA_FILE_SPLITS</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x3f</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+</span></span></code></pre></div><p>其余代码放在 <a class="link" href="https://code.aliyun.com/arkbriar/queue-race-2018-cpp"  target="_blank" rel="noopener"
     >https://code.aliyun.com/arkbriar/queue-race-2018-cpp</a> 中。</p>
 <h3 id="最终成绩">最终成绩</h3>
 <p>最快写入时间大约 690s，最终缓存落盘 20s，随机校验 120s，顺序校验 140s，总计 970s+。</p>
@@ -667,7 +667,7 @@ Size 的计算采用变长编码：</p>
         
             2018 - 
         
-        2021 石沉溪洞 -- Ark&#39;s Blog
+        2022 石沉溪洞 -- Ark&#39;s Blog
     </section>
     
     <section class="powerby">

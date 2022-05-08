@@ -2,8 +2,29 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://blog.crazyark.xyz/tags/cancellation-token/</loc>
+    <lastmod>2022-05-07T16:14:00+08:00</lastmod>
+  </url><url>
     <loc>https://blog.crazyark.xyz/categories/</loc>
-    <lastmod>2021-11-28T20:44:45+08:00</lastmod>
+    <lastmod>2022-05-07T16:14:00+08:00</lastmod>
+  </url><url>
+    <loc>https://blog.crazyark.xyz/post/</loc>
+    <lastmod>2022-05-07T16:14:00+08:00</lastmod>
+  </url><url>
+    <loc>https://blog.crazyark.xyz/categories/programming/</loc>
+    <lastmod>2022-05-07T16:14:00+08:00</lastmod>
+  </url><url>
+    <loc>https://blog.crazyark.xyz/tags/</loc>
+    <lastmod>2022-05-07T16:14:00+08:00</lastmod>
+  </url><url>
+    <loc>https://blog.crazyark.xyz/tags/timeout/</loc>
+    <lastmod>2022-05-07T16:14:00+08:00</lastmod>
+  </url><url>
+    <loc>https://blog.crazyark.xyz/p/timeouts-and-cancellation-for-humans/</loc>
+    <lastmod>2022-05-07T16:14:00+08:00</lastmod>
+  </url><url>
+    <loc>https://blog.crazyark.xyz/</loc>
+    <lastmod>2022-05-07T16:14:00+08:00</lastmod>
   </url><url>
     <loc>https://blog.crazyark.xyz/tags/epoch-gc/</loc>
     <lastmod>2021-11-28T20:44:45+08:00</lastmod>
@@ -14,16 +35,7 @@
     <loc>https://blog.crazyark.xyz/categories/lock-free-programming/</loc>
     <lastmod>2021-11-28T20:44:45+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/post/</loc>
-    <lastmod>2021-11-28T20:44:45+08:00</lastmod>
-  </url><url>
-    <loc>https://blog.crazyark.xyz/tags/</loc>
-    <lastmod>2021-11-28T20:44:45+08:00</lastmod>
-  </url><url>
     <loc>https://blog.crazyark.xyz/p/lock-free-linked-list-and-epoch-gc/</loc>
-    <lastmod>2021-11-28T20:44:45+08:00</lastmod>
-  </url><url>
-    <loc>https://blog.crazyark.xyz/</loc>
     <lastmod>2021-11-28T20:44:45+08:00</lastmod>
   </url><url>
     <loc>https://blog.crazyark.xyz/categories/concurrency/</loc>
@@ -104,10 +116,10 @@
     <loc>https://blog.crazyark.xyz/p/hash-table-collision/</loc>
     <lastmod>2018-08-16T14:55:23+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/categories/contest/</loc>
+    <loc>https://blog.crazyark.xyz/tags/contest/</loc>
     <lastmod>2018-08-01T19:59:45+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/contest/</loc>
+    <loc>https://blog.crazyark.xyz/categories/contest/</loc>
     <lastmod>2018-08-01T19:59:45+08:00</lastmod>
   </url><url>
     <loc>https://blog.crazyark.xyz/tags/middelware/</loc>
@@ -122,10 +134,10 @@
     <loc>https://blog.crazyark.xyz/tags/epoll/</loc>
     <lastmod>2018-04-16T19:51:21+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/categories/linux/</loc>
+    <loc>https://blog.crazyark.xyz/tags/linux/</loc>
     <lastmod>2018-04-16T19:51:21+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/linux/</loc>
+    <loc>https://blog.crazyark.xyz/categories/linux/</loc>
     <lastmod>2018-04-16T19:51:21+08:00</lastmod>
   </url><url>
     <loc>https://blog.crazyark.xyz/p/epoll/</loc>
@@ -140,10 +152,10 @@
     <loc>https://blog.crazyark.xyz/p/bloom-filter/</loc>
     <lastmod>2018-04-16T13:02:27+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/categories/algorithm/</loc>
+    <loc>https://blog.crazyark.xyz/tags/algorithm/</loc>
     <lastmod>2018-04-13T01:50:51+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/algorithm/</loc>
+    <loc>https://blog.crazyark.xyz/categories/algorithm/</loc>
     <lastmod>2018-04-13T01:50:51+08:00</lastmod>
   </url><url>
     <loc>https://blog.crazyark.xyz/tags/longest-palindromic-substring/</loc>
@@ -152,16 +164,16 @@
     <loc>https://blog.crazyark.xyz/p/manachers-algorithm/</loc>
     <lastmod>2018-04-13T01:50:51+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/categories/game-theory/</loc>
-    <lastmod>2017-10-11T00:40:08+08:00</lastmod>
-  </url><url>
     <loc>https://blog.crazyark.xyz/tags/game-theory/</loc>
     <lastmod>2017-10-11T00:40:08+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/categories/math/</loc>
+    <loc>https://blog.crazyark.xyz/categories/game-theory/</loc>
     <lastmod>2017-10-11T00:40:08+08:00</lastmod>
   </url><url>
     <loc>https://blog.crazyark.xyz/tags/math/</loc>
+    <lastmod>2017-10-11T00:40:08+08:00</lastmod>
+  </url><url>
+    <loc>https://blog.crazyark.xyz/categories/math/</loc>
     <lastmod>2017-10-11T00:40:08+08:00</lastmod>
   </url><url>
     <loc>https://blog.crazyark.xyz/p/game-theory/</loc>
@@ -224,10 +236,10 @@
     <loc>https://blog.crazyark.xyz/p/longest-increasing-subsequence/</loc>
     <lastmod>2017-09-01T15:41:22+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/categories/assembly/</loc>
+    <loc>https://blog.crazyark.xyz/tags/assembly/</loc>
     <lastmod>2017-08-27T17:38:37+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/assembly/</loc>
+    <loc>https://blog.crazyark.xyz/categories/assembly/</loc>
     <lastmod>2017-08-27T17:38:37+08:00</lastmod>
   </url><url>
     <loc>https://blog.crazyark.xyz/tags/intel/</loc>
@@ -290,10 +302,10 @@
     <loc>https://blog.crazyark.xyz/p/dynamic-proxy-java/</loc>
     <lastmod>2017-07-29T22:44:24+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/categories/java/</loc>
+    <loc>https://blog.crazyark.xyz/tags/java/</loc>
     <lastmod>2017-07-29T22:44:24+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/java/</loc>
+    <loc>https://blog.crazyark.xyz/categories/java/</loc>
     <lastmod>2017-07-29T22:44:24+08:00</lastmod>
   </url><url>
     <loc>https://blog.crazyark.xyz/tags/boyer-moore/</loc>

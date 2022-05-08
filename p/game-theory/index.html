@@ -246,7 +246,7 @@
 <p>下面我们来证明上述定理。对该定理的证明，我们只需要验证上述 P、N -pos 的几个条件就可以了：</p>
 <ol>
 <li>所有终止点都是 P-pos，因为我们只有终止点 (0, 0, &hellip; 0)，所以显然。</li>
-<li>对每个 N-pos，存在一个移动使得下一个状态时是P-pos。假设当前状态为 (x1, x2, x3 &hellip;, xm), Nim-Sum 为 a = x1 ^ x2 ^ x3 &hellip; ^ xm，且 a 不等于 0。假设 a 的二进制最高位为第 k 位，那么 x1, x2 &hellip; xm 所有数中第 k 位为 1 的数的个数是奇数，也就是说其中一定存在一个数，第 k 位为 1。不失一般性，假设是 x1。那么令 x1' 为 x1 在 k 之后的高位、k位 为 0、a 在 k 之后的地位拼接而成的数，显然 x1' &lt; x1，所以 (x1, x2, x3 &hellip;, xm) 到 (x1', x2, x3 &hellip;, xm) 是一个合法的移动。此时 x1' ^ x2 ^ x3 &hellip; ^ xm = a ^ x1' ^ x1 = 0，(x1', x2, x3 &hellip;, xm) 是一个 P-pos。</li>
+<li>对每个 N-pos，存在一个移动使得下一个状态时是P-pos。假设当前状态为 (x1, x2, x3 &hellip;, xm), Nim-Sum 为 a = x1 ^ x2 ^ x3 &hellip; ^ xm，且 a 不等于 0。假设 a 的二进制最高位为第 k 位，那么 x1, x2 &hellip; xm 所有数中第 k 位为 1 的数的个数是奇数，也就是说其中一定存在一个数，第 k 位为 1。不失一般性，假设是 x1。那么令 x1&rsquo; 为 x1 在 k 之后的高位、k位 为 0、a 在 k 之后的地位拼接而成的数，显然 x1&rsquo; &lt; x1，所以 (x1, x2, x3 &hellip;, xm) 到 (x1&rsquo;, x2, x3 &hellip;, xm) 是一个合法的移动。此时 x1&rsquo; ^ x2 ^ x3 &hellip; ^ xm = a ^ x1&rsquo; ^ x1 = 0，(x1&rsquo;, x2, x3 &hellip;, xm) 是一个 P-pos。</li>
 <li>对每个 P-pos，每一个移动都是到 N-pos。这里反证就行。</li>
 </ol>
 <p>证毕。</p>
@@ -596,7 +596,7 @@ $F(x) = F(x_1, &hellip;, x_n) = F_1(x_1) \times {x_2} \times \cdots {x_n} \cup {
         
             2018 - 
         
-        2021 石沉溪洞 -- Ark&#39;s Blog
+        2022 石沉溪洞 -- Ark&#39;s Blog
     </section>
     
     <section class="powerby">

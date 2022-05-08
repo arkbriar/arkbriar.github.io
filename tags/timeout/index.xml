@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>timeout on 石沉溪洞 -- Ark&#39;s Blog</title>
+    <link>https://blog.crazyark.xyz/tags/timeout/</link>
+    <description>Recent content in timeout on 石沉溪洞 -- Ark&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sat, 07 May 2022 16:14:00 +0800</lastBuildDate><atom:link href="https://blog.crazyark.xyz/tags/timeout/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>代码杂谈：超时与取消（转载）</title>
+      <link>https://blog.crazyark.xyz/p/timeouts-and-cancellation-for-humans/</link>
+      <pubDate>Sat, 07 May 2022 16:14:00 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/p/timeouts-and-cancellation-for-humans/</guid>
+      <description>转载自 Nathaniel J. Smith 的一篇博客，原文是 Timeouts and cancellation for humans，发表于 2018 年 1 月 11 日（所以注意文中的链接和内容的时效性），本文仅仅是对原文的一个翻译。 注：</description>
+    </item>
+    
+  </channel>
+</rss>

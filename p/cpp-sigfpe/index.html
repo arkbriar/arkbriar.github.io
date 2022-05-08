@@ -126,12 +126,12 @@ long mulmod(long a, long b, long m) { long res; asm(&amp;#34;mulq %2; divq %3&am
     <p>第一次遇到了除0以外的SIGFPE，记录一下。</p>
 <h3 id="症状">症状</h3>
 <p>在使用以下函数的时候，假定 a = 1e18, b = 1e18, m = 1e9 + 7 就会触发 SIGFPE。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">long</span> <span class="nf">mulmod</span><span class="p">(</span><span class="kt">long</span> <span class="n">a</span><span class="p">,</span> <span class="kt">long</span> <span class="n">b</span><span class="p">,</span> <span class="kt">long</span> <span class="n">m</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kt">long</span> <span class="n">res</span><span class="p">;</span>
-    <span class="k">asm</span><span class="p">(</span><span class="s">&#34;mulq %2; divq %3&#34;</span> <span class="o">:</span> <span class="s">&#34;=d&#34;</span><span class="p">(</span><span class="n">res</span><span class="p">),</span> <span class="s">&#34;+a&#34;</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">:</span> <span class="s">&#34;S&#34;</span><span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="s">&#34;c&#34;</span><span class="p">(</span><span class="n">m</span><span class="p">));</span>
-    <span class="k">return</span> <span class="n">res</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></div><h3 id="原因">原因</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">long</span> <span class="nf">mulmod</span><span class="p">(</span><span class="kt">long</span> <span class="n">a</span><span class="p">,</span> <span class="kt">long</span> <span class="n">b</span><span class="p">,</span> <span class="kt">long</span> <span class="n">m</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">long</span> <span class="n">res</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">asm</span><span class="p">(</span><span class="s">&#34;mulq %2; divq %3&#34;</span> <span class="o">:</span> <span class="s">&#34;=d&#34;</span><span class="p">(</span><span class="n">res</span><span class="p">),</span> <span class="s">&#34;+a&#34;</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">:</span> <span class="s">&#34;S&#34;</span><span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="s">&#34;c&#34;</span><span class="p">(</span><span class="n">m</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">res</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h3 id="原因">原因</h3>
 <p>主要是由于 divq S 的执行逻辑是用 128bit 的 %rdx:%rax 除以 S，将商存入 %rax, 余数存入 %rdx，而上面的情况 a * b / m 太大，超过了 64bit，所以 %rax 存不下就触发了 SIGFPE。</p>
 <h3 id="解决方案">解决方案</h3>
 <p>先模再模乘。</p>
@@ -229,7 +229,7 @@ long mulmod(long a, long b, long m) { long res; asm(&amp;#34;mulq %2; divq %3&am
         
             2018 - 
         
-        2021 石沉溪洞 -- Ark&#39;s Blog
+        2022 石沉溪洞 -- Ark&#39;s Blog
     </section>
     
     <section class="powerby">

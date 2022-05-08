@@ -153,7 +153,7 @@ else:
 <p>我们有 $T(a, b) = a^{T(a, b - 1)}$。</p>
 <p>由欧拉定理的扩展，如果 $T(a, b - 1) &gt;= \phi(m)$，则有 $T(a,b) \equiv a^{T(a, b - 1) \ %\  \phi(m) + \phi(m)} \ (\textrm{mod} \ m)$，否则有 $T(a,b) \equiv a^{T(a, b - 1) \ %\  \phi(m)} \ (\textrm{mod} \ m)$，此时需要求解 $T(a, b - 1) \ (\textrm{mod}\ \phi(m))$。</p>
 <p>同理，$T(a, b - 1) \equiv a^{T(a, b - 2) \ %\  \phi(\phi(m))\ ?+\ \phi(\phi(m))} \ (\textrm{mod} \ \phi(m))$，此时求解 $T(a, b - 2) \ (\textrm{mod}\ \phi(\phi(m)))$，我们可以一直递归下去。</p>
-<p>直到求解 $T(a, 1)\ (\textrm{mod} \ \phi^{b - 1}(m))$，或者 $T(a, b') \ (\textrm{mod} \ 1), \phi^{b - b'}(m) = 1$ 为止。</p>
+<p>直到求解 $T(a, 1)\ (\textrm{mod} \ \phi^{b - 1}(m))$，或者 $T(a, b&rsquo;) \ (\textrm{mod} \ 1), \phi^{b - b&rsquo;}(m) = 1$ 为止。</p>
 <h4 id="递归深度">递归深度</h4>
 <p>递归深度顶多为 min(128, b - 1)，证明如下：</p>
 <p>递归结束条件有两个，一个是 b 等于 1，或者欧拉函数为1。</p>
@@ -230,16 +230,16 @@ else:
 </table>
 <p>这些数我们可以轻易的计算出来，与模数进行比较，而其余的一定大于模数。</p>
 <h4 id="大整数分解">大整数分解</h4>
-<p>由于 $m$ 的范围，我先打表 1e6 内所有的素数，并先将 m 中这样的质因子全部分解，假设剩余的数为 $m'$，那么 $m'$ 如果是合数，一定是两个质数 $p, q \gt 1000000$ 的乘积。</p>
-<p>如果 $m' \le 1e12$，那么 $m'$ 一定是素数，否则我们先对 $m'$ 进行素数测试 (Miller-Rabin)，如果为合数再使用 Polland-Rho 进行分解，一旦分解一定为两个素数。</p>
+<p>由于 $m$ 的范围，我先打表 1e6 内所有的素数，并先将 m 中这样的质因子全部分解，假设剩余的数为 $m&rsquo;$，那么 $m&rsquo;$ 如果是合数，一定是两个质数 $p, q \gt 1000000$ 的乘积。</p>
+<p>如果 $m&rsquo; \le 1e12$，那么 $m&rsquo;$ 一定是素数，否则我们先对 $m&rsquo;$ 进行素数测试 (Miller-Rabin)，如果为合数再使用 Polland-Rho 进行分解，一旦分解一定为两个素数。</p>
 <h4 id="64位模乘trick">64位模乘trick</h4>
 <p>Gcc/Clang 均提供内置类型 <code>__int128_t</code>，可以支持128位的运算，而如果运行在 intel x86_64 架构上，可以直接使用如下汇编</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="kt">long</span> <span class="nf">mulmod</span><span class="p">(</span><span class="kt">long</span> <span class="n">a</span><span class="p">,</span> <span class="kt">long</span> <span class="n">b</span><span class="p">,</span> <span class="kt">long</span> <span class="n">m</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kt">long</span> <span class="n">res</span><span class="p">;</span>
-    <span class="k">asm</span><span class="p">(</span><span class="s">&#34;mulq %2; divq %3&#34;</span> <span class="o">:</span> <span class="s">&#34;=d&#34;</span><span class="p">(</span><span class="n">res</span><span class="p">),</span> <span class="s">&#34;+a&#34;</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">:</span> <span class="s">&#34;S&#34;</span><span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="s">&#34;c&#34;</span><span class="p">(</span><span class="n">m</span><span class="p">));</span>
-    <span class="k">return</span> <span class="n">res</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></div><h4 id="算法流程">算法流程</h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">long</span> <span class="nf">mulmod</span><span class="p">(</span><span class="kt">long</span> <span class="n">a</span><span class="p">,</span> <span class="kt">long</span> <span class="n">b</span><span class="p">,</span> <span class="kt">long</span> <span class="n">m</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">long</span> <span class="n">res</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">asm</span><span class="p">(</span><span class="s">&#34;mulq %2; divq %3&#34;</span> <span class="o">:</span> <span class="s">&#34;=d&#34;</span><span class="p">(</span><span class="n">res</span><span class="p">),</span> <span class="s">&#34;+a&#34;</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">:</span> <span class="s">&#34;S&#34;</span><span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="s">&#34;c&#34;</span><span class="p">(</span><span class="n">m</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">res</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h4 id="算法流程">算法流程</h4>
 <p>$T(a, b, m)$:</p>
 <ol>
 <li>如果 a == 1 或者 b == 1，返回 a % m</li>
@@ -435,7 +435,7 @@ else:
         
             2018 - 
         
-        2021 石沉溪洞 -- Ark&#39;s Blog
+        2022 石沉溪洞 -- Ark&#39;s Blog
     </section>
     
     <section class="powerby">
