@@ -375,7 +375,7 @@ def do_the_thing():
 
 如果我们只看 `with` 块，这似乎是完全无辜的。但是当我们看看 `do_the_thing` 是如何实现的，我们就会意识到，我们和可能在后台任务完成之前退出 `with` 块，所以就会出现一些模糊的地方：超时是否应该适用于后台任务？如果它确实适用，那么我们应该如何处理 `Cancelled` 异常？对于大多数系统来说，后台线程/任务中未处理的异常被简单地丢弃了。
 
-然而，这些问题在 Trio 中不会出现，因为它有独特的方法来处理并发性。Trio 的[托儿所系统](https://trio.readthedocs.io/en/latest/reference-core.html#tasks-let-you-do-multiple-things-at-once)（注：nursery system，用于实现结构化并发的系统）意味着子任务总是被整合到调用堆栈中，着实际上成为一个调用树。具体来说，Trio 没有全局的 `start_task_in_background` 原语。相反，如果你想生成一个子任务，你必须先打开一个“nursery”块（[让孩子住在里面](http://www.dictionary.com/browse/nursery)，明白吗？），然后其中创建的子任务的生命周期就和创建托儿所的块绑定了起来：
+然而，这些问题在 Trio 中不会出现，因为它有独特的方法来处理并发性。Trio 的[托儿所系统](https://trio.readthedocs.io/en/latest/reference-core.html#tasks-let-you-do-multiple-things-at-once)（注：nursery system，用于实现结构化并发的系统）意味着子任务总是被整合到调用堆栈中，这实际上成为一个调用树。具体来说，Trio 没有全局的 `start_task_in_background` 原语。相反，如果你想生成一个子任务，你必须先打开一个“nursery”块（[让孩子住在里面](http://www.dictionary.com/browse/nursery)，明白吗？），然后其中创建的子任务的生命周期就和创建托儿所的块绑定了起来：
 
 ```python
 with move_on_after(10):
