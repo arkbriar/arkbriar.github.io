@@ -393,7 +393,7 @@
 </span></span><span class="line"><span class="cl">    <span class="n">start_task_in_background</span><span class="p">(</span><span class="n">some_worker_that_will_actually_do_the_thing</span><span class="p">)</span>
 </span></span></code></pre></div><p>如果我们只看 <code>with</code> 块，这似乎是完全无辜的。但是当我们看看 <code>do_the_thing</code> 是如何实现的，我们就会意识到，我们和可能在后台任务完成之前退出 <code>with</code> 块，所以就会出现一些模糊的地方：超时是否应该适用于后台任务？如果它确实适用，那么我们应该如何处理 <code>Cancelled</code> 异常？对于大多数系统来说，后台线程/任务中未处理的异常被简单地丢弃了。</p>
 <p>然而，这些问题在 Trio 中不会出现，因为它有独特的方法来处理并发性。Trio 的<a class="link" href="https://trio.readthedocs.io/en/latest/reference-core.html#tasks-let-you-do-multiple-things-at-once"  target="_blank" rel="noopener"
-    >托儿所系统</a>（注：nursery system，用于实现结构化并发的系统）意味着子任务总是被整合到调用堆栈中，着实际上成为一个调用树。具体来说，Trio 没有全局的 <code>start_task_in_background</code> 原语。相反，如果你想生成一个子任务，你必须先打开一个“nursery”块（<a class="link" href="http://www.dictionary.com/browse/nursery"  target="_blank" rel="noopener"
+    >托儿所系统</a>（注：nursery system，用于实现结构化并发的系统）意味着子任务总是被整合到调用堆栈中，这实际上成为一个调用树。具体来说，Trio 没有全局的 <code>start_task_in_background</code> 原语。相反，如果你想生成一个子任务，你必须先打开一个“nursery”块（<a class="link" href="http://www.dictionary.com/browse/nursery"  target="_blank" rel="noopener"
     >让孩子住在里面</a>，明白吗？），然后其中创建的子任务的生命周期就和创建托儿所的块绑定了起来：</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">with</span> <span class="n">move_on_after</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
 </span></span><span class="line"><span class="cl">    <span class="k">await</span> <span class="n">do_the_thing</span><span class="p">()</span>
