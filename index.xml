@@ -336,7 +336,7 @@
 &lt;p&gt;如果你觉得这听起来很有趣，&lt;a class=&#34;link&#34; href=&#34;https://github.com/njsmith/deadline-scopes&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;可以看看我实现的概念验证代码&lt;/a&gt;。&lt;/p&gt;
 &lt;h4 id=&#34;asyncio&#34;&gt;asyncio&lt;/h4&gt;
-&lt;p&gt;这篇博文最初的动机之一是于 Yury 讨论我们是否可以将 Trio 的一些改进应用到 asyncio 之上。通过上面的分析来看 asyncio，有几件事让我们眼前一亮：&lt;/p&gt;
+&lt;p&gt;这篇博文最初的动机之一是与 Yury 讨论我们是否可以将 Trio 的一些改进应用到 asyncio 之上。通过上面的分析来看 asyncio，有几件事让我们眼前一亮：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;在隐含的有状态的任意规模的取消令牌的取消作用域模型和 asyncio 目前的面向任务的边缘触发的取消之间存在一些阻抗不匹配（注：impedence mismatch）（然后 &lt;code&gt;Future&lt;/code&gt; 层又有一个稍微不用的取消模型），所以我们需要一些故事来说明如何将这些融合到一起。或者，也许我们有可能将任务迁移到一个有状态的取消模型？&lt;/p&gt;
@@ -348,7 +348,7 @@
 &lt;p&gt;如果没有一个通用的机制将异常传回堆栈，就没有办法将 &lt;code&gt;Cancelled&lt;/code&gt; 异常可靠地传回原始作用域。一般来说，asyncio 只是打印和丢弃来自 &lt;code&gt;Task&lt;/code&gt; 的未处理的异常。也许这样就可以了？&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;不幸的是，asyncio 处于一个优点棘手的位置，因为它是建立在 Python 中过去十年的异步 I/O 经验基础之上的&amp;hellip;&amp;hellip;然后在这个架构被锁定之后，它又给 Python 添加了新的语法，使所有这些经验都失效了。但希望还是有可能适应其中的一些经验 &amp;ndash; 至少要做出一些妥协。&lt;/p&gt;
+&lt;p&gt;不幸的是，asyncio 处于一个有点棘手的位置，因为它是建立在 Python 中过去十年的异步 I/O 经验基础之上的&amp;hellip;&amp;hellip;然后在这个架构被锁定之后，它又给 Python 添加了新的语法，使所有这些经验都失效了。但希望还是有可能适应其中的一些经验 &amp;ndash; 至少要做出一些妥协。&lt;/p&gt;
 &lt;h4 id=&#34;其他语言&#34;&gt;其他语言&lt;/h4&gt;
 &lt;p&gt;如果你在工作中使用了其他语言，我很想听听取消作用域是如何适应这些语言的 &amp;ndash; 如果有的话。例如，对于那些不使用异常的语言，或者缺少 Python &lt;code&gt;with&lt;/code&gt; 块提供的那种用户可扩展语法的语言，它肯定需要一些调整。&lt;/p&gt;
 &lt;h3 id=&#34;现在去修复你的超时缺陷吧&#34;&gt;现在去修复你的超时缺陷吧！&lt;/h3&gt;
