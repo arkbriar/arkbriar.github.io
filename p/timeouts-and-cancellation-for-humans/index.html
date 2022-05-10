@@ -175,7 +175,7 @@
     >S3.Client.get_object</a> 来完成。<code>S3.Client.get_object</code> 做了什么呢？它向 S3 的服务器发起了一系列的 HTTP 请求，每一个请求都要调用 <a class="link" href="http://python-requests.org/"  target="_blank" rel="noopener"
     >requests</a> 库。而对 <code>requests</code> 的每一次调用都会在内部转化成对 <code>sockets</code> 模块的一系列的调用，从而完成真正的网络通信<a class="link" href="https://vorpus.org/blog/timeouts-and-cancellation-for-humans/#id6"  target="_blank" rel="noopener"
     >[1]</a>。</p>
-<p>从用户的视角来看，这是用来从远程服务获取数据的三个不用的 API：</p>
+<p>从用户的视角来看，这是用来从远程服务获取数据的三个不同的 API：</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">s3client</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl"><span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&#34;https://...&#34;</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl"><span class="n">sock</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
@@ -457,7 +457,7 @@
 <p>这篇博文最初的动机之一是与 Yury 讨论我们是否可以将 Trio 的一些改进应用到 asyncio 之上。通过上面的分析来看 asyncio，有几件事让我们眼前一亮：</p>
 <ul>
 <li>
-<p>在隐含的有状态的任意规模的取消令牌的取消作用域模型和 asyncio 目前的面向任务的边缘触发的取消之间存在一些阻抗不匹配（注：impedence mismatch）（然后 <code>Future</code> 层又有一个稍微不用的取消模型），所以我们需要一些故事来说明如何将这些融合到一起。或者，也许我们有可能将任务迁移到一个有状态的取消模型？</p>
+<p>在隐含的有状态的任意规模的取消令牌的取消作用域模型和 asyncio 目前的面向任务的边缘触发的取消之间存在一些阻抗不匹配（注：impedence mismatch）（然后 <code>Future</code> 层又有一个稍微不同的取消模型），所以我们需要一些故事来说明如何将这些融合到一起。或者，也许我们有可能将任务迁移到一个有状态的取消模型？</p>
 </li>
 <li>
 <p>如果没有托儿所系统，就没有可靠的方法在任务间传播取消，而且有很多不同的操作，有点像产生一个任务，但是在不用的抽象层次上（例如 <code>loop.call_soon</code>）。你可以制定一个规则，任何新的任务总是继承他们的 <code>spawners</code> 的取消作用域，但我不确定这是否是一个好主意 &ndash; 这需要一些思考。</p>

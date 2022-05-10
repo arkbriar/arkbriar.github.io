@@ -57,7 +57,7 @@
     &gt;S3.Client.get_object&lt;/a&gt; 来完成。&lt;code&gt;S3.Client.get_object&lt;/code&gt; 做了什么呢？它向 S3 的服务器发起了一系列的 HTTP 请求，每一个请求都要调用 &lt;a class=&#34;link&#34; href=&#34;http://python-requests.org/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;requests&lt;/a&gt; 库。而对 &lt;code&gt;requests&lt;/code&gt; 的每一次调用都会在内部转化成对 &lt;code&gt;sockets&lt;/code&gt; 模块的一系列的调用，从而完成真正的网络通信&lt;a class=&#34;link&#34; href=&#34;https://vorpus.org/blog/timeouts-and-cancellation-for-humans/#id6&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;[1]&lt;/a&gt;。&lt;/p&gt;
-&lt;p&gt;从用户的视角来看，这是用来从远程服务获取数据的三个不用的 API：&lt;/p&gt;
+&lt;p&gt;从用户的视角来看，这是用来从远程服务获取数据的三个不同的 API：&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;s3client&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;get_object&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;...&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;requests&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;get&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;https://...&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;sock&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;recv&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;...&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
@@ -339,7 +339,7 @@
 &lt;p&gt;这篇博文最初的动机之一是与 Yury 讨论我们是否可以将 Trio 的一些改进应用到 asyncio 之上。通过上面的分析来看 asyncio，有几件事让我们眼前一亮：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
-&lt;p&gt;在隐含的有状态的任意规模的取消令牌的取消作用域模型和 asyncio 目前的面向任务的边缘触发的取消之间存在一些阻抗不匹配（注：impedence mismatch）（然后 &lt;code&gt;Future&lt;/code&gt; 层又有一个稍微不用的取消模型），所以我们需要一些故事来说明如何将这些融合到一起。或者，也许我们有可能将任务迁移到一个有状态的取消模型？&lt;/p&gt;
+&lt;p&gt;在隐含的有状态的任意规模的取消令牌的取消作用域模型和 asyncio 目前的面向任务的边缘触发的取消之间存在一些阻抗不匹配（注：impedence mismatch）（然后 &lt;code&gt;Future&lt;/code&gt; 层又有一个稍微不同的取消模型），所以我们需要一些故事来说明如何将这些融合到一起。或者，也许我们有可能将任务迁移到一个有状态的取消模型？&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;如果没有托儿所系统，就没有可靠的方法在任务间传播取消，而且有很多不同的操作，有点像产生一个任务，但是在不用的抽象层次上（例如 &lt;code&gt;loop.call_soon&lt;/code&gt;）。你可以制定一个规则，任何新的任务总是继承他们的 &lt;code&gt;spawners&lt;/code&gt; 的取消作用域，但我不确定这是否是一个好主意 &amp;ndash; 这需要一些思考。&lt;/p&gt;
