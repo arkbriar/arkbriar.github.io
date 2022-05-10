@@ -61,7 +61,7 @@ sock.recv(...)
 
 那么这有什么问题呢？这似乎是一个很显然的方式。如果我们总是直接使用这些低层的 API 来编写代码，那么这可能就足够了。但是，编程是关于抽象的。比如我们想从 [S3](https://en.wikipedia.org/wiki/Amazon_S3) 上获取一个文件，我们可以使用 boto3 库中的这个接口 [S3.Client.get_object](https://botocore.readthedocs.io/en/latest/reference/services/s3.html#S3.Client.get_object) 来完成。`S3.Client.get_object` 做了什么呢？它向 S3 的服务器发起了一系列的 HTTP 请求，每一个请求都要调用 [requests](http://python-requests.org/) 库。而对 `requests` 的每一次调用都会在内部转化成对 `sockets` 模块的一系列的调用，从而完成真正的网络通信[[1]](https://vorpus.org/blog/timeouts-and-cancellation-for-humans/#id6)。
 
-从用户的视角来看，这是用来从远程服务获取数据的三个不用的 API：
+从用户的视角来看，这是用来从远程服务获取数据的三个不同的 API：
 
 ```python
 s3client.get_object(...)
@@ -435,7 +435,7 @@ async def do_the_thing():
 
 这篇博文最初的动机之一是与 Yury 讨论我们是否可以将 Trio 的一些改进应用到 asyncio 之上。通过上面的分析来看 asyncio，有几件事让我们眼前一亮：
 
-+ 在隐含的有状态的任意规模的取消令牌的取消作用域模型和 asyncio 目前的面向任务的边缘触发的取消之间存在一些阻抗不匹配（注：impedence mismatch）（然后 `Future` 层又有一个稍微不用的取消模型），所以我们需要一些故事来说明如何将这些融合到一起。或者，也许我们有可能将任务迁移到一个有状态的取消模型？
++ 在隐含的有状态的任意规模的取消令牌的取消作用域模型和 asyncio 目前的面向任务的边缘触发的取消之间存在一些阻抗不匹配（注：impedence mismatch）（然后 `Future` 层又有一个稍微不同的取消模型），所以我们需要一些故事来说明如何将这些融合到一起。或者，也许我们有可能将任务迁移到一个有状态的取消模型？
 
 + 如果没有托儿所系统，就没有可靠的方法在任务间传播取消，而且有很多不同的操作，有点像产生一个任务，但是在不用的抽象层次上（例如 `loop.call_soon`）。你可以制定一个规则，任何新的任务总是继承他们的 `spawners` 的取消作用域，但我不确定这是否是一个好主意 -- 这需要一些思考。
 
