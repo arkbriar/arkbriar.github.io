@@ -1,4 +1,4 @@
-baseurl: "https://blog.crazyark.xyz"
+baseurl: "https://blog.crazyark.me"
 languageCode: zh-cn
 theme: hugo-theme-stack
 paginate: 5
