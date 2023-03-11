@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
         <title>石沉溪洞 -- Ark&#39;s Blog</title>
-        <link>https://blog.crazyark.xyz/</link>
+        <link>https://blog.crazyark.me/</link>
         <description>Recent content on 石沉溪洞 -- Ark&#39;s Blog</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
-        <lastBuildDate>Fri, 03 Feb 2023 13:56:33 +0800</lastBuildDate><atom:link href="https://blog.crazyark.xyz/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Fri, 03 Feb 2023 13:56:33 +0800</lastBuildDate><atom:link href="https://blog.crazyark.me/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>又一个 binlog 解析器 -- Yet Another Binlog Parser</title>
-        <link>https://blog.crazyark.xyz/p/yet-another-binlog-parser/</link>
+        <link>https://blog.crazyark.me/p/yet-another-binlog-parser/</link>
         <pubDate>Fri, 03 Feb 2023 13:56:33 +0800</pubDate>
         
-        <guid>https://blog.crazyark.xyz/p/yet-another-binlog-parser/</guid>
-        <description>&lt;img src="https://blog.crazyark.xyz/p/yet-another-binlog-parser/img/cover.png" alt="Featured image of post 又一个 binlog 解析器 -- Yet Another Binlog Parser" /&gt;&lt;p&gt;Although the article was originally written in Chinese, with the help of ChatGPT, I was able to provide an English translation. If you want to read the English version, please jump to &lt;a class=&#34;link&#34; href=&#34;#why-do-we-need-to-reinvent-the-wheel&#34; &gt;here&lt;/a&gt; for reading.&lt;/p&gt;
+        <guid>https://blog.crazyark.me/p/yet-another-binlog-parser/</guid>
+        <description>&lt;img src="https://blog.crazyark.me/p/yet-another-binlog-parser/img/cover.png" alt="Featured image of post 又一个 binlog 解析器 -- Yet Another Binlog Parser" /&gt;&lt;p&gt;Although the article was originally written in Chinese, with the help of ChatGPT, I was able to provide an English translation. If you want to read the English version, please jump to &lt;a class=&#34;link&#34; href=&#34;#why-do-we-need-to-reinvent-the-wheel&#34; &gt;here&lt;/a&gt; for reading.&lt;/p&gt;
 &lt;h2 id=&#34;为什么要再造一个轮子&#34;&gt;为什么要再造一个轮子？&lt;/h2&gt;
 &lt;blockquote&gt;
 &lt;p&gt;造轮子是程序员的浪漫！🥰&lt;/p&gt;
@@ -33,11 +33,11 @@
 			flex-grow: 94; 
 			flex-basis: 227px&#34;
 	&gt;
-	&lt;a href=&#34;https://blog.crazyark.xyz/p/yet-another-binlog-parser/img/binlog_event_header.png&#34; data-size=&#34;340x358&#34;&gt;
-		&lt;img src=&#34;https://blog.crazyark.xyz/p/yet-another-binlog-parser/img/binlog_event_header.png&#34;
+	&lt;a href=&#34;https://blog.crazyark.me/p/yet-another-binlog-parser/img/binlog_event_header.png&#34; data-size=&#34;340x358&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.me/p/yet-another-binlog-parser/img/binlog_event_header.png&#34;
 			width=&#34;340&#34;
 			height=&#34;358&#34;
-			srcset=&#34;https://blog.crazyark.xyz/p/yet-another-binlog-parser/img/binlog_event_header_hufa6fa0b91f889c0460e4f242276b284d_45436_480x0_resize_box_3.png 480w, https://blog.crazyark.xyz/p/yet-another-binlog-parser/img/binlog_event_header_hufa6fa0b91f889c0460e4f242276b284d_45436_1024x0_resize_box_3.png 1024w&#34;
+			srcset=&#34;https://blog.crazyark.me/p/yet-another-binlog-parser/img/binlog_event_header_hufa6fa0b91f889c0460e4f242276b284d_45436_480x0_resize_box_3.png 480w, https://blog.crazyark.me/p/yet-another-binlog-parser/img/binlog_event_header_hufa6fa0b91f889c0460e4f242276b284d_45436_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;Binlog 事件头&#34;&gt;
 	&lt;/a&gt;
@@ -125,11 +125,11 @@
 			flex-grow: 107; 
 			flex-basis: 258px&#34;
 	&gt;
-	&lt;a href=&#34;https://blog.crazyark.xyz/p/yet-another-binlog-parser/img/query_event_data.png&#34; data-size=&#34;340x316&#34;&gt;
-		&lt;img src=&#34;https://blog.crazyark.xyz/p/yet-another-binlog-parser/img/query_event_data.png&#34;
+	&lt;a href=&#34;https://blog.crazyark.me/p/yet-another-binlog-parser/img/query_event_data.png&#34; data-size=&#34;340x316&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.me/p/yet-another-binlog-parser/img/query_event_data.png&#34;
 			width=&#34;340&#34;
 			height=&#34;316&#34;
-			srcset=&#34;https://blog.crazyark.xyz/p/yet-another-binlog-parser/img/query_event_data_hua4b1c7c3057bb9f734790a6209f1d2bc_52705_480x0_resize_box_3.png 480w, https://blog.crazyark.xyz/p/yet-another-binlog-parser/img/query_event_data_hua4b1c7c3057bb9f734790a6209f1d2bc_52705_1024x0_resize_box_3.png 1024w&#34;
+			srcset=&#34;https://blog.crazyark.me/p/yet-another-binlog-parser/img/query_event_data_hua4b1c7c3057bb9f734790a6209f1d2bc_52705_480x0_resize_box_3.png 480w, https://blog.crazyark.me/p/yet-another-binlog-parser/img/query_event_data_hua4b1c7c3057bb9f734790a6209f1d2bc_52705_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;QUERY EVENT DATA&#34;&gt;
 	&lt;/a&gt;
@@ -193,11 +193,11 @@
 			flex-grow: 94; 
 			flex-basis: 227px&#34;
 	&gt;
-	&lt;a href=&#34;https://blog.crazyark.xyz/p/yet-another-binlog-parser/img/binlog_event_header.png&#34; data-size=&#34;340x358&#34;&gt;
-		&lt;img src=&#34;https://blog.crazyark.xyz/p/yet-another-binlog-parser/img/binlog_event_header.png&#34;
+	&lt;a href=&#34;https://blog.crazyark.me/p/yet-another-binlog-parser/img/binlog_event_header.png&#34; data-size=&#34;340x358&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.me/p/yet-another-binlog-parser/img/binlog_event_header.png&#34;
 			width=&#34;340&#34;
 			height=&#34;358&#34;
-			srcset=&#34;https://blog.crazyark.xyz/p/yet-another-binlog-parser/img/binlog_event_header_hufa6fa0b91f889c0460e4f242276b284d_45436_480x0_resize_box_3.png 480w, https://blog.crazyark.xyz/p/yet-another-binlog-parser/img/binlog_event_header_hufa6fa0b91f889c0460e4f242276b284d_45436_1024x0_resize_box_3.png 1024w&#34;
+			srcset=&#34;https://blog.crazyark.me/p/yet-another-binlog-parser/img/binlog_event_header_hufa6fa0b91f889c0460e4f242276b284d_45436_480x0_resize_box_3.png 480w, https://blog.crazyark.me/p/yet-another-binlog-parser/img/binlog_event_header_hufa6fa0b91f889c0460e4f242276b284d_45436_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;Binlog 事件头&#34;&gt;
 	&lt;/a&gt;
@@ -292,11 +292,11 @@
 			flex-grow: 107; 
 			flex-basis: 258px&#34;
 	&gt;
-	&lt;a href=&#34;https://blog.crazyark.xyz/p/yet-another-binlog-parser/img/query_event_data.png&#34; data-size=&#34;340x316&#34;&gt;
-		&lt;img src=&#34;https://blog.crazyark.xyz/p/yet-another-binlog-parser/img/query_event_data.png&#34;
+	&lt;a href=&#34;https://blog.crazyark.me/p/yet-another-binlog-parser/img/query_event_data.png&#34; data-size=&#34;340x316&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.me/p/yet-another-binlog-parser/img/query_event_data.png&#34;
 			width=&#34;340&#34;
 			height=&#34;316&#34;
-			srcset=&#34;https://blog.crazyark.xyz/p/yet-another-binlog-parser/img/query_event_data_hua4b1c7c3057bb9f734790a6209f1d2bc_52705_480x0_resize_box_3.png 480w, https://blog.crazyark.xyz/p/yet-another-binlog-parser/img/query_event_data_hua4b1c7c3057bb9f734790a6209f1d2bc_52705_1024x0_resize_box_3.png 1024w&#34;
+			srcset=&#34;https://blog.crazyark.me/p/yet-another-binlog-parser/img/query_event_data_hua4b1c7c3057bb9f734790a6209f1d2bc_52705_480x0_resize_box_3.png 480w, https://blog.crazyark.me/p/yet-another-binlog-parser/img/query_event_data_hua4b1c7c3057bb9f734790a6209f1d2bc_52705_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;QUERY EVENT DATA&#34;&gt;
 	&lt;/a&gt;
@@ -341,11 +341,11 @@
         </item>
         <item>
         <title>代码杂谈：超时与取消（转载）</title>
-        <link>https://blog.crazyark.xyz/p/timeouts-and-cancellation-for-humans/</link>
+        <link>https://blog.crazyark.me/p/timeouts-and-cancellation-for-humans/</link>
         <pubDate>Sat, 07 May 2022 16:14:00 +0800</pubDate>
         
-        <guid>https://blog.crazyark.xyz/p/timeouts-and-cancellation-for-humans/</guid>
-        <description>&lt;img src="https://blog.crazyark.xyz/p/timeouts-and-cancellation-for-humans/img/bailan1.jpeg" alt="Featured image of post 代码杂谈：超时与取消（转载）" /&gt;&lt;p&gt;转载自 Nathaniel J. Smith 的一篇博客，原文是 &lt;a class=&#34;link&#34; href=&#34;https://vorpus.org/blog/timeouts-and-cancellation-for-humans/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+        <guid>https://blog.crazyark.me/p/timeouts-and-cancellation-for-humans/</guid>
+        <description>&lt;img src="https://blog.crazyark.me/p/timeouts-and-cancellation-for-humans/img/bailan1.jpeg" alt="Featured image of post 代码杂谈：超时与取消（转载）" /&gt;&lt;p&gt;转载自 Nathaniel J. Smith 的一篇博客，原文是 &lt;a class=&#34;link&#34; href=&#34;https://vorpus.org/blog/timeouts-and-cancellation-for-humans/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Timeouts and cancellation for humans&lt;/a&gt;，发表于 2018 年 1 月 11 日（所以注意文中的链接和内容的时效性），本文仅仅是对原文的一个翻译。&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;注：原来计划写一篇文章讲讲在网络和异步编程中如何进行超时和取消，但 NJS 的文章珠玉在前，我也没有能力再写一篇更好的文章了，因此选择了直接进行翻译。&lt;/p&gt;
@@ -701,11 +701,11 @@
         </item>
         <item>
         <title>代码杂谈：无锁编程（一）</title>
-        <link>https://blog.crazyark.xyz/p/lock-free-linked-list-and-epoch-gc/</link>
+        <link>https://blog.crazyark.me/p/lock-free-linked-list-and-epoch-gc/</link>
         <pubDate>Sun, 28 Nov 2021 20:44:45 +0800</pubDate>
         
-        <guid>https://blog.crazyark.xyz/p/lock-free-linked-list-and-epoch-gc/</guid>
-        <description>&lt;img src="https://blog.crazyark.xyz/p/lock-free-linked-list-and-epoch-gc/img/card.png" alt="Featured image of post 代码杂谈：无锁编程（一）" /&gt;&lt;h2 id=&#34;缘起&#34;&gt;缘起&lt;/h2&gt;
+        <guid>https://blog.crazyark.me/p/lock-free-linked-list-and-epoch-gc/</guid>
+        <description>&lt;img src="https://blog.crazyark.me/p/lock-free-linked-list-and-epoch-gc/img/card.png" alt="Featured image of post 代码杂谈：无锁编程（一）" /&gt;&lt;h2 id=&#34;缘起&#34;&gt;缘起&lt;/h2&gt;
 &lt;p&gt;俗话说的好，作为一个在数据库团队做 Kubernetes 开发的同学，不能做到编写 B 树至少要做到心里有 B 数。因此最近闲暇时间一直在研究可持久化的 B 树怎么写，接着就了解到了 BwTree（微软 14 年提出的无锁 B 树），然后开始思考其中的 mapping table 怎么实现，然后开始看 FasterKV（微软 18 年提出的可持久化无锁 KV），然后就彻底跑偏了&amp;hellip;&lt;/p&gt;
 &lt;p&gt;本文主要记录我拿 Rust 折腾几个无锁数据结构的经验和教训，这样以后不记得了还能翻一翻，并告诉自己：&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;没事别瞎折腾什么劳什子无锁编程！&lt;/strong&gt;&lt;/p&gt;
@@ -727,8 +727,8 @@
 &lt;p&gt;链表的节点和整体结构如下图所示：&lt;/p&gt;
 &lt;p&gt;&lt;figure 
 	&gt;
-	&lt;a href=&#34;https://blog.crazyark.xyz/p/lock-free-linked-list-and-epoch-gc/img/linked-set-structure-and-operations.svg&#34; &gt;
-		&lt;img src=&#34;https://blog.crazyark.xyz/p/lock-free-linked-list-and-epoch-gc/img/linked-set-structure-and-operations.svg&#34;
+	&lt;a href=&#34;https://blog.crazyark.me/p/lock-free-linked-list-and-epoch-gc/img/linked-set-structure-and-operations.svg&#34; &gt;
+		&lt;img src=&#34;https://blog.crazyark.me/p/lock-free-linked-list-and-epoch-gc/img/linked-set-structure-and-operations.svg&#34;
 			
 			
 			
@@ -834,11 +834,11 @@
 			flex-grow: 237; 
 			flex-basis: 570px&#34;
 	&gt;
-	&lt;a href=&#34;https://blog.crazyark.xyz/p/lock-free-linked-list-and-epoch-gc/img/epochgc.png&#34; data-size=&#34;2186x920&#34;&gt;
-		&lt;img src=&#34;https://blog.crazyark.xyz/p/lock-free-linked-list-and-epoch-gc/img/epochgc.png&#34;
+	&lt;a href=&#34;https://blog.crazyark.me/p/lock-free-linked-list-and-epoch-gc/img/epochgc.png&#34; data-size=&#34;2186x920&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.me/p/lock-free-linked-list-and-epoch-gc/img/epochgc.png&#34;
 			width=&#34;2186&#34;
 			height=&#34;920&#34;
-			srcset=&#34;https://blog.crazyark.xyz/p/lock-free-linked-list-and-epoch-gc/img/epochgc_hu14bcae44c83482a9060282e204aff52e_671965_480x0_resize_box_3.png 480w, https://blog.crazyark.xyz/p/lock-free-linked-list-and-epoch-gc/img/epochgc_hu14bcae44c83482a9060282e204aff52e_671965_1024x0_resize_box_3.png 1024w&#34;
+			srcset=&#34;https://blog.crazyark.me/p/lock-free-linked-list-and-epoch-gc/img/epochgc_hu14bcae44c83482a9060282e204aff52e_671965_480x0_resize_box_3.png 480w, https://blog.crazyark.me/p/lock-free-linked-list-and-epoch-gc/img/epochgc_hu14bcae44c83482a9060282e204aff52e_671965_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;Epoch GC&#34;&gt;
 	&lt;/a&gt;
@@ -884,8 +884,8 @@
 &lt;p&gt;在更改过的算法中，相邻并发删除的一种情况如下图所示：&lt;/p&gt;
 &lt;p&gt;&lt;figure 
 	&gt;
-	&lt;a href=&#34;https://blog.crazyark.xyz/p/lock-free-linked-list-and-epoch-gc/img/refined-remove-on-linked-list-with-epoch-gc.svg&#34; &gt;
-		&lt;img src=&#34;https://blog.crazyark.xyz/p/lock-free-linked-list-and-epoch-gc/img/refined-remove-on-linked-list-with-epoch-gc.svg&#34;
+	&lt;a href=&#34;https://blog.crazyark.me/p/lock-free-linked-list-and-epoch-gc/img/refined-remove-on-linked-list-with-epoch-gc.svg&#34; &gt;
+		&lt;img src=&#34;https://blog.crazyark.me/p/lock-free-linked-list-and-epoch-gc/img/refined-remove-on-linked-list-with-epoch-gc.svg&#34;
 			
 			
 			
@@ -964,11 +964,11 @@
         </item>
         <item>
         <title>代码杂谈：结构化并发</title>
-        <link>https://blog.crazyark.xyz/p/structured-concurrency/</link>
+        <link>https://blog.crazyark.me/p/structured-concurrency/</link>
         <pubDate>Tue, 14 Sep 2021 08:37:50 +0800</pubDate>
         
-        <guid>https://blog.crazyark.xyz/p/structured-concurrency/</guid>
-        <description>&lt;img src="https://blog.crazyark.xyz/p/structured-concurrency/img/eva0.jpeg" alt="Featured image of post 代码杂谈：结构化并发" /&gt;&lt;blockquote&gt;
+        <guid>https://blog.crazyark.me/p/structured-concurrency/</guid>
+        <description>&lt;img src="https://blog.crazyark.me/p/structured-concurrency/img/eva0.jpeg" alt="Featured image of post 代码杂谈：结构化并发" /&gt;&lt;blockquote&gt;
 &lt;p&gt;最近阅读的几篇文章都是围绕着编程来的。在我看来，编程语言/模型/抽象的一大重要目的是在保证核心功能和性能的基础上，让开发人员更容易地开发出不易出错的、高效的程序，都是为人服务的。并发编程通常被认为是难以编写且容易写出缺陷的，因此我也希望能有一个良好的抽象使并发编程更加的容易。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;结构化并发（Structured Concurrency）是一个近年来才被提出的概念，主要目的是提高并发编程的确定性、质量和开发效率。结构化并发的中心思想是对并发的执行流进行封装，使得它们能够有确定的入口和出口。&lt;/p&gt;
@@ -990,11 +990,11 @@
 			flex-grow: 120; 
 			flex-basis: 289px&#34;
 	&gt;
-	&lt;a href=&#34;https://blog.crazyark.xyz/p/structured-concurrency/img/flow-matic.jpg&#34; data-size=&#34;940x780&#34;&gt;
-		&lt;img src=&#34;https://blog.crazyark.xyz/p/structured-concurrency/img/flow-matic.jpg&#34;
+	&lt;a href=&#34;https://blog.crazyark.me/p/structured-concurrency/img/flow-matic.jpg&#34; data-size=&#34;940x780&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.me/p/structured-concurrency/img/flow-matic.jpg&#34;
 			width=&#34;940&#34;
 			height=&#34;780&#34;
-			srcset=&#34;https://blog.crazyark.xyz/p/structured-concurrency/img/flow-matic_hu4c558425e36484ceebf57c0d1c2e5033_221339_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/structured-concurrency/img/flow-matic_hu4c558425e36484ceebf57c0d1c2e5033_221339_1024x0_resize_q75_box.jpg 1024w&#34;
+			srcset=&#34;https://blog.crazyark.me/p/structured-concurrency/img/flow-matic_hu4c558425e36484ceebf57c0d1c2e5033_221339_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.me/p/structured-concurrency/img/flow-matic_hu4c558425e36484ceebf57c0d1c2e5033_221339_1024x0_resize_q75_box.jpg 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;FLOW-MATIC&#34;&gt;
 	&lt;/a&gt;
@@ -1067,8 +1067,8 @@
 &lt;p&gt;在这里，go 对控制流的抽象进行了第二次破坏。对比 goto 和 go，你会发现它们是极为相似的[2]。&lt;/p&gt;
 &lt;p&gt;&lt;figure 
 	&gt;
-	&lt;a href=&#34;https://blog.crazyark.xyz/p/structured-concurrency/img/go-schematic-and-go-to-schematic.svg&#34; &gt;
-		&lt;img src=&#34;https://blog.crazyark.xyz/p/structured-concurrency/img/go-schematic-and-go-to-schematic.svg&#34;
+	&lt;a href=&#34;https://blog.crazyark.me/p/structured-concurrency/img/go-schematic-and-go-to-schematic.svg&#34; &gt;
+		&lt;img src=&#34;https://blog.crazyark.me/p/structured-concurrency/img/go-schematic-and-go-to-schematic.svg&#34;
 			
 			
 			
@@ -1111,11 +1111,11 @@
 			flex-grow: 133; 
 			flex-basis: 320px&#34;
 	&gt;
-	&lt;a href=&#34;https://blog.crazyark.xyz/p/structured-concurrency/img/structured_concurrency.png&#34; data-size=&#34;1400x1050&#34;&gt;
-		&lt;img src=&#34;https://blog.crazyark.xyz/p/structured-concurrency/img/structured_concurrency.png&#34;
+	&lt;a href=&#34;https://blog.crazyark.me/p/structured-concurrency/img/structured_concurrency.png&#34; data-size=&#34;1400x1050&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.me/p/structured-concurrency/img/structured_concurrency.png&#34;
 			width=&#34;1400&#34;
 			height=&#34;1050&#34;
-			srcset=&#34;https://blog.crazyark.xyz/p/structured-concurrency/img/structured_concurrency_hu08756367126f224464f90e209f7e6f32_88848_480x0_resize_box_3.png 480w, https://blog.crazyark.xyz/p/structured-concurrency/img/structured_concurrency_hu08756367126f224464f90e209f7e6f32_88848_1024x0_resize_box_3.png 1024w&#34;
+			srcset=&#34;https://blog.crazyark.me/p/structured-concurrency/img/structured_concurrency_hu08756367126f224464f90e209f7e6f32_88848_480x0_resize_box_3.png 480w, https://blog.crazyark.me/p/structured-concurrency/img/structured_concurrency_hu08756367126f224464f90e209f7e6f32_88848_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;Structured Concurrency&#34;&gt;
 	&lt;/a&gt;
@@ -1132,11 +1132,11 @@
 			flex-grow: 97; 
 			flex-basis: 233px&#34;
 	&gt;
-	&lt;a href=&#34;https://blog.crazyark.xyz/p/structured-concurrency/img/structured-concurrency-control-flow-example-0.jpg&#34; data-size=&#34;544x558&#34;&gt;
-		&lt;img src=&#34;https://blog.crazyark.xyz/p/structured-concurrency/img/structured-concurrency-control-flow-example-0.jpg&#34;
+	&lt;a href=&#34;https://blog.crazyark.me/p/structured-concurrency/img/structured-concurrency-control-flow-example-0.jpg&#34; data-size=&#34;544x558&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.me/p/structured-concurrency/img/structured-concurrency-control-flow-example-0.jpg&#34;
 			width=&#34;544&#34;
 			height=&#34;558&#34;
-			srcset=&#34;https://blog.crazyark.xyz/p/structured-concurrency/img/structured-concurrency-control-flow-example-0_hu4c558425e36484ceebf57c0d1c2e5033_47908_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/structured-concurrency/img/structured-concurrency-control-flow-example-0_hu4c558425e36484ceebf57c0d1c2e5033_47908_1024x0_resize_q75_box.jpg 1024w&#34;
+			srcset=&#34;https://blog.crazyark.me/p/structured-concurrency/img/structured-concurrency-control-flow-example-0_hu4c558425e36484ceebf57c0d1c2e5033_47908_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.me/p/structured-concurrency/img/structured-concurrency-control-flow-example-0_hu4c558425e36484ceebf57c0d1c2e5033_47908_1024x0_resize_q75_box.jpg 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;Control Flow&#34;&gt;
 	&lt;/a&gt;
@@ -1150,11 +1150,11 @@
 			flex-grow: 184; 
 			flex-basis: 442px&#34;
 	&gt;
-	&lt;a href=&#34;https://blog.crazyark.xyz/p/structured-concurrency/img/structured-concurrency-control-flow-example-1.jpg&#34; data-size=&#34;1232x668&#34;&gt;
-		&lt;img src=&#34;https://blog.crazyark.xyz/p/structured-concurrency/img/structured-concurrency-control-flow-example-1.jpg&#34;
+	&lt;a href=&#34;https://blog.crazyark.me/p/structured-concurrency/img/structured-concurrency-control-flow-example-1.jpg&#34; data-size=&#34;1232x668&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.me/p/structured-concurrency/img/structured-concurrency-control-flow-example-1.jpg&#34;
 			width=&#34;1232&#34;
 			height=&#34;668&#34;
-			srcset=&#34;https://blog.crazyark.xyz/p/structured-concurrency/img/structured-concurrency-control-flow-example-1_hu4c558425e36484ceebf57c0d1c2e5033_122148_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/structured-concurrency/img/structured-concurrency-control-flow-example-1_hu4c558425e36484ceebf57c0d1c2e5033_122148_1024x0_resize_q75_box.jpg 1024w&#34;
+			srcset=&#34;https://blog.crazyark.me/p/structured-concurrency/img/structured-concurrency-control-flow-example-1_hu4c558425e36484ceebf57c0d1c2e5033_122148_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.me/p/structured-concurrency/img/structured-concurrency-control-flow-example-1_hu4c558425e36484ceebf57c0d1c2e5033_122148_1024x0_resize_q75_box.jpg 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;Nursery Example&#34;&gt;
 	&lt;/a&gt;
@@ -1262,11 +1262,11 @@ Carl Lerche 尝试在 tokio 的 issue [4] 中提出了一个结构化并发的�
         </item>
         <item>
         <title>代码杂谈：协程</title>
-        <link>https://blog.crazyark.xyz/p/coroutines-rust-and-go/</link>
+        <link>https://blog.crazyark.me/p/coroutines-rust-and-go/</link>
         <pubDate>Thu, 09 Sep 2021 00:37:00 +0800</pubDate>
         
-        <guid>https://blog.crazyark.xyz/p/coroutines-rust-and-go/</guid>
-        <description>&lt;img src="https://blog.crazyark.xyz/p/coroutines-rust-and-go/img/coroutines_how.jpg" alt="Featured image of post 代码杂谈：协程" /&gt;&lt;blockquote&gt;
+        <guid>https://blog.crazyark.me/p/coroutines-rust-and-go/</guid>
+        <description>&lt;img src="https://blog.crazyark.me/p/coroutines-rust-and-go/img/coroutines_how.jpg" alt="Featured image of post 代码杂谈：协程" /&gt;&lt;blockquote&gt;
 &lt;p&gt;协程是对子程序（subroutine）的一种扩展，它允许执行流程被挂起和恢复 [1]。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;随着越来越多的编程语言的支持，协程这个概念也被更多的人所知晓。协程定义了一种通用的控制流的交互方式。
@@ -1339,11 +1339,11 @@ Carl Lerche 尝试在 tokio 的 issue [4] 中提出了一个结构化并发的�
 			flex-grow: 214; 
 			flex-basis: 514px&#34;
 	&gt;
-	&lt;a href=&#34;https://blog.crazyark.xyz/p/coroutines-rust-and-go/img/go_pmg_model.png&#34; data-size=&#34;1096x511&#34;&gt;
-		&lt;img src=&#34;https://blog.crazyark.xyz/p/coroutines-rust-and-go/img/go_pmg_model.png&#34;
+	&lt;a href=&#34;https://blog.crazyark.me/p/coroutines-rust-and-go/img/go_pmg_model.png&#34; data-size=&#34;1096x511&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.me/p/coroutines-rust-and-go/img/go_pmg_model.png&#34;
 			width=&#34;1096&#34;
 			height=&#34;511&#34;
-			srcset=&#34;https://blog.crazyark.xyz/p/coroutines-rust-and-go/img/go_pmg_model_hu52f8e98d226cf3189a3251cab0119b0c_24280_480x0_resize_box_3.png 480w, https://blog.crazyark.xyz/p/coroutines-rust-and-go/img/go_pmg_model_hu52f8e98d226cf3189a3251cab0119b0c_24280_1024x0_resize_box_3.png 1024w&#34;
+			srcset=&#34;https://blog.crazyark.me/p/coroutines-rust-and-go/img/go_pmg_model_hu52f8e98d226cf3189a3251cab0119b0c_24280_480x0_resize_box_3.png 480w, https://blog.crazyark.me/p/coroutines-rust-and-go/img/go_pmg_model_hu52f8e98d226cf3189a3251cab0119b0c_24280_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;Go Runtime&#34;&gt;
 	&lt;/a&gt;
@@ -1619,8 +1619,8 @@ Carl Lerche 尝试在 tokio 的 issue [4] 中提出了一个结构化并发的�
 &lt;p&gt;总结一下，Rust 的协程的运行时大概如下图所示（仅以 IO 为例）：&lt;/p&gt;
 &lt;p&gt;&lt;figure 
 	&gt;
-	&lt;a href=&#34;https://blog.crazyark.xyz/p/coroutines-rust-and-go/img/rust_async_runtime.svg&#34; &gt;
-		&lt;img src=&#34;https://blog.crazyark.xyz/p/coroutines-rust-and-go/img/rust_async_runtime.svg&#34;
+	&lt;a href=&#34;https://blog.crazyark.me/p/coroutines-rust-and-go/img/rust_async_runtime.svg&#34; &gt;
+		&lt;img src=&#34;https://blog.crazyark.me/p/coroutines-rust-and-go/img/rust_async_runtime.svg&#34;
 			
 			
 			
@@ -1658,11 +1658,11 @@ Carl Lerche 尝试在 tokio 的 issue [4] 中提出了一个结构化并发的�
         </item>
         <item>
         <title>数据库系统: 聊聊存储和组提交 (group commit)</title>
-        <link>https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/</link>
+        <link>https://blog.crazyark.me/p/group-commit-with-direct-io-and-fsync/</link>
         <pubDate>Sat, 21 Aug 2021 12:36:51 +0800</pubDate>
         
-        <guid>https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/</guid>
-        <description>&lt;img src="https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/img/transaction_commit.png" alt="Featured image of post 数据库系统: 聊聊存储和组提交 (group commit)" /&gt;&lt;p&gt;众所周知，数据库管理系统需要满足数据操作的持久性，即保证操作的请求在返回之前，对应的数据一定是已经保存在非易失性存储中 &amp;ndash; 通常来说，就是磁盘。而大多数数据库系统都是构建在操作系统提供的文件系统之上的，因为不同的存储设备往往有着不同的特性和交互方式，操作系统和文件系统帮助屏蔽了物理细节。当然也不排除直接使用块设备操作或是使用用户空间驱动 (e.g. SPDK) 操作的，其优化思想应当是一样的，本文不做额外讨论。&lt;/p&gt;
+        <guid>https://blog.crazyark.me/p/group-commit-with-direct-io-and-fsync/</guid>
+        <description>&lt;img src="https://blog.crazyark.me/p/group-commit-with-direct-io-and-fsync/img/transaction_commit.png" alt="Featured image of post 数据库系统: 聊聊存储和组提交 (group commit)" /&gt;&lt;p&gt;众所周知，数据库管理系统需要满足数据操作的持久性，即保证操作的请求在返回之前，对应的数据一定是已经保存在非易失性存储中 &amp;ndash; 通常来说，就是磁盘。而大多数数据库系统都是构建在操作系统提供的文件系统之上的，因为不同的存储设备往往有着不同的特性和交互方式，操作系统和文件系统帮助屏蔽了物理细节。当然也不排除直接使用块设备操作或是使用用户空间驱动 (e.g. SPDK) 操作的，其优化思想应当是一样的，本文不做额外讨论。&lt;/p&gt;
 &lt;h2 id=&#34;存储&#34;&gt;存储&lt;/h2&gt;
 &lt;h3 id=&#34;buffered--direct-io&#34;&gt;Buffered / Direct IO&lt;/h3&gt;
 &lt;p&gt;操作系统和文件系统对存储做了层层封装，最终提供给我们这些通用的操作方式，如下 C 函数所示（摘抄自 macOS 的 manual）：&lt;/p&gt;
@@ -1738,11 +1738,11 @@ Carl Lerche 尝试在 tokio 的 issue [4] 中提出了一个结构化并发的�
 			flex-grow: 157; 
 			flex-basis: 377px&#34;
 	&gt;
-	&lt;a href=&#34;https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/img/ext4_inode.jpg&#34; data-size=&#34;2367x1505&#34;&gt;
-		&lt;img src=&#34;https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/img/ext4_inode.jpg&#34;
+	&lt;a href=&#34;https://blog.crazyark.me/p/group-commit-with-direct-io-and-fsync/img/ext4_inode.jpg&#34; data-size=&#34;2367x1505&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.me/p/group-commit-with-direct-io-and-fsync/img/ext4_inode.jpg&#34;
 			width=&#34;2367&#34;
 			height=&#34;1505&#34;
-			srcset=&#34;https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/img/ext4_inode_hud9776bdf9876fcbe95ea715c40ddcfae_236370_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/img/ext4_inode_hud9776bdf9876fcbe95ea715c40ddcfae_236370_1024x0_resize_q75_box.jpg 1024w&#34;
+			srcset=&#34;https://blog.crazyark.me/p/group-commit-with-direct-io-and-fsync/img/ext4_inode_hud9776bdf9876fcbe95ea715c40ddcfae_236370_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.me/p/group-commit-with-direct-io-and-fsync/img/ext4_inode_hud9776bdf9876fcbe95ea715c40ddcfae_236370_1024x0_resize_q75_box.jpg 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;ext4_inode&#34;&gt;
 	&lt;/a&gt;
@@ -1763,11 +1763,11 @@ Carl Lerche 尝试在 tokio 的 issue [4] 中提出了一个结构化并发的�
 			flex-grow: 140; 
 			flex-basis: 336px&#34;
 	&gt;
-	&lt;a href=&#34;https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/img/group_commit.jpg&#34; data-size=&#34;1764x1260&#34;&gt;
-		&lt;img src=&#34;https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/img/group_commit.jpg&#34;
+	&lt;a href=&#34;https://blog.crazyark.me/p/group-commit-with-direct-io-and-fsync/img/group_commit.jpg&#34; data-size=&#34;1764x1260&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.me/p/group-commit-with-direct-io-and-fsync/img/group_commit.jpg&#34;
 			width=&#34;1764&#34;
 			height=&#34;1260&#34;
-			srcset=&#34;https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/img/group_commit_hu4c558425e36484ceebf57c0d1c2e5033_237683_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/img/group_commit_hu4c558425e36484ceebf57c0d1c2e5033_237683_1024x0_resize_q75_box.jpg 1024w&#34;
+			srcset=&#34;https://blog.crazyark.me/p/group-commit-with-direct-io-and-fsync/img/group_commit_hu4c558425e36484ceebf57c0d1c2e5033_237683_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.me/p/group-commit-with-direct-io-and-fsync/img/group_commit_hu4c558425e36484ceebf57c0d1c2e5033_237683_1024x0_resize_q75_box.jpg 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;group commit&#34;&gt;
 	&lt;/a&gt;
@@ -1808,11 +1808,11 @@ Carl Lerche 尝试在 tokio 的 issue [4] 中提出了一个结构化并发的�
         </item>
         <item>
         <title>Raft on RocksDB -- 共享日志</title>
-        <link>https://blog.crazyark.xyz/p/raft-and-share-log/</link>
+        <link>https://blog.crazyark.me/p/raft-and-share-log/</link>
         <pubDate>Tue, 17 Aug 2021 00:00:00 +0000</pubDate>
         
-        <guid>https://blog.crazyark.xyz/p/raft-and-share-log/</guid>
-        <description>&lt;img src="https://blog.crazyark.xyz/p/raft-and-share-log/img/raft.jpg" alt="Featured image of post Raft on RocksDB -- 共享日志" /&gt;&lt;p&gt;自上次更新博客起已经有三年时间了，这期间经历了留学、毕业、工作等很多事情，个中滋味只有自己知道。博客重开，希望文笔和思路上能比以前进步一点点。同时因为学识有限，也希望各位大佬能不吝赐教。&lt;/p&gt;
+        <guid>https://blog.crazyark.me/p/raft-and-share-log/</guid>
+        <description>&lt;img src="https://blog.crazyark.me/p/raft-and-share-log/img/raft.jpg" alt="Featured image of post Raft on RocksDB -- 共享日志" /&gt;&lt;p&gt;自上次更新博客起已经有三年时间了，这期间经历了留学、毕业、工作等很多事情，个中滋味只有自己知道。博客重开，希望文笔和思路上能比以前进步一点点。同时因为学识有限，也希望各位大佬能不吝赐教。&lt;/p&gt;
 &lt;h2 id=&#34;背景&#34;&gt;背景&lt;/h2&gt;
 &lt;p&gt;上个月为了学习 rust 语言，参加了阿里云 ECS 团队举办的 CloudBuild 性能挑战赛，用 rust 实现一个聊天室服务器。因为 rust 不熟练初赛只提交了一次，居然也闯进复赛了，也挺有意思的。复赛题目要求服务要部署在三台机器上，同时提供完整的读写服务，且要求宕机一台不影响服务。看到题目后，我直观地想到了使用一致性协议让三台机器关于存储的数据达成一致就可。分布式系统中常用的一致性协议有 Paxos 和 Raft 等，其中 Raft 从原理上来说是一种特化的 Paxos，而且简单易懂。因此我最终决定采用 Raft + RocksDB 的方案进行实现。&lt;/p&gt;
 &lt;h2 id=&#34;问题&#34;&gt;问题&lt;/h2&gt;
@@ -1846,11 +1846,11 @@ Carl Lerche 尝试在 tokio 的 issue [4] 中提出了一个结构化并发的�
 			flex-grow: 148; 
 			flex-basis: 355px&#34;
 	&gt;
-	&lt;a href=&#34;https://blog.crazyark.xyz/p/raft-and-share-log/img/raft_on_rocksdb.jpg&#34; data-size=&#34;1454x982&#34;&gt;
-		&lt;img src=&#34;https://blog.crazyark.xyz/p/raft-and-share-log/img/raft_on_rocksdb.jpg&#34;
+	&lt;a href=&#34;https://blog.crazyark.me/p/raft-and-share-log/img/raft_on_rocksdb.jpg&#34; data-size=&#34;1454x982&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.me/p/raft-and-share-log/img/raft_on_rocksdb.jpg&#34;
 			width=&#34;1454&#34;
 			height=&#34;982&#34;
-			srcset=&#34;https://blog.crazyark.xyz/p/raft-and-share-log/img/raft_on_rocksdb_hu4c558425e36484ceebf57c0d1c2e5033_152789_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/raft-and-share-log/img/raft_on_rocksdb_hu4c558425e36484ceebf57c0d1c2e5033_152789_1024x0_resize_q75_box.jpg 1024w&#34;
+			srcset=&#34;https://blog.crazyark.me/p/raft-and-share-log/img/raft_on_rocksdb_hu4c558425e36484ceebf57c0d1c2e5033_152789_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.me/p/raft-and-share-log/img/raft_on_rocksdb_hu4c558425e36484ceebf57c0d1c2e5033_152789_1024x0_resize_q75_box.jpg 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;流程图&#34;&gt;
 	&lt;/a&gt;
@@ -1866,10 +1866,10 @@ Carl Lerche 尝试在 tokio 的 issue [4] 中提出了一个结构化并发的�
         </item>
         <item>
         <title>哈希表 -- 哈希冲突</title>
-        <link>https://blog.crazyark.xyz/p/hash-table-collision/</link>
+        <link>https://blog.crazyark.me/p/hash-table-collision/</link>
         <pubDate>Thu, 16 Aug 2018 14:55:23 +0800</pubDate>
         
-        <guid>https://blog.crazyark.xyz/p/hash-table-collision/</guid>
+        <guid>https://blog.crazyark.me/p/hash-table-collision/</guid>
         <description>&lt;h1 id=&#34;hash-table----collision&#34;&gt;Hash table &amp;ndash; Collision&lt;/h1&gt;
 &lt;p&gt;在计算机科学中，哈希表 (hash table) 是一个非常重要的数据结构，它帮助我们快速的进行插入和查询。理论上来说，在表中查询一次的耗时应该是 O(1) 的。这里假设大家对于哈希 (hash) 都已经了解，如果你以前没有接触过这个概念，这篇&lt;a class=&#34;link&#34; href=&#34;http://blog.thedigitalcatonline.com/blog/2018/04/06/introduction-to-hashing/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;文章&lt;/a&gt;或许是一个很好的开始。&lt;/p&gt;
@@ -2014,10 +2014,10 @@ Carl Lerche 尝试在 tokio 的 issue [4] 中提出了一个结构化并发的�
         </item>
         <item>
         <title>第四届天池中间件性能挑战赛感想</title>
-        <link>https://blog.crazyark.xyz/p/awrace-2018/</link>
+        <link>https://blog.crazyark.me/p/awrace-2018/</link>
         <pubDate>Wed, 01 Aug 2018 19:59:45 +0800</pubDate>
         
-        <guid>https://blog.crazyark.xyz/p/awrace-2018/</guid>
+        <guid>https://blog.crazyark.me/p/awrace-2018/</guid>
         <description>&lt;p&gt;从报名比赛开始到现在将近四个月了，终于告一段落，最终拿到了季军也很开心。这三个月中我学到了很多有用的工程知识，顺便把 C++ 又摸熟了。初赛代码实在写太丑就不放出来了，复赛的代码托管在 github 上：&lt;/p&gt;
 &lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://github.com/arkbriar/awrace2018_messagestore&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;https://github.com/arkbriar/awrace2018_messagestore&lt;/a&gt;&lt;/p&gt;
@@ -2045,11 +2045,11 @@ Carl Lerche 尝试在 tokio 的 issue [4] 中提出了一个结构化并发的�
 			flex-grow: 133; 
 			flex-basis: 320px&#34;
 	&gt;
-	&lt;a href=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321002017148.jpg&#34; data-size=&#34;1280x960&#34;&gt;
-		&lt;img src=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321002017148.jpg&#34;
+	&lt;a href=&#34;https://blog.crazyark.me/p/awrace-2018/img/15321002017148.jpg&#34; data-size=&#34;1280x960&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.me/p/awrace-2018/img/15321002017148.jpg&#34;
 			width=&#34;1280&#34;
 			height=&#34;960&#34;
-			srcset=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321002017148_hua5afa8ce71308f91ef79d2bfc60f7366_105122_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/awrace-2018/img/15321002017148_hua5afa8ce71308f91ef79d2bfc60f7366_105122_1024x0_resize_q75_box.jpg 1024w&#34;
+			srcset=&#34;https://blog.crazyark.me/p/awrace-2018/img/15321002017148_hua5afa8ce71308f91ef79d2bfc60f7366_105122_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.me/p/awrace-2018/img/15321002017148_hua5afa8ce71308f91ef79d2bfc60f7366_105122_1024x0_resize_q75_box.jpg 1024w&#34;
 			loading=&#34;lazy&#34;
 			&gt;
 	&lt;/a&gt;
@@ -2063,11 +2063,11 @@ Carl Lerche 尝试在 tokio 的 issue [4] 中提出了一个结构化并发的�
 			flex-grow: 133; 
 			flex-basis: 320px&#34;
 	&gt;
-	&lt;a href=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321002990709.jpg&#34; data-size=&#34;1502x1126&#34;&gt;
-		&lt;img src=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321002990709.jpg&#34;
+	&lt;a href=&#34;https://blog.crazyark.me/p/awrace-2018/img/15321002990709.jpg&#34; data-size=&#34;1502x1126&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.me/p/awrace-2018/img/15321002990709.jpg&#34;
 			width=&#34;1502&#34;
 			height=&#34;1126&#34;
-			srcset=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321002990709_hu0a5db44a40f1a46ca5b546777e717e36_117478_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/awrace-2018/img/15321002990709_hu0a5db44a40f1a46ca5b546777e717e36_117478_1024x0_resize_q75_box.jpg 1024w&#34;
+			srcset=&#34;https://blog.crazyark.me/p/awrace-2018/img/15321002990709_hu0a5db44a40f1a46ca5b546777e717e36_117478_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.me/p/awrace-2018/img/15321002990709_hu0a5db44a40f1a46ca5b546777e717e36_117478_1024x0_resize_q75_box.jpg 1024w&#34;
 			loading=&#34;lazy&#34;
 			&gt;
 	&lt;/a&gt;
@@ -2123,11 +2123,11 @@ Carl Lerche 尝试在 tokio 的 issue [4] 中提出了一个结构化并发的�
 			flex-grow: 215; 
 			flex-basis: 516px&#34;
 	&gt;
-	&lt;a href=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321022399044.jpg&#34; data-size=&#34;904x420&#34;&gt;
-		&lt;img src=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321022399044.jpg&#34;
+	&lt;a href=&#34;https://blog.crazyark.me/p/awrace-2018/img/15321022399044.jpg&#34; data-size=&#34;904x420&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.me/p/awrace-2018/img/15321022399044.jpg&#34;
 			width=&#34;904&#34;
 			height=&#34;420&#34;
-			srcset=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321022399044_hu4bb4523a07eff2093e6598edd29d0d43_98681_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/awrace-2018/img/15321022399044_hu4bb4523a07eff2093e6598edd29d0d43_98681_1024x0_resize_q75_box.jpg 1024w&#34;
+			srcset=&#34;https://blog.crazyark.me/p/awrace-2018/img/15321022399044_hu4bb4523a07eff2093e6598edd29d0d43_98681_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.me/p/awrace-2018/img/15321022399044_hu4bb4523a07eff2093e6598edd29d0d43_98681_1024x0_resize_q75_box.jpg 1024w&#34;
 			loading=&#34;lazy&#34;
 			&gt;
 	&lt;/a&gt;
@@ -2140,11 +2140,11 @@ Carl Lerche 尝试在 tokio 的 issue [4] 中提出了一个结构化并发的�
 			flex-grow: 338; 
 			flex-basis: 811px&#34;
 	&gt;
-	&lt;a href=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321022432192.jpg&#34; data-size=&#34;954x282&#34;&gt;
-		&lt;img src=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321022432192.jpg&#34;
+	&lt;a href=&#34;https://blog.crazyark.me/p/awrace-2018/img/15321022432192.jpg&#34; data-size=&#34;954x282&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.me/p/awrace-2018/img/15321022432192.jpg&#34;
 			width=&#34;954&#34;
 			height=&#34;282&#34;
-			srcset=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321022432192_hu1c06df13f10d3387ac2ac27db6f6fc34_74387_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/awrace-2018/img/15321022432192_hu1c06df13f10d3387ac2ac27db6f6fc34_74387_1024x0_resize_q75_box.jpg 1024w&#34;
+			srcset=&#34;https://blog.crazyark.me/p/awrace-2018/img/15321022432192_hu1c06df13f10d3387ac2ac27db6f6fc34_74387_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.me/p/awrace-2018/img/15321022432192_hu1c06df13f10d3387ac2ac27db6f6fc34_74387_1024x0_resize_q75_box.jpg 1024w&#34;
 			loading=&#34;lazy&#34;
 			&gt;
 	&lt;/a&gt;
@@ -2181,11 +2181,11 @@ Carl Lerche 尝试在 tokio 的 issue [4] 中提出了一个结构化并发的�
 			flex-grow: 82; 
 			flex-basis: 198px&#34;
 	&gt;
-	&lt;a href=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321031573324.jpg&#34; data-size=&#34;801x967&#34;&gt;
-		&lt;img src=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321031573324.jpg&#34;
+	&lt;a href=&#34;https://blog.crazyark.me/p/awrace-2018/img/15321031573324.jpg&#34; data-size=&#34;801x967&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.me/p/awrace-2018/img/15321031573324.jpg&#34;
 			width=&#34;801&#34;
 			height=&#34;967&#34;
-			srcset=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321031573324_huea8623adfd433ef5c976570e570bcfa2_160898_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/awrace-2018/img/15321031573324_huea8623adfd433ef5c976570e570bcfa2_160898_1024x0_resize_q75_box.jpg 1024w&#34;
+			srcset=&#34;https://blog.crazyark.me/p/awrace-2018/img/15321031573324_huea8623adfd433ef5c976570e570bcfa2_160898_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.me/p/awrace-2018/img/15321031573324_huea8623adfd433ef5c976570e570bcfa2_160898_1024x0_resize_q75_box.jpg 1024w&#34;
 			loading=&#34;lazy&#34;
 			&gt;
 	&lt;/a&gt;
@@ -2201,11 +2201,11 @@ Carl Lerche 尝试在 tokio 的 issue [4] 中提出了一个结构化并发的�
 			flex-grow: 151; 
 			flex-basis: 362px&#34;
 	&gt;
-	&lt;a href=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321036720838.jpg&#34; data-size=&#34;810x536&#34;&gt;
-		&lt;img src=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321036720838.jpg&#34;
+	&lt;a href=&#34;https://blog.crazyark.me/p/awrace-2018/img/15321036720838.jpg&#34; data-size=&#34;810x536&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.me/p/awrace-2018/img/15321036720838.jpg&#34;
 			width=&#34;810&#34;
 			height=&#34;536&#34;
-			srcset=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321036720838_hu7aa2b71d568a824992a6f317ef0fc88d_121802_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/awrace-2018/img/15321036720838_hu7aa2b71d568a824992a6f317ef0fc88d_121802_1024x0_resize_q75_box.jpg 1024w&#34;
+			srcset=&#34;https://blog.crazyark.me/p/awrace-2018/img/15321036720838_hu7aa2b71d568a824992a6f317ef0fc88d_121802_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.me/p/awrace-2018/img/15321036720838_hu7aa2b71d568a824992a6f317ef0fc88d_121802_1024x0_resize_q75_box.jpg 1024w&#34;
 			loading=&#34;lazy&#34;
 			&gt;
 	&lt;/a&gt;
@@ -2219,11 +2219,11 @@ Carl Lerche 尝试在 tokio 的 issue [4] 中提出了一个结构化并发的�
 			flex-grow: 316; 
 			flex-basis: 759px&#34;
 	&gt;
-	&lt;a href=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321037598597.jpg&#34; data-size=&#34;1906x602&#34;&gt;
-		&lt;img src=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321037598597.jpg&#34;
+	&lt;a href=&#34;https://blog.crazyark.me/p/awrace-2018/img/15321037598597.jpg&#34; data-size=&#34;1906x602&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.me/p/awrace-2018/img/15321037598597.jpg&#34;
 			width=&#34;1906&#34;
 			height=&#34;602&#34;
-			srcset=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321037598597_hu24a85cf152ae3fa35fb59282832f4ac6_314186_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/awrace-2018/img/15321037598597_hu24a85cf152ae3fa35fb59282832f4ac6_314186_1024x0_resize_q75_box.jpg 1024w&#34;
+			srcset=&#34;https://blog.crazyark.me/p/awrace-2018/img/15321037598597_hu24a85cf152ae3fa35fb59282832f4ac6_314186_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.me/p/awrace-2018/img/15321037598597_hu24a85cf152ae3fa35fb59282832f4ac6_314186_1024x0_resize_q75_box.jpg 1024w&#34;
 			loading=&#34;lazy&#34;
 			&gt;
 	&lt;/a&gt;
@@ -2252,11 +2252,11 @@ Carl Lerche 尝试在 tokio 的 issue [4] 中提出了一个结构化并发的�
 			flex-grow: 133; 
 			flex-basis: 319px&#34;
 	&gt;
-	&lt;a href=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321040869218.jpg&#34; data-size=&#34;1390x1044&#34;&gt;
-		&lt;img src=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321040869218.jpg&#34;
+	&lt;a href=&#34;https://blog.crazyark.me/p/awrace-2018/img/15321040869218.jpg&#34; data-size=&#34;1390x1044&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.me/p/awrace-2018/img/15321040869218.jpg&#34;
 			width=&#34;1390&#34;
 			height=&#34;1044&#34;
-			srcset=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321040869218_huacd3f5dc60665b25a2f31db973dbb916_102813_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/awrace-2018/img/15321040869218_huacd3f5dc60665b25a2f31db973dbb916_102813_1024x0_resize_q75_box.jpg 1024w&#34;
+			srcset=&#34;https://blog.crazyark.me/p/awrace-2018/img/15321040869218_huacd3f5dc60665b25a2f31db973dbb916_102813_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.me/p/awrace-2018/img/15321040869218_huacd3f5dc60665b25a2f31db973dbb916_102813_1024x0_resize_q75_box.jpg 1024w&#34;
 			loading=&#34;lazy&#34;
 			&gt;
 	&lt;/a&gt;
@@ -2270,11 +2270,11 @@ Carl Lerche 尝试在 tokio 的 issue [4] 中提出了一个结构化并发的�
 			flex-grow: 133; 
 			flex-basis: 319px&#34;
 	&gt;
-	&lt;a href=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321040994886.jpg&#34; data-size=&#34;1578x1184&#34;&gt;
-		&lt;img src=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321040994886.jpg&#34;
+	&lt;a href=&#34;https://blog.crazyark.me/p/awrace-2018/img/15321040994886.jpg&#34; data-size=&#34;1578x1184&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.me/p/awrace-2018/img/15321040994886.jpg&#34;
 			width=&#34;1578&#34;
 			height=&#34;1184&#34;
-			srcset=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321040994886_huacd3f5dc60665b25a2f31db973dbb916_76700_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/awrace-2018/img/15321040994886_huacd3f5dc60665b25a2f31db973dbb916_76700_1024x0_resize_q75_box.jpg 1024w&#34;
+			srcset=&#34;https://blog.crazyark.me/p/awrace-2018/img/15321040994886_huacd3f5dc60665b25a2f31db973dbb916_76700_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.me/p/awrace-2018/img/15321040994886_huacd3f5dc60665b25a2f31db973dbb916_76700_1024x0_resize_q75_box.jpg 1024w&#34;
 			loading=&#34;lazy&#34;
 			&gt;
 	&lt;/a&gt;
@@ -2293,11 +2293,11 @@ Size 的计算采用变长编码：&lt;/p&gt;
 			flex-grow: 133; 
 			flex-basis: 320px&#34;
 	&gt;
-	&lt;a href=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321041984763.jpg&#34; data-size=&#34;1582x1186&#34;&gt;
-		&lt;img src=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321041984763.jpg&#34;
+	&lt;a href=&#34;https://blog.crazyark.me/p/awrace-2018/img/15321041984763.jpg&#34; data-size=&#34;1582x1186&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.me/p/awrace-2018/img/15321041984763.jpg&#34;
 			width=&#34;1582&#34;
 			height=&#34;1186&#34;
-			srcset=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321041984763_hu3b7b820f6188ac43dd748418d36a402e_116922_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/awrace-2018/img/15321041984763_hu3b7b820f6188ac43dd748418d36a402e_116922_1024x0_resize_q75_box.jpg 1024w&#34;
+			srcset=&#34;https://blog.crazyark.me/p/awrace-2018/img/15321041984763_hu3b7b820f6188ac43dd748418d36a402e_116922_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.me/p/awrace-2018/img/15321041984763_hu3b7b820f6188ac43dd748418d36a402e_116922_1024x0_resize_q75_box.jpg 1024w&#34;
 			loading=&#34;lazy&#34;
 			&gt;
 	&lt;/a&gt;
@@ -2313,11 +2313,11 @@ Size 的计算采用变长编码：&lt;/p&gt;
 			flex-grow: 133; 
 			flex-basis: 320px&#34;
 	&gt;
-	&lt;a href=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321043391182.jpg&#34; data-size=&#34;1308x980&#34;&gt;
-		&lt;img src=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321043391182.jpg&#34;
+	&lt;a href=&#34;https://blog.crazyark.me/p/awrace-2018/img/15321043391182.jpg&#34; data-size=&#34;1308x980&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.me/p/awrace-2018/img/15321043391182.jpg&#34;
 			width=&#34;1308&#34;
 			height=&#34;980&#34;
-			srcset=&#34;https://blog.crazyark.xyz/p/awrace-2018/img/15321043391182_huc5d40804f4c6da7eecc544ca84e32f82_156135_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/awrace-2018/img/15321043391182_huc5d40804f4c6da7eecc544ca84e32f82_156135_1024x0_resize_q75_box.jpg 1024w&#34;
+			srcset=&#34;https://blog.crazyark.me/p/awrace-2018/img/15321043391182_huc5d40804f4c6da7eecc544ca84e32f82_156135_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.me/p/awrace-2018/img/15321043391182_huc5d40804f4c6da7eecc544ca84e32f82_156135_1024x0_resize_q75_box.jpg 1024w&#34;
 			loading=&#34;lazy&#34;
 			&gt;
 	&lt;/a&gt;
@@ -2456,10 +2456,10 @@ Size 的计算采用变长编码：&lt;/p&gt;
         </item>
         <item>
         <title>Linux IO 多路复用 —— Epoll</title>
-        <link>https://blog.crazyark.xyz/p/epoll/</link>
+        <link>https://blog.crazyark.me/p/epoll/</link>
         <pubDate>Mon, 16 Apr 2018 19:51:21 +0800</pubDate>
         
-        <guid>https://blog.crazyark.xyz/p/epoll/</guid>
+        <guid>https://blog.crazyark.me/p/epoll/</guid>
         <description>&lt;p&gt;Epoll 是 Linux 平台上独有的一组编程接口，用于监听多个文件描述符上的 IO 事件。Epoll 相对于 select/poll 的优势在于即使监听了大量的文件描述符，性能也非常好。Epoll API 支持两种监听方式：edge-triggered (EPOLLET) 和 level_triggered (default)。&lt;/p&gt;
 &lt;p&gt;Edge-triggered 模式下，只有当文件描述符上产生事件时，才会被 epoll_wait 返回。例如，监听一个 socket，假如第一次 epoll_wait 返回了该 sock，可读取为 2 字节，但是只读取了 1 字节。那么下一次 epoll_wait 将不会返回该文件描述符了。换句话说，缓冲区中还有数据可读不是一个事件。&lt;/p&gt;
 &lt;p&gt;Level-triggered 不同，只要该 sock 还是可读的，将持续返回。&lt;/p&gt;
@@ -2694,10 +2694,10 @@ Size 的计算采用变长编码：&lt;/p&gt;
         </item>
         <item>
         <title>布隆过滤器 (Bloom Filter)</title>
-        <link>https://blog.crazyark.xyz/p/bloom-filter/</link>
+        <link>https://blog.crazyark.me/p/bloom-filter/</link>
         <pubDate>Mon, 16 Apr 2018 13:02:27 +0800</pubDate>
         
-        <guid>https://blog.crazyark.xyz/p/bloom-filter/</guid>
+        <guid>https://blog.crazyark.me/p/bloom-filter/</guid>
         <description>&lt;p&gt;布隆过滤器 (Bloom Filter) 是一个空间高效的&lt;strong&gt;概率&lt;/strong&gt;数据结构，它能够用来测试是否一个元素在一个集合中。布隆过滤器存在着 false positive (返回存在，其实不存在），但是不存在 false negative (返回不存在，其实存在)。集合中的元素越多，false positive 的概率就越高。&lt;/p&gt;
 &lt;h3 id=&#34;结构描述&#34;&gt;结构描述&lt;/h3&gt;
 &lt;p&gt;布隆过滤器的结构非常简单，即一个长度为 m 的比特数组，初始化都为0。然后，布隆过滤器需要有 k 个不同的哈希函数，每一个都能将元素映射到 [0, m) 中的一个数字，也就是数组上的一个位置，并呈现均匀分布。&lt;/p&gt;
@@ -2710,11 +2710,11 @@ Size 的计算采用变长编码：&lt;/p&gt;
 			flex-grow: 278; 
 			flex-basis: 668px&#34;
 	&gt;
-	&lt;a href=&#34;https://blog.crazyark.xyz/p/bloom-filter/img/15238556159607.png&#34; data-size=&#34;649x233&#34;&gt;
-		&lt;img src=&#34;https://blog.crazyark.xyz/p/bloom-filter/img/15238556159607.png&#34;
+	&lt;a href=&#34;https://blog.crazyark.me/p/bloom-filter/img/15238556159607.png&#34; data-size=&#34;649x233&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.me/p/bloom-filter/img/15238556159607.png&#34;
 			width=&#34;649&#34;
 			height=&#34;233&#34;
-			srcset=&#34;https://blog.crazyark.xyz/p/bloom-filter/img/15238556159607_hu41c2302f1d9ff2cc9a1d82f9162d2f29_30563_480x0_resize_box_3.png 480w, https://blog.crazyark.xyz/p/bloom-filter/img/15238556159607_hu41c2302f1d9ff2cc9a1d82f9162d2f29_30563_1024x0_resize_box_3.png 1024w&#34;
+			srcset=&#34;https://blog.crazyark.me/p/bloom-filter/img/15238556159607_hu41c2302f1d9ff2cc9a1d82f9162d2f29_30563_480x0_resize_box_3.png 480w, https://blog.crazyark.me/p/bloom-filter/img/15238556159607_hu41c2302f1d9ff2cc9a1d82f9162d2f29_30563_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			&gt;
 	&lt;/a&gt;
@@ -2760,10 +2760,10 @@ Size 的计算采用变长编码：&lt;/p&gt;
         </item>
         <item>
         <title>最长回文子串 Manacher 算法 (Longest Palindromic Substring -- Manacher&#39;s Algorithm)</title>
-        <link>https://blog.crazyark.xyz/p/manachers-algorithm/</link>
+        <link>https://blog.crazyark.me/p/manachers-algorithm/</link>
         <pubDate>Fri, 13 Apr 2018 01:50:51 +0800</pubDate>
         
-        <guid>https://blog.crazyark.xyz/p/manachers-algorithm/</guid>
+        <guid>https://blog.crazyark.me/p/manachers-algorithm/</guid>
         <description>&lt;p&gt;Emm，这篇其实在 2017 年 9 月就打算写了，到现在才填上，再不填又要忘记了&amp;hellip;&lt;/p&gt;
 &lt;p&gt;字符串界的明星回文串，总是有各种稀奇古怪难搞的题目，比如说这道最长回文子串 (Longest Palindromic Substring)，显而易见的算法复杂度是 $O(n^2)$，而这个 Manacher&amp;rsquo;s Algorithm 则可以在 $O(n)$ 的时间给出答案。&lt;/p&gt;
 &lt;p&gt;我们用一个简单但是不错的例子来解释这个算法: &amp;ldquo;abababa&amp;rdquo;，它的最长回文子串就是自己。&lt;/p&gt;
@@ -2779,11 +2779,11 @@ Size 的计算采用变长编码：&lt;/p&gt;
 			flex-grow: 309; 
 			flex-basis: 742px&#34;
 	&gt;
-	&lt;a href=&#34;https://blog.crazyark.xyz/p/manachers-algorithm/img/15235560287436.jpg&#34; data-size=&#34;551x178&#34;&gt;
-		&lt;img src=&#34;https://blog.crazyark.xyz/p/manachers-algorithm/img/15235560287436.jpg&#34;
+	&lt;a href=&#34;https://blog.crazyark.me/p/manachers-algorithm/img/15235560287436.jpg&#34; data-size=&#34;551x178&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.me/p/manachers-algorithm/img/15235560287436.jpg&#34;
 			width=&#34;551&#34;
 			height=&#34;178&#34;
-			srcset=&#34;https://blog.crazyark.xyz/p/manachers-algorithm/img/15235560287436_hu369a0e3579d052bdfcd0cbdbe8116bdb_38464_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/manachers-algorithm/img/15235560287436_hu369a0e3579d052bdfcd0cbdbe8116bdb_38464_1024x0_resize_q75_box.jpg 1024w&#34;
+			srcset=&#34;https://blog.crazyark.me/p/manachers-algorithm/img/15235560287436_hu369a0e3579d052bdfcd0cbdbe8116bdb_38464_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.me/p/manachers-algorithm/img/15235560287436_hu369a0e3579d052bdfcd0cbdbe8116bdb_38464_1024x0_resize_q75_box.jpg 1024w&#34;
 			loading=&#34;lazy&#34;
 			&gt;
 	&lt;/a&gt;
@@ -2858,10 +2858,10 @@ Size 的计算采用变长编码：&lt;/p&gt;
         </item>
         <item>
         <title>博弈论-公平组合游戏 (Game Theory -- Impartial Combinatorial Games)</title>
-        <link>https://blog.crazyark.xyz/p/game-theory/</link>
+        <link>https://blog.crazyark.me/p/game-theory/</link>
         <pubDate>Wed, 11 Oct 2017 00:40:08 +0800</pubDate>
         
-        <guid>https://blog.crazyark.xyz/p/game-theory/</guid>
+        <guid>https://blog.crazyark.me/p/game-theory/</guid>
         <description>&lt;p&gt;上回说到接下来都是图算法&amp;hellip; 这个，我食个言 🙃&lt;/p&gt;
 &lt;p&gt;做题目碰到了博弈论，对这方面我真是完全不了解，还是要学习一个。本篇文章主要介绍组合游戏中的 Impartial Combinatorial Games，结构和内容均参考自 CMU Thomas S. Ferguson 教授的博弈论讲稿，结合我自己的思考。&lt;/p&gt;
 &lt;h3 id=&#34;take-away-games&#34;&gt;Take-Away Games&lt;/h3&gt;
@@ -3045,11 +3045,11 @@ $F(x) = F(x_1, &amp;hellip;, x_n) = F_1(x_1) \times {x_2} \times \cdots {x_n} \c
 			flex-grow: 96; 
 			flex-basis: 231px&#34;
 	&gt;
-	&lt;a href=&#34;https://blog.crazyark.xyz/p/game-theory/img/bamboo_stalks.png&#34; data-size=&#34;475x492&#34;&gt;
-		&lt;img src=&#34;https://blog.crazyark.xyz/p/game-theory/img/bamboo_stalks.png&#34;
+	&lt;a href=&#34;https://blog.crazyark.me/p/game-theory/img/bamboo_stalks.png&#34; data-size=&#34;475x492&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.me/p/game-theory/img/bamboo_stalks.png&#34;
 			width=&#34;475&#34;
 			height=&#34;492&#34;
-			srcset=&#34;https://blog.crazyark.xyz/p/game-theory/img/bamboo_stalks_hu6954f238b34429d4da7526d1df236f80_13006_480x0_resize_box_3.png 480w, https://blog.crazyark.xyz/p/game-theory/img/bamboo_stalks_hu6954f238b34429d4da7526d1df236f80_13006_1024x0_resize_box_3.png 1024w&#34;
+			srcset=&#34;https://blog.crazyark.me/p/game-theory/img/bamboo_stalks_hu6954f238b34429d4da7526d1df236f80_13006_480x0_resize_box_3.png 480w, https://blog.crazyark.me/p/game-theory/img/bamboo_stalks_hu6954f238b34429d4da7526d1df236f80_13006_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;Bamboo Stalks&#34;&gt;
 	&lt;/a&gt;
@@ -3068,11 +3068,11 @@ $F(x) = F(x_1, &amp;hellip;, x_n) = F_1(x_1) \times {x_2} \times \cdots {x_n} \c
 			flex-grow: 268; 
 			flex-basis: 644px&#34;
 	&gt;
-	&lt;a href=&#34;https://blog.crazyark.xyz/p/game-theory/img/green_hackenbush_on_trees.png&#34; data-size=&#34;1367x509&#34;&gt;
-		&lt;img src=&#34;https://blog.crazyark.xyz/p/game-theory/img/green_hackenbush_on_trees.png&#34;
+	&lt;a href=&#34;https://blog.crazyark.me/p/game-theory/img/green_hackenbush_on_trees.png&#34; data-size=&#34;1367x509&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.me/p/game-theory/img/green_hackenbush_on_trees.png&#34;
 			width=&#34;1367&#34;
 			height=&#34;509&#34;
-			srcset=&#34;https://blog.crazyark.xyz/p/game-theory/img/green_hackenbush_on_trees_hu66d277dbc89a2d79fdbc23ae5e3a2a04_60086_480x0_resize_box_3.png 480w, https://blog.crazyark.xyz/p/game-theory/img/green_hackenbush_on_trees_hu66d277dbc89a2d79fdbc23ae5e3a2a04_60086_1024x0_resize_box_3.png 1024w&#34;
+			srcset=&#34;https://blog.crazyark.me/p/game-theory/img/green_hackenbush_on_trees_hu66d277dbc89a2d79fdbc23ae5e3a2a04_60086_480x0_resize_box_3.png 480w, https://blog.crazyark.me/p/game-theory/img/green_hackenbush_on_trees_hu66d277dbc89a2d79fdbc23ae5e3a2a04_60086_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;Green Hackenbush on Trees&#34;&gt;
 	&lt;/a&gt;
@@ -3091,11 +3091,11 @@ $F(x) = F(x_1, &amp;hellip;, x_n) = F_1(x_1) \times {x_2} \times \cdots {x_n} \c
 			flex-grow: 214; 
 			flex-basis: 514px&#34;
 	&gt;
-	&lt;a href=&#34;https://blog.crazyark.xyz/p/game-theory/img/colon_principle.png&#34; data-size=&#34;1409x657&#34;&gt;
-		&lt;img src=&#34;https://blog.crazyark.xyz/p/game-theory/img/colon_principle.png&#34;
+	&lt;a href=&#34;https://blog.crazyark.me/p/game-theory/img/colon_principle.png&#34; data-size=&#34;1409x657&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.me/p/game-theory/img/colon_principle.png&#34;
 			width=&#34;1409&#34;
 			height=&#34;657&#34;
-			srcset=&#34;https://blog.crazyark.xyz/p/game-theory/img/colon_principle_hu750eba6a4ce35f55e74ad823081f0332_55132_480x0_resize_box_3.png 480w, https://blog.crazyark.xyz/p/game-theory/img/colon_principle_hu750eba6a4ce35f55e74ad823081f0332_55132_1024x0_resize_box_3.png 1024w&#34;
+			srcset=&#34;https://blog.crazyark.me/p/game-theory/img/colon_principle_hu750eba6a4ce35f55e74ad823081f0332_55132_480x0_resize_box_3.png 480w, https://blog.crazyark.me/p/game-theory/img/colon_principle_hu750eba6a4ce35f55e74ad823081f0332_55132_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;Colon Principle&#34;&gt;
 	&lt;/a&gt;
@@ -3113,11 +3113,11 @@ $F(x) = F(x_1, &amp;hellip;, x_n) = F_1(x_1) \times {x_2} \times \cdots {x_n} \c
 			flex-grow: 251; 
 			flex-basis: 603px&#34;
 	&gt;
-	&lt;a href=&#34;https://blog.crazyark.xyz/p/game-theory/img/arbitrary_green_hackenbush.png&#34; data-size=&#34;1374x546&#34;&gt;
-		&lt;img src=&#34;https://blog.crazyark.xyz/p/game-theory/img/arbitrary_green_hackenbush.png&#34;
+	&lt;a href=&#34;https://blog.crazyark.me/p/game-theory/img/arbitrary_green_hackenbush.png&#34; data-size=&#34;1374x546&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.me/p/game-theory/img/arbitrary_green_hackenbush.png&#34;
 			width=&#34;1374&#34;
 			height=&#34;546&#34;
-			srcset=&#34;https://blog.crazyark.xyz/p/game-theory/img/arbitrary_green_hackenbush_hu20c83af8058c6bce94bac3d9e87e1226_53980_480x0_resize_box_3.png 480w, https://blog.crazyark.xyz/p/game-theory/img/arbitrary_green_hackenbush_hu20c83af8058c6bce94bac3d9e87e1226_53980_1024x0_resize_box_3.png 1024w&#34;
+			srcset=&#34;https://blog.crazyark.me/p/game-theory/img/arbitrary_green_hackenbush_hu20c83af8058c6bce94bac3d9e87e1226_53980_480x0_resize_box_3.png 480w, https://blog.crazyark.me/p/game-theory/img/arbitrary_green_hackenbush_hu20c83af8058c6bce94bac3d9e87e1226_53980_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;Arbitrary Green Hackenbush&#34;&gt;
 	&lt;/a&gt;
@@ -3136,11 +3136,11 @@ $F(x) = F(x_1, &amp;hellip;, x_n) = F_1(x_1) \times {x_2} \times \cdots {x_n} \c
 			flex-grow: 648; 
 			flex-basis: 1556px&#34;
 	&gt;
-	&lt;a href=&#34;https://blog.crazyark.xyz/p/game-theory/img/fusion_principle_ex1.png&#34; data-size=&#34;1271x196&#34;&gt;
-		&lt;img src=&#34;https://blog.crazyark.xyz/p/game-theory/img/fusion_principle_ex1.png&#34;
+	&lt;a href=&#34;https://blog.crazyark.me/p/game-theory/img/fusion_principle_ex1.png&#34; data-size=&#34;1271x196&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.me/p/game-theory/img/fusion_principle_ex1.png&#34;
 			width=&#34;1271&#34;
 			height=&#34;196&#34;
-			srcset=&#34;https://blog.crazyark.xyz/p/game-theory/img/fusion_principle_ex1_hude38f068e013fc66183009c5b4503194_28795_480x0_resize_box_3.png 480w, https://blog.crazyark.xyz/p/game-theory/img/fusion_principle_ex1_hude38f068e013fc66183009c5b4503194_28795_1024x0_resize_box_3.png 1024w&#34;
+			srcset=&#34;https://blog.crazyark.me/p/game-theory/img/fusion_principle_ex1_hude38f068e013fc66183009c5b4503194_28795_480x0_resize_box_3.png 480w, https://blog.crazyark.me/p/game-theory/img/fusion_principle_ex1_hude38f068e013fc66183009c5b4503194_28795_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;Fusion Principle Example&#34;&gt;
 	&lt;/a&gt;
@@ -3176,10 +3176,10 @@ $F(x) = F(x_1, &amp;hellip;, x_n) = F_1(x_1) \times {x_2} \times \cdots {x_n} \c
         </item>
         <item>
         <title>二部图的最大匹配 (Maximum Matching in Bipartite Graph)</title>
-        <link>https://blog.crazyark.xyz/p/maximum-matching-in-bipartite-graph/</link>
+        <link>https://blog.crazyark.me/p/maximum-matching-in-bipartite-graph/</link>
         <pubDate>Tue, 26 Sep 2017 22:26:08 +0800</pubDate>
         
-        <guid>https://blog.crazyark.xyz/p/maximum-matching-in-bipartite-graph/</guid>
+        <guid>https://blog.crazyark.me/p/maximum-matching-in-bipartite-graph/</guid>
         <description>&lt;p&gt;上几篇博文主要是关于范围更新和范围查询的几个数据结构，接下去的主题是图论和图算法，希望能够学习和回忆起大部分图算法。&lt;/p&gt;
 &lt;p&gt;今天遇到一个问题，可以转化成二部图(bipartite graph)上的完美匹配的存在性问题，我们先来看一下完美匹配的理论，Hall&amp;rsquo;s Marriage theorem；然后介绍两个算法，用于解决完美匹配的超集——最大匹配问题。&lt;/p&gt;
 &lt;h3 id=&#34;halls-marriage-theorem&#34;&gt;Hall&amp;rsquo;s Marriage Theorem&lt;/h3&gt;
@@ -3536,10 +3536,10 @@ function Hopcroft-Karp
         </item>
         <item>
         <title>稀疏表和并行二分查找 (Sparse Table &amp; Parallel Binary Search)</title>
-        <link>https://blog.crazyark.xyz/p/hourrank23/</link>
+        <link>https://blog.crazyark.me/p/hourrank23/</link>
         <pubDate>Sun, 10 Sep 2017 01:06:11 +0800</pubDate>
         
-        <guid>https://blog.crazyark.xyz/p/hourrank23/</guid>
+        <guid>https://blog.crazyark.me/p/hourrank23/</guid>
         <description>&lt;p&gt;不刷题不知道自己菜，越刷题越发现自己🙄 —— 记 HourRank23 被虐。&lt;/p&gt;
 &lt;h3 id=&#34;sparse-table&#34;&gt;Sparse Table&lt;/h3&gt;
 &lt;p&gt;还记得上两篇线段树和BIT都讲到了区间查找的问题，我们来回忆一下。&lt;/p&gt;
@@ -4047,10 +4047,10 @@ So what Parallel Binary Search does is move one step down in N binary search tre
         </item>
         <item>
         <title>二叉索引树/树状数组 (Binary Indexed Tree)</title>
-        <link>https://blog.crazyark.xyz/p/binary-indexed-tree/</link>
+        <link>https://blog.crazyark.me/p/binary-indexed-tree/</link>
         <pubDate>Fri, 08 Sep 2017 22:23:50 +0800</pubDate>
         
-        <guid>https://blog.crazyark.xyz/p/binary-indexed-tree/</guid>
+        <guid>https://blog.crazyark.me/p/binary-indexed-tree/</guid>
         <description>&lt;p&gt;Binary Indexed Tree/Fenwick tree 的树构成方式我一直很疑惑，总是似懂非懂。现在终于弄清楚了它的节点的父子关系，记录下来防止忘记。&lt;/p&gt;
 &lt;h3 id=&#34;binary-indexed-tree&#34;&gt;Binary Indexed Tree&lt;/h3&gt;
 &lt;p&gt;BIT 通常用于存储前缀和，或者存储数组本身(用前缀和trick)。BIT 用一个数组来表示树，空间复杂度为 O(n)。BIT 支持两个操作，update和query，用于单点更新和前缀和查询，它们的时间复杂度都为严格的 O(lgn)。&lt;/p&gt;
@@ -4311,10 +4311,10 @@ So what Parallel Binary Search does is move one step down in N binary search tre
         </item>
         <item>
         <title>线段树 (Segment Tree)</title>
-        <link>https://blog.crazyark.xyz/p/segment-tree/</link>
+        <link>https://blog.crazyark.me/p/segment-tree/</link>
         <pubDate>Fri, 08 Sep 2017 12:58:11 +0800</pubDate>
         
-        <guid>https://blog.crazyark.xyz/p/segment-tree/</guid>
+        <guid>https://blog.crazyark.me/p/segment-tree/</guid>
         <description>&lt;p&gt;本篇为WCIPEG上关于SegmentTree的翻译稿，除了删去了几个小节，其余行文结构将完全一致。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;线段树&lt;/strong&gt;是一种非常灵活的数据结构，它可以帮助我们高效地完成对底层数组区间查询或是修改。顾名思义，线段树可以被想象成底层数组区间构成的一棵树，它的基本思想是分治。&lt;/p&gt;
 &lt;h3 id=&#34;motivation&#34;&gt;Motivation&lt;/h3&gt;
@@ -4348,11 +4348,11 @@ So what Parallel Binary Search does is move one step down in N binary search tre
 			flex-grow: 196; 
 			flex-basis: 471px&#34;
 	&gt;
-	&lt;a href=&#34;https://blog.crazyark.xyz/p/segment-tree/img/Segtree_92631507.png&#34; data-size=&#34;367x187&#34;&gt;
-		&lt;img src=&#34;https://blog.crazyark.xyz/p/segment-tree/img/Segtree_92631507.png&#34;
+	&lt;a href=&#34;https://blog.crazyark.me/p/segment-tree/img/Segtree_92631507.png&#34; data-size=&#34;367x187&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.me/p/segment-tree/img/Segtree_92631507.png&#34;
 			width=&#34;367&#34;
 			height=&#34;187&#34;
-			srcset=&#34;https://blog.crazyark.xyz/p/segment-tree/img/Segtree_92631507_hu048eda11744b5690bd60961f9c220a55_7150_480x0_resize_box_3.png 480w, https://blog.crazyark.xyz/p/segment-tree/img/Segtree_92631507_hu048eda11744b5690bd60961f9c220a55_7150_1024x0_resize_box_3.png 1024w&#34;
+			srcset=&#34;https://blog.crazyark.me/p/segment-tree/img/Segtree_92631507_hu048eda11744b5690bd60961f9c220a55_7150_480x0_resize_box_3.png 480w, https://blog.crazyark.me/p/segment-tree/img/Segtree_92631507_hu048eda11744b5690bd60961f9c220a55_7150_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			&gt;
 	&lt;/a&gt;
@@ -4371,11 +4371,11 @@ So what Parallel Binary Search does is move one step down in N binary search tre
 			flex-grow: 196; 
 			flex-basis: 471px&#34;
 	&gt;
-	&lt;a href=&#34;https://blog.crazyark.xyz/p/segment-tree/img/Segtree_92631587.png&#34; data-size=&#34;367x187&#34;&gt;
-		&lt;img src=&#34;https://blog.crazyark.xyz/p/segment-tree/img/Segtree_92631587.png&#34;
+	&lt;a href=&#34;https://blog.crazyark.me/p/segment-tree/img/Segtree_92631587.png&#34; data-size=&#34;367x187&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.me/p/segment-tree/img/Segtree_92631587.png&#34;
 			width=&#34;367&#34;
 			height=&#34;187&#34;
-			srcset=&#34;https://blog.crazyark.xyz/p/segment-tree/img/Segtree_92631587_hu7d0797410047cdc4348c852d9c1936ad_6831_480x0_resize_box_3.png 480w, https://blog.crazyark.xyz/p/segment-tree/img/Segtree_92631587_hu7d0797410047cdc4348c852d9c1936ad_6831_1024x0_resize_box_3.png 1024w&#34;
+			srcset=&#34;https://blog.crazyark.me/p/segment-tree/img/Segtree_92631587_hu7d0797410047cdc4348c852d9c1936ad_6831_480x0_resize_box_3.png 480w, https://blog.crazyark.me/p/segment-tree/img/Segtree_92631587_hu7d0797410047cdc4348c852d9c1936ad_6831_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;0 changed to 8&#34;&gt;
 	&lt;/a&gt;
@@ -4393,11 +4393,11 @@ So what Parallel Binary Search does is move one step down in N binary search tre
 			flex-grow: 196; 
 			flex-basis: 471px&#34;
 	&gt;
-	&lt;a href=&#34;https://blog.crazyark.xyz/p/segment-tree/img/Segtree_query_92631587.png&#34; data-size=&#34;367x187&#34;&gt;
-		&lt;img src=&#34;https://blog.crazyark.xyz/p/segment-tree/img/Segtree_query_92631587.png&#34;
+	&lt;a href=&#34;https://blog.crazyark.me/p/segment-tree/img/Segtree_query_92631587.png&#34; data-size=&#34;367x187&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.me/p/segment-tree/img/Segtree_query_92631587.png&#34;
 			width=&#34;367&#34;
 			height=&#34;187&#34;
-			srcset=&#34;https://blog.crazyark.xyz/p/segment-tree/img/Segtree_query_92631587_hu0d83e9c25b58c00b4903440285ada782_7114_480x0_resize_box_3.png 480w, https://blog.crazyark.xyz/p/segment-tree/img/Segtree_query_92631587_hu0d83e9c25b58c00b4903440285ada782_7114_1024x0_resize_box_3.png 1024w&#34;
+			srcset=&#34;https://blog.crazyark.me/p/segment-tree/img/Segtree_query_92631587_hu0d83e9c25b58c00b4903440285ada782_7114_480x0_resize_box_3.png 480w, https://blog.crazyark.me/p/segment-tree/img/Segtree_query_92631587_hu0d83e9c25b58c00b4903440285ada782_7114_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;Query (1, 6)&#34;&gt;
 	&lt;/a&gt;
@@ -4539,10 +4539,10 @@ So what Parallel Binary Search does is move one step down in N binary search tre
         </item>
         <item>
         <title>神奇的组合数 (AGC019-F Mysterious Combinators)</title>
-        <link>https://blog.crazyark.xyz/p/agc019-mysterious-combinators/</link>
+        <link>https://blog.crazyark.me/p/agc019-mysterious-combinators/</link>
         <pubDate>Wed, 06 Sep 2017 21:16:06 +0800</pubDate>
         
-        <guid>https://blog.crazyark.xyz/p/agc019-mysterious-combinators/</guid>
+        <guid>https://blog.crazyark.me/p/agc019-mysterious-combinators/</guid>
         <description>&lt;p&gt;原题目在 AtCoder Grand Contest 019，F - Yes or No。&lt;/p&gt;
 &lt;p&gt;把它改成数学题，题目大意如下：&lt;/p&gt;
 &lt;blockquote&gt;
@@ -4652,10 +4652,10 @@ $ = \sum\limits_{k = 1}^{k = N - 1}\binom{2k - 1}{k}\binom{M + N + 1 - 2k}{N - k
         </item>
         <item>
         <title>最长递增子序列 (Longest Increasing Subsequence)</title>
-        <link>https://blog.crazyark.xyz/p/longest-increasing-subsequence/</link>
+        <link>https://blog.crazyark.me/p/longest-increasing-subsequence/</link>
         <pubDate>Fri, 01 Sep 2017 15:41:22 +0800</pubDate>
         
-        <guid>https://blog.crazyark.xyz/p/longest-increasing-subsequence/</guid>
+        <guid>https://blog.crazyark.me/p/longest-increasing-subsequence/</guid>
         <description>&lt;p&gt;最长递增子序列算法，原本以为已经记住了最快的算法，看来是记性太差，今天碰到一道题目又忘记了怎么做 🙄&lt;/p&gt;
 &lt;p&gt;三种做法：DP，Sort + LCS，DP + BS，我只记得第一种DP了 &amp;hellip;&lt;/p&gt;
 &lt;p&gt;然后咱们顺便把某道题目做了 🤣&lt;/p&gt;
@@ -4732,11 +4732,11 @@ The picture below shows an example of how a part of the city with roads and foun
 			flex-grow: 121; 
 			flex-basis: 291px&#34;
 	&gt;
-	&lt;a href=&#34;https://blog.crazyark.xyz/p/longest-increasing-subsequence/img/1f931bf0c98ec6f07e612b0282cdb094.png&#34; data-size=&#34;376x310&#34;&gt;
-		&lt;img src=&#34;https://blog.crazyark.xyz/p/longest-increasing-subsequence/img/1f931bf0c98ec6f07e612b0282cdb094.png&#34;
+	&lt;a href=&#34;https://blog.crazyark.me/p/longest-increasing-subsequence/img/1f931bf0c98ec6f07e612b0282cdb094.png&#34; data-size=&#34;376x310&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.me/p/longest-increasing-subsequence/img/1f931bf0c98ec6f07e612b0282cdb094.png&#34;
 			width=&#34;376&#34;
 			height=&#34;310&#34;
-			srcset=&#34;https://blog.crazyark.xyz/p/longest-increasing-subsequence/img/1f931bf0c98ec6f07e612b0282cdb094_hufaaf75fc670df1c7809cf083332601f3_6060_480x0_resize_box_3.png 480w, https://blog.crazyark.xyz/p/longest-increasing-subsequence/img/1f931bf0c98ec6f07e612b0282cdb094_hufaaf75fc670df1c7809cf083332601f3_6060_1024x0_resize_box_3.png 1024w&#34;
+			srcset=&#34;https://blog.crazyark.me/p/longest-increasing-subsequence/img/1f931bf0c98ec6f07e612b0282cdb094_hufaaf75fc670df1c7809cf083332601f3_6060_480x0_resize_box_3.png 480w, https://blog.crazyark.me/p/longest-increasing-subsequence/img/1f931bf0c98ec6f07e612b0282cdb094_hufaaf75fc670df1c7809cf083332601f3_6060_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;city&#34;&gt;
 	&lt;/a&gt;
@@ -4887,10 +4887,10 @@ XN YN&lt;/p&gt;
         </item>
         <item>
         <title>SIGFPE When Doing DivQ</title>
-        <link>https://blog.crazyark.xyz/p/cpp-sigfpe/</link>
+        <link>https://blog.crazyark.me/p/cpp-sigfpe/</link>
         <pubDate>Sun, 27 Aug 2017 17:38:37 +0800</pubDate>
         
-        <guid>https://blog.crazyark.xyz/p/cpp-sigfpe/</guid>
+        <guid>https://blog.crazyark.me/p/cpp-sigfpe/</guid>
         <description>&lt;p&gt;第一次遇到了除0以外的SIGFPE，记录一下。&lt;/p&gt;
 &lt;h3 id=&#34;症状&#34;&gt;症状&lt;/h3&gt;
 &lt;p&gt;在使用以下函数的时候，假定 a = 1e18, b = 1e18, m = 1e9 + 7 就会触发 SIGFPE。&lt;/p&gt;
@@ -4906,10 +4906,10 @@ XN YN&lt;/p&gt;
         </item>
         <item>
         <title>整数的超幂 (Project Euler #188 -- The Hyperexponentiation of A Number)</title>
-        <link>https://blog.crazyark.xyz/p/project-euler-188/</link>
+        <link>https://blog.crazyark.me/p/project-euler-188/</link>
         <pubDate>Fri, 25 Aug 2017 21:32:26 +0800</pubDate>
         
-        <guid>https://blog.crazyark.xyz/p/project-euler-188/</guid>
+        <guid>https://blog.crazyark.me/p/project-euler-188/</guid>
         <description>&lt;p&gt;接上次的博文，我们来解决大整数分解问题，并最终解决 Project Euler #188。&lt;/p&gt;
 &lt;p&gt;回忆一下，问题要求解的是 $a\uparrow\uparrow b \ (\textrm{mod} \ m)$，其中 $1 \le a, b, m \le 10^{18}$。&lt;/p&gt;
 &lt;p&gt;其实这里的整数在整数分解领域并不算太大，之前并没有学习过这类的算法，正好也算是补上了。在这里我使用了 Pollard Rho 算法，其他的算法还有 Fermat Rho 和 Quadratic Sieve 算法。&lt;/p&gt;
@@ -5042,10 +5042,10 @@ else:
         </item>
         <item>
         <title>非质数的欧拉定理扩展 (Euler Theorem for Non-coprime)</title>
-        <link>https://blog.crazyark.xyz/p/euler-theorem-for-noncoprime/</link>
+        <link>https://blog.crazyark.me/p/euler-theorem-for-noncoprime/</link>
         <pubDate>Wed, 23 Aug 2017 22:02:59 +0800</pubDate>
         
-        <guid>https://blog.crazyark.xyz/p/euler-theorem-for-noncoprime/</guid>
+        <guid>https://blog.crazyark.me/p/euler-theorem-for-noncoprime/</guid>
         <description>&lt;p&gt;刚遇到一道可怕的题目，迭代次幂(tetration)在超级大的范围下快速求解对某个模数的幂，模数范围在 1 到 1e18 之间。&lt;/p&gt;
 &lt;p&gt;OK，这道题其实思路很清晰，用欧拉定理降幂，但是最难的部分在于&lt;/p&gt;
 &lt;ol&gt;
@@ -5108,10 +5108,10 @@ else:
         </item>
         <item>
         <title>多项式哈希及Theu-Morse序列 (Polynomial Hash and Theu-Morse Sequence)</title>
-        <link>https://blog.crazyark.xyz/p/polynomial-hash-and-theu-morse-sequence/</link>
+        <link>https://blog.crazyark.me/p/polynomial-hash-and-theu-morse-sequence/</link>
         <pubDate>Mon, 21 Aug 2017 23:58:42 +0800</pubDate>
         
-        <guid>https://blog.crazyark.xyz/p/polynomial-hash-and-theu-morse-sequence/</guid>
+        <guid>https://blog.crazyark.me/p/polynomial-hash-and-theu-morse-sequence/</guid>
         <description>&lt;p&gt;前两天刷 Hackerrank 上的 &lt;a class=&#34;link&#34; href=&#34;https://www.hackerrank.com/contests/gs-codesprint/challenges&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Contest&lt;/a&gt;，给了两天时间，没想到被最后一题卡成🐶，谨记录思考和收获。&lt;/p&gt;
 &lt;p&gt;原题目在 &lt;a class=&#34;link&#34; href=&#34;https://www.hackerrank.com/contests/gs-codesprint/challenges/transaction-certificates&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
@@ -5168,10 +5168,10 @@ else:
         </item>
         <item>
         <title>无向带权图图全局最小割 Stoer-Wagner 算法 (Stoer-Wagner Algorithm -- Global Min-Cut in Undirected Weighted Graphs)</title>
-        <link>https://blog.crazyark.xyz/p/stoer-wagner-algorithm/</link>
+        <link>https://blog.crazyark.me/p/stoer-wagner-algorithm/</link>
         <pubDate>Sat, 05 Aug 2017 22:14:01 +0800</pubDate>
         
-        <guid>https://blog.crazyark.xyz/p/stoer-wagner-algorithm/</guid>
+        <guid>https://blog.crazyark.me/p/stoer-wagner-algorithm/</guid>
         <description>&lt;p&gt;最近碰到一道题目，求一个图的全局最小割，可惜图论博主学的不太好，至今只记得一个求s-t最大流/最小割的 ford-fulkerson。想了想总不能做$n^2$次最大流吧，最终还是求助了维基百科 🤣&lt;/p&gt;
 &lt;h2 id=&#34;stoer-wagner-algorithm&#34;&gt;Stoer-Wagner Algorithm&lt;/h2&gt;
 &lt;p&gt;Stoer-Wagner 算法是一个求&lt;strong&gt;带非负权无向图&lt;/strong&gt;中全局最小割的算法，它是在1995年由 Mechthild Stoer 和 Frank Wagner 提出的。&lt;/p&gt;
@@ -5231,10 +5231,10 @@ else:
         </item>
         <item>
         <title>优化比较次数的排序算法 (Ford Johnson Algorithm)</title>
-        <link>https://blog.crazyark.xyz/p/ford-johnson-algorithm/</link>
+        <link>https://blog.crazyark.me/p/ford-johnson-algorithm/</link>
         <pubDate>Fri, 04 Aug 2017 14:15:35 +0800</pubDate>
         
-        <guid>https://blog.crazyark.xyz/p/ford-johnson-algorithm/</guid>
+        <guid>https://blog.crazyark.me/p/ford-johnson-algorithm/</guid>
         <description>&lt;p&gt;偶然发现 AtCoder，上去注册了准备试试，结果卡在practice contest&amp;hellip;&lt;/p&gt;
 &lt;p&gt;问题倒是很简单：&lt;/p&gt;
 &lt;blockquote&gt;
@@ -5387,10 +5387,10 @@ In testset 3, N=5 and Q=7.&lt;/p&gt;
         </item>
         <item>
         <title>滑动窗口中的最大值 (Sliding Window Maximum / Monotonic Queue)</title>
-        <link>https://blog.crazyark.xyz/p/monotonic-queue/</link>
+        <link>https://blog.crazyark.me/p/monotonic-queue/</link>
         <pubDate>Thu, 03 Aug 2017 15:55:02 +0800</pubDate>
         
-        <guid>https://blog.crazyark.xyz/p/monotonic-queue/</guid>
+        <guid>https://blog.crazyark.me/p/monotonic-queue/</guid>
         <description>&lt;p&gt;Leetcode 上有一道题叫 Sliding Window Maximum，虽然不是今天刷的，但是解法非常有意思，就记录一下。&lt;/p&gt;
 &lt;p&gt;问题描述：&lt;/p&gt;
 &lt;blockquote&gt;
@@ -5439,10 +5439,10 @@ In testset 3, N=5 and Q=7.&lt;/p&gt;
         </item>
         <item>
         <title>有序矩阵中的第k大数 (Selection in X&#43;Y or Sorted Matrices)</title>
-        <link>https://blog.crazyark.xyz/p/selection-in-x-y-or-sorted-matrices/</link>
+        <link>https://blog.crazyark.me/p/selection-in-x-y-or-sorted-matrices/</link>
         <pubDate>Wed, 02 Aug 2017 20:58:55 +0800</pubDate>
         
-        <guid>https://blog.crazyark.xyz/p/selection-in-x-y-or-sorted-matrices/</guid>
+        <guid>https://blog.crazyark.me/p/selection-in-x-y-or-sorted-matrices/</guid>
         <description>&lt;p&gt;今天在刷 leetcode 的时候遇到一道题目 &lt;a class=&#34;link&#34; href=&#34;https://leetcode.com/problems/kth-smallest-element-in-a-sorted-matrix/description/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Kth Smallest Element in a Sorted Matrix&lt;/a&gt;。&lt;/p&gt;
 &lt;p&gt;首先用一个 Min-Heap 就可以得到 O(klgn) (n为列数)的算法，实现放在最后。&lt;/p&gt;
@@ -5690,10 +5690,10 @@ In testset 3, N=5 and Q=7.&lt;/p&gt;
         </item>
         <item>
         <title>Dynamic Proxy in Java</title>
-        <link>https://blog.crazyark.xyz/p/dynamic-proxy-java/</link>
+        <link>https://blog.crazyark.me/p/dynamic-proxy-java/</link>
         <pubDate>Sat, 29 Jul 2017 22:44:24 +0800</pubDate>
         
-        <guid>https://blog.crazyark.xyz/p/dynamic-proxy-java/</guid>
+        <guid>https://blog.crazyark.me/p/dynamic-proxy-java/</guid>
         <description>&lt;p&gt;虽然在一年前就知道了 Proxy 模式，但是基本没有尝试使用过，仅在框架里看到一些例子。昨天翻阅《大型网站系统与Java中间件实践》时，偶然发现了 Proxy 模式在 Java 中的应用 —— 动态代理，遂记录下来，顺便复习一下 Proxy 模式。&lt;/p&gt;
 &lt;p&gt;以下内容参考自&lt;/p&gt;
 &lt;ol&gt;
@@ -5710,11 +5710,11 @@ In testset 3, N=5 and Q=7.&lt;/p&gt;
 			flex-grow: 194; 
 			flex-basis: 466px&#34;
 	&gt;
-	&lt;a href=&#34;https://blog.crazyark.xyz/p/dynamic-proxy-java/img/proxy_pattern.jpg&#34; data-size=&#34;624x321&#34;&gt;
-		&lt;img src=&#34;https://blog.crazyark.xyz/p/dynamic-proxy-java/img/proxy_pattern.jpg&#34;
+	&lt;a href=&#34;https://blog.crazyark.me/p/dynamic-proxy-java/img/proxy_pattern.jpg&#34; data-size=&#34;624x321&#34;&gt;
+		&lt;img src=&#34;https://blog.crazyark.me/p/dynamic-proxy-java/img/proxy_pattern.jpg&#34;
 			width=&#34;624&#34;
 			height=&#34;321&#34;
-			srcset=&#34;https://blog.crazyark.xyz/p/dynamic-proxy-java/img/proxy_pattern_huecf3cb5f59dd7cada22bb31448bd1d4d_12361_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.xyz/p/dynamic-proxy-java/img/proxy_pattern_huecf3cb5f59dd7cada22bb31448bd1d4d_12361_1024x0_resize_q75_box.jpg 1024w&#34;
+			srcset=&#34;https://blog.crazyark.me/p/dynamic-proxy-java/img/proxy_pattern_huecf3cb5f59dd7cada22bb31448bd1d4d_12361_480x0_resize_q75_box.jpg 480w, https://blog.crazyark.me/p/dynamic-proxy-java/img/proxy_pattern_huecf3cb5f59dd7cada22bb31448bd1d4d_12361_1024x0_resize_q75_box.jpg 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;Proxy Pattern&#34;&gt;
 	&lt;/a&gt;
@@ -5804,10 +5804,10 @@ In testset 3, N=5 and Q=7.&lt;/p&gt;
         </item>
         <item>
         <title>Boyer-Moore 投票算法 (Boyer-Moore Majority Voting Algorithm)</title>
-        <link>https://blog.crazyark.xyz/p/majority-voting/</link>
+        <link>https://blog.crazyark.me/p/majority-voting/</link>
         <pubDate>Fri, 28 Jul 2017 21:08:02 +0800</pubDate>
         
-        <guid>https://blog.crazyark.xyz/p/majority-voting/</guid>
+        <guid>https://blog.crazyark.me/p/majority-voting/</guid>
         <description>&lt;p&gt;刷leetcode时碰到的问题，本篇仅做简要描述，以及记录思考。&lt;/p&gt;
 &lt;p&gt;参考自: &lt;a class=&#34;link&#34; href=&#34;https://gregable.com/2013/10/majority-vote-algorithm-find-majority.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;https://gregable.com/2013/10/majority-vote-algorithm-find-majority.html&lt;/a&gt;，一篇写的非常好的博客&lt;/p&gt;
@@ -5904,10 +5904,10 @@ In testset 3, N=5 and Q=7.&lt;/p&gt;
         </item>
         <item>
         <title>2017 Alibaba Middleware 24h Final (Just for Fun 😀)</title>
-        <link>https://blog.crazyark.xyz/p/awrace-topkn/</link>
+        <link>https://blog.crazyark.me/p/awrace-topkn/</link>
         <pubDate>Wed, 26 Jul 2017 16:59:26 +0800</pubDate>
         
-        <guid>https://blog.crazyark.xyz/p/awrace-topkn/</guid>
+        <guid>https://blog.crazyark.me/p/awrace-topkn/</guid>
         <description>&lt;p&gt;今年阿里中间件比赛的时候不巧博主心情不好，外加要准备期末考试，并没有参加，非常遗憾。不过好在好基友 &lt;a class=&#34;link&#34; href=&#34;https://ericfu.me&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Eric Fu&lt;/a&gt; 参加并获得了冠军！今年的主题是分布式数据库，如果想了解详情及复赛的解题思路请读者前往 Eric 的博客。&lt;/p&gt;
 &lt;p&gt;博主没有参加甚是遗憾，外加看到题目手痒难耐，遂问基友讨了最后的24h极客赛来玩一玩。&lt;/p&gt;

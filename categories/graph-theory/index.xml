@@ -2,27 +2,27 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Graph Theory on 石沉溪洞 -- Ark&#39;s Blog</title>
-    <link>https://blog.crazyark.xyz/categories/graph-theory/</link>
+    <link>https://blog.crazyark.me/categories/graph-theory/</link>
     <description>Recent content in Graph Theory on 石沉溪洞 -- Ark&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Tue, 26 Sep 2017 22:26:08 +0800</lastBuildDate><atom:link href="https://blog.crazyark.xyz/categories/graph-theory/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 26 Sep 2017 22:26:08 +0800</lastBuildDate><atom:link href="https://blog.crazyark.me/categories/graph-theory/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>二部图的最大匹配 (Maximum Matching in Bipartite Graph)</title>
-      <link>https://blog.crazyark.xyz/p/maximum-matching-in-bipartite-graph/</link>
+      <link>https://blog.crazyark.me/p/maximum-matching-in-bipartite-graph/</link>
       <pubDate>Tue, 26 Sep 2017 22:26:08 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/maximum-matching-in-bipartite-graph/</guid>
+      <guid>https://blog.crazyark.me/p/maximum-matching-in-bipartite-graph/</guid>
       <description>&lt;p&gt;上几篇博文主要是关于范围更新和范围查询的几个数据结构，接下去的主题是图论和图算法，希望能够学习和回忆起大部分图算法。&lt;/p&gt;
 &lt;p&gt;今天遇到一个问题，可以转化成二部图(bipartite graph)上的完美匹配的存在性问题，我们先来看一下完美匹配的理论，Hall&amp;rsquo;s Marriage theorem；然后介绍两个算法，用于解决完美匹配的超集——最大匹配问题。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>无向带权图图全局最小割 Stoer-Wagner 算法 (Stoer-Wagner Algorithm -- Global Min-Cut in Undirected Weighted Graphs)</title>
-      <link>https://blog.crazyark.xyz/p/stoer-wagner-algorithm/</link>
+      <link>https://blog.crazyark.me/p/stoer-wagner-algorithm/</link>
       <pubDate>Sat, 05 Aug 2017 22:14:01 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/stoer-wagner-algorithm/</guid>
+      <guid>https://blog.crazyark.me/p/stoer-wagner-algorithm/</guid>
       <description>&lt;p&gt;最近碰到一道题目，求一个图的全局最小割，可惜图论博主学的不太好，至今只记得一个求s-t最大流/最小割的 ford-fulkerson。想了想总不能做$n^2$次最大流吧，最终还是求助了维基百科 🤣&lt;/p&gt;</description>
     </item>
     

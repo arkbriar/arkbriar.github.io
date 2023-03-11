@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>sparse table on 石沉溪洞 -- Ark&#39;s Blog</title>
-    <link>https://blog.crazyark.xyz/tags/sparse-table/</link>
+    <link>https://blog.crazyark.me/tags/sparse-table/</link>
     <description>Recent content in sparse table on 石沉溪洞 -- Ark&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sun, 10 Sep 2017 01:06:11 +0800</lastBuildDate><atom:link href="https://blog.crazyark.xyz/tags/sparse-table/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 10 Sep 2017 01:06:11 +0800</lastBuildDate><atom:link href="https://blog.crazyark.me/tags/sparse-table/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>稀疏表和并行二分查找 (Sparse Table &amp; Parallel Binary Search)</title>
-      <link>https://blog.crazyark.xyz/p/hourrank23/</link>
+      <link>https://blog.crazyark.me/p/hourrank23/</link>
       <pubDate>Sun, 10 Sep 2017 01:06:11 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/hourrank23/</guid>
+      <guid>https://blog.crazyark.me/p/hourrank23/</guid>
       <description>&lt;p&gt;不刷题不知道自己菜，越刷题越发现自己🙄 —— 记 HourRank23 被虐。&lt;/p&gt;</description>
     </item>
     

@@ -3,17 +3,17 @@
     <head><meta charset='utf-8'>
 <meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='众所周知，数据库管理系统需要满足数据操作的持久性，即保证操作的请求在返回之前，对应的数据一定是已经保存在非易失性存储中 &amp;ndash; 通常来说，就是磁盘。'><title>数据库系统: 聊聊存储和组提交 (group commit)</title>
 
-<link rel='canonical' href='https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/'>
+<link rel='canonical' href='https://blog.crazyark.me/p/group-commit-with-direct-io-and-fsync/'>
 
 <link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='数据库系统: 聊聊存储和组提交 (group commit)'>
 <meta property='og:description' content='众所周知，数据库管理系统需要满足数据操作的持久性，即保证操作的请求在返回之前，对应的数据一定是已经保存在非易失性存储中 &amp;ndash; 通常来说，就是磁盘。'>
-<meta property='og:url' content='https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/'>
+<meta property='og:url' content='https://blog.crazyark.me/p/group-commit-with-direct-io-and-fsync/'>
 <meta property='og:site_name' content='石沉溪洞 -- Ark&#39;s Blog'>
-<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='direct io' /><meta property='article:tag' content='sync' /><meta property='article:tag' content='group commit' /><meta property='article:published_time' content='2021-08-21T12:36:51&#43;08:00'/><meta property='article:modified_time' content='2021-08-21T12:36:51&#43;08:00'/><meta property='og:image' content='https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/img/transaction_commit.png' />
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='direct io' /><meta property='article:tag' content='sync' /><meta property='article:tag' content='group commit' /><meta property='article:published_time' content='2021-08-21T12:36:51&#43;08:00'/><meta property='article:modified_time' content='2021-08-21T12:36:51&#43;08:00'/><meta property='og:image' content='https://blog.crazyark.me/p/group-commit-with-direct-io-and-fsync/img/transaction_commit.png' />
 <meta name="twitter:site" content="@ImperiusDs">
     <meta name="twitter:creator" content="@ImperiusDs"><meta name="twitter:title" content="数据库系统: 聊聊存储和组提交 (group commit)">
 <meta name="twitter:description" content="众所周知，数据库管理系统需要满足数据操作的持久性，即保证操作的请求在返回之前，对应的数据一定是已经保存在非易失性存储中 &amp;ndash; 通常来说，就是磁盘。"><meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content='https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/img/transaction_commit.png' />
+    <meta name="twitter:image" content='https://blog.crazyark.me/p/group-commit-with-direct-io-and-fsync/img/transaction_commit.png' />
     </head>
     <body class="
     article-page has-toc
@@ -47,7 +47,7 @@
 ">
     
         <div id="article-toolbar">
-            <a href="https://blog.crazyark.xyz" class="back-home">
+            <a href="https://blog.crazyark.me" class="back-home">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z"/>
   <polyline points="15 6 9 12 15 18" />

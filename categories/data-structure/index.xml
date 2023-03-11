@@ -2,26 +2,26 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Data Structure on 石沉溪洞 -- Ark&#39;s Blog</title>
-    <link>https://blog.crazyark.xyz/categories/data-structure/</link>
+    <link>https://blog.crazyark.me/categories/data-structure/</link>
     <description>Recent content in Data Structure on 石沉溪洞 -- Ark&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Thu, 16 Aug 2018 14:55:23 +0800</lastBuildDate><atom:link href="https://blog.crazyark.xyz/categories/data-structure/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 16 Aug 2018 14:55:23 +0800</lastBuildDate><atom:link href="https://blog.crazyark.me/categories/data-structure/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>哈希表 -- 哈希冲突</title>
-      <link>https://blog.crazyark.xyz/p/hash-table-collision/</link>
+      <link>https://blog.crazyark.me/p/hash-table-collision/</link>
       <pubDate>Thu, 16 Aug 2018 14:55:23 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/hash-table-collision/</guid>
+      <guid>https://blog.crazyark.me/p/hash-table-collision/</guid>
       <description>Hash table &amp;ndash; Collision 在计算机科学中，哈希表 (hash table) 是一个非常重要的数据结构，它帮助我们快速的进行插入和查询。理论上来说，在表中查询一次的耗时应该是 O(1) 的。这里</description>
     </item>
     
     <item>
       <title>布隆过滤器 (Bloom Filter)</title>
-      <link>https://blog.crazyark.xyz/p/bloom-filter/</link>
+      <link>https://blog.crazyark.me/p/bloom-filter/</link>
       <pubDate>Mon, 16 Apr 2018 13:02:27 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/bloom-filter/</guid>
+      <guid>https://blog.crazyark.me/p/bloom-filter/</guid>
       <description>&lt;p&gt;布隆过滤器 (Bloom Filter) 是一个空间高效的&lt;strong&gt;概率&lt;/strong&gt;数据结构，它能够用来测试是否一个元素在一个集合中。布隆过滤器存在着 false positive (返回存在，其实不存在），但是不存在 false negative (返回不存在，其实存在)。集合中的元素越多，false positive 的概率就越高。&lt;/p&gt;</description>
     </item>
     

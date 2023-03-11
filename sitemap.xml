@@ -2,344 +2,344 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://blog.crazyark.xyz/tags/binlog/</loc>
+    <loc>https://blog.crazyark.me/tags/binlog/</loc>
     <lastmod>2023-02-03T13:56:33+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/categories/</loc>
+    <loc>https://blog.crazyark.me/categories/</loc>
     <lastmod>2023-02-03T13:56:33+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/categories/golang/</loc>
+    <loc>https://blog.crazyark.me/categories/golang/</loc>
     <lastmod>2023-02-03T13:56:33+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/categories/mysql/</loc>
+    <loc>https://blog.crazyark.me/categories/mysql/</loc>
     <lastmod>2023-02-03T13:56:33+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/post/</loc>
+    <loc>https://blog.crazyark.me/post/</loc>
     <lastmod>2023-02-03T13:56:33+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/</loc>
+    <loc>https://blog.crazyark.me/tags/</loc>
     <lastmod>2023-02-03T13:56:33+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/</loc>
+    <loc>https://blog.crazyark.me/</loc>
     <lastmod>2023-02-03T13:56:33+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/p/yet-another-binlog-parser/</loc>
+    <loc>https://blog.crazyark.me/p/yet-another-binlog-parser/</loc>
     <lastmod>2023-02-03T13:56:33+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/cancellation-token/</loc>
+    <loc>https://blog.crazyark.me/tags/cancellation-token/</loc>
     <lastmod>2022-05-07T16:14:00+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/categories/programming/</loc>
+    <loc>https://blog.crazyark.me/categories/programming/</loc>
     <lastmod>2022-05-07T16:14:00+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/timeout/</loc>
+    <loc>https://blog.crazyark.me/tags/timeout/</loc>
     <lastmod>2022-05-07T16:14:00+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/p/timeouts-and-cancellation-for-humans/</loc>
+    <loc>https://blog.crazyark.me/p/timeouts-and-cancellation-for-humans/</loc>
     <lastmod>2022-05-07T16:14:00+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/epoch-gc/</loc>
+    <loc>https://blog.crazyark.me/tags/epoch-gc/</loc>
     <lastmod>2021-11-28T20:44:45+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/lock-free-linked-list/</loc>
+    <loc>https://blog.crazyark.me/tags/lock-free-linked-list/</loc>
     <lastmod>2021-11-28T20:44:45+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/categories/lock-free-programming/</loc>
+    <loc>https://blog.crazyark.me/categories/lock-free-programming/</loc>
     <lastmod>2021-11-28T20:44:45+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/p/lock-free-linked-list-and-epoch-gc/</loc>
+    <loc>https://blog.crazyark.me/p/lock-free-linked-list-and-epoch-gc/</loc>
     <lastmod>2021-11-28T20:44:45+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/categories/concurrency/</loc>
+    <loc>https://blog.crazyark.me/categories/concurrency/</loc>
     <lastmod>2021-09-14T08:37:50+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/categories/coroutine/</loc>
+    <loc>https://blog.crazyark.me/categories/coroutine/</loc>
     <lastmod>2021-09-14T08:37:50+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/rust/</loc>
+    <loc>https://blog.crazyark.me/tags/rust/</loc>
     <lastmod>2021-09-14T08:37:50+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/structured-concurrency/</loc>
+    <loc>https://blog.crazyark.me/tags/structured-concurrency/</loc>
     <lastmod>2021-09-14T08:37:50+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/tokio/</loc>
+    <loc>https://blog.crazyark.me/tags/tokio/</loc>
     <lastmod>2021-09-14T08:37:50+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/p/structured-concurrency/</loc>
+    <loc>https://blog.crazyark.me/p/structured-concurrency/</loc>
     <lastmod>2021-09-14T08:37:50+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/coroutine/</loc>
+    <loc>https://blog.crazyark.me/tags/coroutine/</loc>
     <lastmod>2021-09-09T00:37:00+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/go/</loc>
+    <loc>https://blog.crazyark.me/tags/go/</loc>
     <lastmod>2021-09-09T00:37:00+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/p/coroutines-rust-and-go/</loc>
+    <loc>https://blog.crazyark.me/p/coroutines-rust-and-go/</loc>
     <lastmod>2021-09-09T00:37:00+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/categories/database/</loc>
+    <loc>https://blog.crazyark.me/categories/database/</loc>
     <lastmod>2021-08-21T12:36:51+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/direct-io/</loc>
+    <loc>https://blog.crazyark.me/tags/direct-io/</loc>
     <lastmod>2021-08-21T12:36:51+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/categories/file-system/</loc>
+    <loc>https://blog.crazyark.me/categories/file-system/</loc>
     <lastmod>2021-08-21T12:36:51+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/group-commit/</loc>
+    <loc>https://blog.crazyark.me/tags/group-commit/</loc>
     <lastmod>2021-08-21T12:36:51+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/categories/operating-system/</loc>
+    <loc>https://blog.crazyark.me/categories/operating-system/</loc>
     <lastmod>2021-08-21T12:36:51+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/sync/</loc>
+    <loc>https://blog.crazyark.me/tags/sync/</loc>
     <lastmod>2021-08-21T12:36:51+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/</loc>
+    <loc>https://blog.crazyark.me/p/group-commit-with-direct-io-and-fsync/</loc>
     <lastmod>2021-08-21T12:36:51+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/categories/consensus/</loc>
+    <loc>https://blog.crazyark.me/categories/consensus/</loc>
     <lastmod>2021-08-17T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/raft/</loc>
+    <loc>https://blog.crazyark.me/tags/raft/</loc>
     <lastmod>2021-08-17T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/p/raft-and-share-log/</loc>
+    <loc>https://blog.crazyark.me/p/raft-and-share-log/</loc>
     <lastmod>2021-08-17T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/write-ahead-log/</loc>
+    <loc>https://blog.crazyark.me/tags/write-ahead-log/</loc>
     <lastmod>2021-08-17T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/archives/</loc>
+    <loc>https://blog.crazyark.me/archives/</loc>
     <lastmod>2019-05-28T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/page/</loc>
+    <loc>https://blog.crazyark.me/page/</loc>
     <lastmod>2019-05-28T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/collision/</loc>
+    <loc>https://blog.crazyark.me/tags/collision/</loc>
     <lastmod>2018-08-16T14:55:23+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/categories/data-structure/</loc>
+    <loc>https://blog.crazyark.me/categories/data-structure/</loc>
     <lastmod>2018-08-16T14:55:23+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/hash/</loc>
+    <loc>https://blog.crazyark.me/tags/hash/</loc>
     <lastmod>2018-08-16T14:55:23+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/p/hash-table-collision/</loc>
+    <loc>https://blog.crazyark.me/p/hash-table-collision/</loc>
     <lastmod>2018-08-16T14:55:23+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/contest/</loc>
+    <loc>https://blog.crazyark.me/tags/contest/</loc>
     <lastmod>2018-08-01T19:59:45+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/categories/contest/</loc>
+    <loc>https://blog.crazyark.me/categories/contest/</loc>
     <lastmod>2018-08-01T19:59:45+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/middelware/</loc>
+    <loc>https://blog.crazyark.me/tags/middelware/</loc>
     <lastmod>2018-08-01T19:59:45+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/categories/tianchi/</loc>
+    <loc>https://blog.crazyark.me/categories/tianchi/</loc>
     <lastmod>2018-08-01T19:59:45+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/p/awrace-2018/</loc>
+    <loc>https://blog.crazyark.me/p/awrace-2018/</loc>
     <lastmod>2018-08-01T19:59:45+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/epoll/</loc>
+    <loc>https://blog.crazyark.me/tags/epoll/</loc>
     <lastmod>2018-04-16T19:51:21+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/linux/</loc>
+    <loc>https://blog.crazyark.me/tags/linux/</loc>
     <lastmod>2018-04-16T19:51:21+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/categories/linux/</loc>
+    <loc>https://blog.crazyark.me/categories/linux/</loc>
     <lastmod>2018-04-16T19:51:21+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/p/epoll/</loc>
+    <loc>https://blog.crazyark.me/p/epoll/</loc>
     <lastmod>2018-04-16T19:51:21+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/categories/network/</loc>
+    <loc>https://blog.crazyark.me/categories/network/</loc>
     <lastmod>2018-04-16T19:51:21+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/bloom-filter/</loc>
+    <loc>https://blog.crazyark.me/tags/bloom-filter/</loc>
     <lastmod>2018-04-16T13:02:27+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/p/bloom-filter/</loc>
+    <loc>https://blog.crazyark.me/p/bloom-filter/</loc>
     <lastmod>2018-04-16T13:02:27+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/algorithm/</loc>
+    <loc>https://blog.crazyark.me/tags/algorithm/</loc>
     <lastmod>2018-04-13T01:50:51+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/categories/algorithm/</loc>
+    <loc>https://blog.crazyark.me/categories/algorithm/</loc>
     <lastmod>2018-04-13T01:50:51+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/longest-palindromic-substring/</loc>
+    <loc>https://blog.crazyark.me/tags/longest-palindromic-substring/</loc>
     <lastmod>2018-04-13T01:50:51+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/p/manachers-algorithm/</loc>
+    <loc>https://blog.crazyark.me/p/manachers-algorithm/</loc>
     <lastmod>2018-04-13T01:50:51+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/game-theory/</loc>
+    <loc>https://blog.crazyark.me/tags/game-theory/</loc>
     <lastmod>2017-10-11T00:40:08+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/categories/game-theory/</loc>
+    <loc>https://blog.crazyark.me/categories/game-theory/</loc>
     <lastmod>2017-10-11T00:40:08+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/math/</loc>
+    <loc>https://blog.crazyark.me/tags/math/</loc>
     <lastmod>2017-10-11T00:40:08+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/categories/math/</loc>
+    <loc>https://blog.crazyark.me/categories/math/</loc>
     <lastmod>2017-10-11T00:40:08+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/p/game-theory/</loc>
+    <loc>https://blog.crazyark.me/p/game-theory/</loc>
     <lastmod>2017-10-11T00:40:08+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/bipartite-graph/</loc>
+    <loc>https://blog.crazyark.me/tags/bipartite-graph/</loc>
     <lastmod>2017-09-26T22:26:08+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/graph/</loc>
+    <loc>https://blog.crazyark.me/tags/graph/</loc>
     <lastmod>2017-09-26T22:26:08+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/categories/graph-theory/</loc>
+    <loc>https://blog.crazyark.me/categories/graph-theory/</loc>
     <lastmod>2017-09-26T22:26:08+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/halls-marriage-theorem/</loc>
+    <loc>https://blog.crazyark.me/tags/halls-marriage-theorem/</loc>
     <lastmod>2017-09-26T22:26:08+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/hopcraft-karp-algorithm/</loc>
+    <loc>https://blog.crazyark.me/tags/hopcraft-karp-algorithm/</loc>
     <lastmod>2017-09-26T22:26:08+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/hungarian-algorithm/</loc>
+    <loc>https://blog.crazyark.me/tags/hungarian-algorithm/</loc>
     <lastmod>2017-09-26T22:26:08+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/maximum-matching/</loc>
+    <loc>https://blog.crazyark.me/tags/maximum-matching/</loc>
     <lastmod>2017-09-26T22:26:08+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/p/maximum-matching-in-bipartite-graph/</loc>
+    <loc>https://blog.crazyark.me/p/maximum-matching-in-bipartite-graph/</loc>
     <lastmod>2017-09-26T22:26:08+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/parallel-binary-search/</loc>
+    <loc>https://blog.crazyark.me/tags/parallel-binary-search/</loc>
     <lastmod>2017-09-10T01:06:11+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/sparse-table/</loc>
+    <loc>https://blog.crazyark.me/tags/sparse-table/</loc>
     <lastmod>2017-09-10T01:06:11+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/p/hourrank23/</loc>
+    <loc>https://blog.crazyark.me/p/hourrank23/</loc>
     <lastmod>2017-09-10T01:06:11+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/binary-indexed-tree/</loc>
+    <loc>https://blog.crazyark.me/tags/binary-indexed-tree/</loc>
     <lastmod>2017-09-08T22:23:50+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/p/binary-indexed-tree/</loc>
+    <loc>https://blog.crazyark.me/p/binary-indexed-tree/</loc>
     <lastmod>2017-09-08T22:23:50+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/segment-tree/</loc>
+    <loc>https://blog.crazyark.me/tags/segment-tree/</loc>
     <lastmod>2017-09-08T12:58:11+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/p/segment-tree/</loc>
+    <loc>https://blog.crazyark.me/p/segment-tree/</loc>
     <lastmod>2017-09-08T12:58:11+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/combination/</loc>
+    <loc>https://blog.crazyark.me/tags/combination/</loc>
     <lastmod>2017-09-06T21:16:06+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/p/agc019-mysterious-combinators/</loc>
+    <loc>https://blog.crazyark.me/p/agc019-mysterious-combinators/</loc>
     <lastmod>2017-09-06T21:16:06+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/lis/</loc>
+    <loc>https://blog.crazyark.me/tags/lis/</loc>
     <lastmod>2017-09-01T15:41:22+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/p/longest-increasing-subsequence/</loc>
+    <loc>https://blog.crazyark.me/p/longest-increasing-subsequence/</loc>
     <lastmod>2017-09-01T15:41:22+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/assembly/</loc>
+    <loc>https://blog.crazyark.me/tags/assembly/</loc>
     <lastmod>2017-08-27T17:38:37+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/categories/assembly/</loc>
+    <loc>https://blog.crazyark.me/categories/assembly/</loc>
     <lastmod>2017-08-27T17:38:37+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/intel/</loc>
+    <loc>https://blog.crazyark.me/tags/intel/</loc>
     <lastmod>2017-08-27T17:38:37+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/p/cpp-sigfpe/</loc>
+    <loc>https://blog.crazyark.me/p/cpp-sigfpe/</loc>
     <lastmod>2017-08-27T17:38:37+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/x86_64/</loc>
+    <loc>https://blog.crazyark.me/tags/x86_64/</loc>
     <lastmod>2017-08-27T17:38:37+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/project-euler/</loc>
+    <loc>https://blog.crazyark.me/tags/project-euler/</loc>
     <lastmod>2017-08-25T21:32:26+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/p/project-euler-188/</loc>
+    <loc>https://blog.crazyark.me/p/project-euler-188/</loc>
     <lastmod>2017-08-25T21:32:26+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/euler-theorem/</loc>
+    <loc>https://blog.crazyark.me/tags/euler-theorem/</loc>
     <lastmod>2017-08-23T22:02:59+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/non-coprime/</loc>
+    <loc>https://blog.crazyark.me/tags/non-coprime/</loc>
     <lastmod>2017-08-23T22:02:59+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/p/euler-theorem-for-noncoprime/</loc>
+    <loc>https://blog.crazyark.me/p/euler-theorem-for-noncoprime/</loc>
     <lastmod>2017-08-23T22:02:59+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/p/polynomial-hash-and-theu-morse-sequence/</loc>
+    <loc>https://blog.crazyark.me/p/polynomial-hash-and-theu-morse-sequence/</loc>
     <lastmod>2017-08-21T23:58:42+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/graph-theory/</loc>
+    <loc>https://blog.crazyark.me/tags/graph-theory/</loc>
     <lastmod>2017-08-05T22:14:01+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/min-cut/</loc>
+    <loc>https://blog.crazyark.me/tags/min-cut/</loc>
     <lastmod>2017-08-05T22:14:01+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/p/stoer-wagner-algorithm/</loc>
+    <loc>https://blog.crazyark.me/p/stoer-wagner-algorithm/</loc>
     <lastmod>2017-08-05T22:14:01+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/sort/</loc>
+    <loc>https://blog.crazyark.me/tags/sort/</loc>
     <lastmod>2017-08-04T14:15:35+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/p/ford-johnson-algorithm/</loc>
+    <loc>https://blog.crazyark.me/p/ford-johnson-algorithm/</loc>
     <lastmod>2017-08-04T14:15:35+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/monotonic-queue/</loc>
+    <loc>https://blog.crazyark.me/tags/monotonic-queue/</loc>
     <lastmod>2017-08-03T15:55:02+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/p/monotonic-queue/</loc>
+    <loc>https://blog.crazyark.me/p/monotonic-queue/</loc>
     <lastmod>2017-08-03T15:55:02+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/p/selection-in-x-y-or-sorted-matrices/</loc>
+    <loc>https://blog.crazyark.me/p/selection-in-x-y-or-sorted-matrices/</loc>
     <lastmod>2017-08-02T20:58:55+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/design-pattern/</loc>
+    <loc>https://blog.crazyark.me/tags/design-pattern/</loc>
     <lastmod>2017-07-29T22:44:24+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/dynamic-proxy/</loc>
+    <loc>https://blog.crazyark.me/tags/dynamic-proxy/</loc>
     <lastmod>2017-07-29T22:44:24+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/p/dynamic-proxy-java/</loc>
+    <loc>https://blog.crazyark.me/p/dynamic-proxy-java/</loc>
     <lastmod>2017-07-29T22:44:24+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/java/</loc>
+    <loc>https://blog.crazyark.me/tags/java/</loc>
     <lastmod>2017-07-29T22:44:24+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/categories/java/</loc>
+    <loc>https://blog.crazyark.me/categories/java/</loc>
     <lastmod>2017-07-29T22:44:24+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/boyer-moore/</loc>
+    <loc>https://blog.crazyark.me/tags/boyer-moore/</loc>
     <lastmod>2017-07-28T21:08:02+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/p/majority-voting/</loc>
+    <loc>https://blog.crazyark.me/p/majority-voting/</loc>
     <lastmod>2017-07-28T21:08:02+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/majority-vote/</loc>
+    <loc>https://blog.crazyark.me/tags/majority-vote/</loc>
     <lastmod>2017-07-28T21:08:02+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/p/awrace-topkn/</loc>
+    <loc>https://blog.crazyark.me/p/awrace-topkn/</loc>
     <lastmod>2017-07-26T16:59:26+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/distributed-system/</loc>
+    <loc>https://blog.crazyark.me/tags/distributed-system/</loc>
     <lastmod>2017-07-26T16:59:26+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/tags/parallel-computing/</loc>
+    <loc>https://blog.crazyark.me/tags/parallel-computing/</loc>
     <lastmod>2017-07-26T16:59:26+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/about/</loc>
+    <loc>https://blog.crazyark.me/about/</loc>
   </url><url>
-    <loc>https://blog.crazyark.xyz/search/</loc>
+    <loc>https://blog.crazyark.me/search/</loc>
   </url>
 </urlset>

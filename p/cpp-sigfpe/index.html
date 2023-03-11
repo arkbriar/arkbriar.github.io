@@ -5,13 +5,13 @@
 症状 在使用以下函数的时候，假定 a = 1e18, b = 1e18, m = 1e9 &#43; 7 就会触发 SIGFPE。
 long mulmod(long a, long b, long m) { long res; asm(&amp;#34;mulq %2; divq %3&amp;#34; : &amp;#34;=d&amp;#34;(res), &amp;#34;&#43;a&amp;#34;(a) : &amp;#34;S&amp;#34;(b), &amp;#34;c&amp;#34;(m)); return res; } '><title>SIGFPE When Doing DivQ</title>
 
-<link rel='canonical' href='https://blog.crazyark.xyz/p/cpp-sigfpe/'>
+<link rel='canonical' href='https://blog.crazyark.me/p/cpp-sigfpe/'>
 
 <link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='SIGFPE When Doing DivQ'>
 <meta property='og:description' content='第一次遇到了除0以外的SIGFPE，记录一下。
 症状 在使用以下函数的时候，假定 a = 1e18, b = 1e18, m = 1e9 &#43; 7 就会触发 SIGFPE。
 long mulmod(long a, long b, long m) { long res; asm(&amp;#34;mulq %2; divq %3&amp;#34; : &amp;#34;=d&amp;#34;(res), &amp;#34;&#43;a&amp;#34;(a) : &amp;#34;S&amp;#34;(b), &amp;#34;c&amp;#34;(m)); return res; } '>
-<meta property='og:url' content='https://blog.crazyark.xyz/p/cpp-sigfpe/'>
+<meta property='og:url' content='https://blog.crazyark.me/p/cpp-sigfpe/'>
 <meta property='og:site_name' content='石沉溪洞 -- Ark&#39;s Blog'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='assembly' /><meta property='article:tag' content='intel' /><meta property='article:tag' content='x86_64' /><meta property='article:published_time' content='2017-08-27T17:38:37&#43;08:00'/><meta property='article:modified_time' content='2017-08-27T17:38:37&#43;08:00'/>
 <meta name="twitter:site" content="@ImperiusDs">
@@ -52,7 +52,7 @@ long mulmod(long a, long b, long m) { long res; asm(&amp;#34;mulq %2; divq %3&am
 ">
     
         <div id="article-toolbar">
-            <a href="https://blog.crazyark.xyz" class="back-home">
+            <a href="https://blog.crazyark.me" class="back-home">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z"/>
   <polyline points="15 6 9 12 15 18" />

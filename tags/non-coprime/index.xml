@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>non-coprime on 石沉溪洞 -- Ark&#39;s Blog</title>
-    <link>https://blog.crazyark.xyz/tags/non-coprime/</link>
+    <link>https://blog.crazyark.me/tags/non-coprime/</link>
     <description>Recent content in non-coprime on 石沉溪洞 -- Ark&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Wed, 23 Aug 2017 22:02:59 +0800</lastBuildDate><atom:link href="https://blog.crazyark.xyz/tags/non-coprime/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 23 Aug 2017 22:02:59 +0800</lastBuildDate><atom:link href="https://blog.crazyark.me/tags/non-coprime/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>非质数的欧拉定理扩展 (Euler Theorem for Non-coprime)</title>
-      <link>https://blog.crazyark.xyz/p/euler-theorem-for-noncoprime/</link>
+      <link>https://blog.crazyark.me/p/euler-theorem-for-noncoprime/</link>
       <pubDate>Wed, 23 Aug 2017 22:02:59 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/euler-theorem-for-noncoprime/</guid>
+      <guid>https://blog.crazyark.me/p/euler-theorem-for-noncoprime/</guid>
       <description>&lt;p&gt;刚遇到一道可怕的题目，迭代次幂(tetration)在超级大的范围下快速求解对某个模数的幂，模数范围在 1 到 1e18 之间。&lt;/p&gt;
 &lt;p&gt;OK，这道题其实思路很清晰，用欧拉定理降幂，但是最难的部分在于&lt;/p&gt;
 &lt;ol&gt;

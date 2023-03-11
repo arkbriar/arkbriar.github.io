@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>sort on 石沉溪洞 -- Ark&#39;s Blog</title>
-    <link>https://blog.crazyark.xyz/tags/sort/</link>
+    <link>https://blog.crazyark.me/tags/sort/</link>
     <description>Recent content in sort on 石沉溪洞 -- Ark&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Fri, 04 Aug 2017 14:15:35 +0800</lastBuildDate><atom:link href="https://blog.crazyark.xyz/tags/sort/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 04 Aug 2017 14:15:35 +0800</lastBuildDate><atom:link href="https://blog.crazyark.me/tags/sort/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>优化比较次数的排序算法 (Ford Johnson Algorithm)</title>
-      <link>https://blog.crazyark.xyz/p/ford-johnson-algorithm/</link>
+      <link>https://blog.crazyark.me/p/ford-johnson-algorithm/</link>
       <pubDate>Fri, 04 Aug 2017 14:15:35 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/ford-johnson-algorithm/</guid>
+      <guid>https://blog.crazyark.me/p/ford-johnson-algorithm/</guid>
       <description>&lt;p&gt;偶然发现 AtCoder，上去注册了准备试试，结果卡在practice contest&amp;hellip;&lt;/p&gt;
 &lt;p&gt;问题倒是很简单：&lt;/p&gt;
 &lt;blockquote&gt;

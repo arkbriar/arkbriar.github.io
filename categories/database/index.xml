@@ -2,26 +2,26 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Database on 石沉溪洞 -- Ark&#39;s Blog</title>
-    <link>https://blog.crazyark.xyz/categories/database/</link>
+    <link>https://blog.crazyark.me/categories/database/</link>
     <description>Recent content in Database on 石沉溪洞 -- Ark&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sat, 21 Aug 2021 12:36:51 +0800</lastBuildDate><atom:link href="https://blog.crazyark.xyz/categories/database/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 21 Aug 2021 12:36:51 +0800</lastBuildDate><atom:link href="https://blog.crazyark.me/categories/database/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>数据库系统: 聊聊存储和组提交 (group commit)</title>
-      <link>https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/</link>
+      <link>https://blog.crazyark.me/p/group-commit-with-direct-io-and-fsync/</link>
       <pubDate>Sat, 21 Aug 2021 12:36:51 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/</guid>
+      <guid>https://blog.crazyark.me/p/group-commit-with-direct-io-and-fsync/</guid>
       <description>众所周知，数据库管理系统需要满足数据操作的持久性，即保证操作的请求在返回之前，对应的数据一定是已经保存在非易失性存储中 &amp;ndash; 通常来说，就是磁盘。</description>
     </item>
     
     <item>
       <title>Raft on RocksDB -- 共享日志</title>
-      <link>https://blog.crazyark.xyz/p/raft-and-share-log/</link>
+      <link>https://blog.crazyark.me/p/raft-and-share-log/</link>
       <pubDate>Tue, 17 Aug 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/raft-and-share-log/</guid>
+      <guid>https://blog.crazyark.me/p/raft-and-share-log/</guid>
       <description>自上次更新博客起已经有三年时间了，这期间经历了留学、毕业、工作等很多事情，个中滋味只有自己知道。博客重开，希望文笔和思路上能比以前进步一点点</description>
     </item>
     

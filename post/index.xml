@@ -2,174 +2,174 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on 石沉溪洞 -- Ark&#39;s Blog</title>
-    <link>https://blog.crazyark.xyz/post/</link>
+    <link>https://blog.crazyark.me/post/</link>
     <description>Recent content in Posts on 石沉溪洞 -- Ark&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Fri, 03 Feb 2023 13:56:33 +0800</lastBuildDate><atom:link href="https://blog.crazyark.xyz/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 03 Feb 2023 13:56:33 +0800</lastBuildDate><atom:link href="https://blog.crazyark.me/post/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>又一个 binlog 解析器 -- Yet Another Binlog Parser</title>
-      <link>https://blog.crazyark.xyz/p/yet-another-binlog-parser/</link>
+      <link>https://blog.crazyark.me/p/yet-another-binlog-parser/</link>
       <pubDate>Fri, 03 Feb 2023 13:56:33 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/yet-another-binlog-parser/</guid>
+      <guid>https://blog.crazyark.me/p/yet-another-binlog-parser/</guid>
       <description>Although the article was originally written in Chinese, with the help of ChatGPT, I was able to provide an English translation. If you want to read the English version, please jump to here for reading. 为什么要再造一个轮子？ 造轮子是程序员的浪漫！🥰 在前东家工作的时候，我设</description>
     </item>
     
     <item>
       <title>代码杂谈：超时与取消（转载）</title>
-      <link>https://blog.crazyark.xyz/p/timeouts-and-cancellation-for-humans/</link>
+      <link>https://blog.crazyark.me/p/timeouts-and-cancellation-for-humans/</link>
       <pubDate>Sat, 07 May 2022 16:14:00 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/timeouts-and-cancellation-for-humans/</guid>
+      <guid>https://blog.crazyark.me/p/timeouts-and-cancellation-for-humans/</guid>
       <description>转载自 Nathaniel J. Smith 的一篇博客，原文是 Timeouts and cancellation for humans，发表于 2018 年 1 月 11 日（所以注意文中的链接和内容的时效性），本文仅仅是对原文的一个翻译。 注：</description>
     </item>
     
     <item>
       <title>代码杂谈：无锁编程（一）</title>
-      <link>https://blog.crazyark.xyz/p/lock-free-linked-list-and-epoch-gc/</link>
+      <link>https://blog.crazyark.me/p/lock-free-linked-list-and-epoch-gc/</link>
       <pubDate>Sun, 28 Nov 2021 20:44:45 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/lock-free-linked-list-and-epoch-gc/</guid>
+      <guid>https://blog.crazyark.me/p/lock-free-linked-list-and-epoch-gc/</guid>
       <description>缘起 俗话说的好，作为一个在数据库团队做 Kubernetes 开发的同学，不能做到编写 B 树至少要做到心里有 B 数。因此最近闲暇时间一直在研究可持久化的 B 树怎么写，接</description>
     </item>
     
     <item>
       <title>代码杂谈：结构化并发</title>
-      <link>https://blog.crazyark.xyz/p/structured-concurrency/</link>
+      <link>https://blog.crazyark.me/p/structured-concurrency/</link>
       <pubDate>Tue, 14 Sep 2021 08:37:50 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/structured-concurrency/</guid>
+      <guid>https://blog.crazyark.me/p/structured-concurrency/</guid>
       <description>最近阅读的几篇文章都是围绕着编程来的。在我看来，编程语言/模型/抽象的一大重要目的是在保证核心功能和性能的基础上，让开发人员更容易地开发出不</description>
     </item>
     
     <item>
       <title>代码杂谈：协程</title>
-      <link>https://blog.crazyark.xyz/p/coroutines-rust-and-go/</link>
+      <link>https://blog.crazyark.me/p/coroutines-rust-and-go/</link>
       <pubDate>Thu, 09 Sep 2021 00:37:00 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/coroutines-rust-and-go/</guid>
+      <guid>https://blog.crazyark.me/p/coroutines-rust-and-go/</guid>
       <description>协程是对子程序（subroutine）的一种扩展，它允许执行流程被挂起和恢复 [1]。 随着越来越多的编程语言的支持，协程这个概念也被更多的人所</description>
     </item>
     
     <item>
       <title>数据库系统: 聊聊存储和组提交 (group commit)</title>
-      <link>https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/</link>
+      <link>https://blog.crazyark.me/p/group-commit-with-direct-io-and-fsync/</link>
       <pubDate>Sat, 21 Aug 2021 12:36:51 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/group-commit-with-direct-io-and-fsync/</guid>
+      <guid>https://blog.crazyark.me/p/group-commit-with-direct-io-and-fsync/</guid>
       <description>众所周知，数据库管理系统需要满足数据操作的持久性，即保证操作的请求在返回之前，对应的数据一定是已经保存在非易失性存储中 &amp;ndash; 通常来说，就是磁盘。</description>
     </item>
     
     <item>
       <title>Raft on RocksDB -- 共享日志</title>
-      <link>https://blog.crazyark.xyz/p/raft-and-share-log/</link>
+      <link>https://blog.crazyark.me/p/raft-and-share-log/</link>
       <pubDate>Tue, 17 Aug 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/raft-and-share-log/</guid>
+      <guid>https://blog.crazyark.me/p/raft-and-share-log/</guid>
       <description>自上次更新博客起已经有三年时间了，这期间经历了留学、毕业、工作等很多事情，个中滋味只有自己知道。博客重开，希望文笔和思路上能比以前进步一点点</description>
     </item>
     
     <item>
       <title>哈希表 -- 哈希冲突</title>
-      <link>https://blog.crazyark.xyz/p/hash-table-collision/</link>
+      <link>https://blog.crazyark.me/p/hash-table-collision/</link>
       <pubDate>Thu, 16 Aug 2018 14:55:23 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/hash-table-collision/</guid>
+      <guid>https://blog.crazyark.me/p/hash-table-collision/</guid>
       <description>Hash table &amp;ndash; Collision 在计算机科学中，哈希表 (hash table) 是一个非常重要的数据结构，它帮助我们快速的进行插入和查询。理论上来说，在表中查询一次的耗时应该是 O(1) 的。这里</description>
     </item>
     
     <item>
       <title>第四届天池中间件性能挑战赛感想</title>
-      <link>https://blog.crazyark.xyz/p/awrace-2018/</link>
+      <link>https://blog.crazyark.me/p/awrace-2018/</link>
       <pubDate>Wed, 01 Aug 2018 19:59:45 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/awrace-2018/</guid>
+      <guid>https://blog.crazyark.me/p/awrace-2018/</guid>
       <description>从报名比赛开始到现在将近四个月了，终于告一段落，最终拿到了季军也很开心。这三个月中我学到了很多有用的工程知识，顺便把 C++ 又摸熟了。初赛代码实在</description>
     </item>
     
     <item>
       <title>Linux IO 多路复用 —— Epoll</title>
-      <link>https://blog.crazyark.xyz/p/epoll/</link>
+      <link>https://blog.crazyark.me/p/epoll/</link>
       <pubDate>Mon, 16 Apr 2018 19:51:21 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/epoll/</guid>
+      <guid>https://blog.crazyark.me/p/epoll/</guid>
       <description>&lt;p&gt;Epoll 是 Linux 平台上独有的一组编程接口，用于监听多个文件描述符上的 IO 事件。Epoll 相对于 select/poll 的优势在于即使监听了大量的文件描述符，性能也非常好。Epoll API 支持两种监听方式：edge-triggered (EPOLLET) 和 level_triggered (default)。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>布隆过滤器 (Bloom Filter)</title>
-      <link>https://blog.crazyark.xyz/p/bloom-filter/</link>
+      <link>https://blog.crazyark.me/p/bloom-filter/</link>
       <pubDate>Mon, 16 Apr 2018 13:02:27 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/bloom-filter/</guid>
+      <guid>https://blog.crazyark.me/p/bloom-filter/</guid>
       <description>&lt;p&gt;布隆过滤器 (Bloom Filter) 是一个空间高效的&lt;strong&gt;概率&lt;/strong&gt;数据结构，它能够用来测试是否一个元素在一个集合中。布隆过滤器存在着 false positive (返回存在，其实不存在），但是不存在 false negative (返回不存在，其实存在)。集合中的元素越多，false positive 的概率就越高。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>最长回文子串 Manacher 算法 (Longest Palindromic Substring -- Manacher&#39;s Algorithm)</title>
-      <link>https://blog.crazyark.xyz/p/manachers-algorithm/</link>
+      <link>https://blog.crazyark.me/p/manachers-algorithm/</link>
       <pubDate>Fri, 13 Apr 2018 01:50:51 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/manachers-algorithm/</guid>
+      <guid>https://blog.crazyark.me/p/manachers-algorithm/</guid>
       <description>&lt;p&gt;Emm，这篇其实在 2017 年 9 月就打算写了，到现在才填上，再不填又要忘记了&amp;hellip;&lt;/p&gt;
 &lt;p&gt;字符串界的明星回文串，总是有各种稀奇古怪难搞的题目，比如说这道最长回文子串 (Longest Palindromic Substring)，显而易见的算法复杂度是 $O(n^2)$，而这个 Manacher&amp;rsquo;s Algorithm 则可以在 $O(n)$ 的时间给出答案。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>博弈论-公平组合游戏 (Game Theory -- Impartial Combinatorial Games)</title>
-      <link>https://blog.crazyark.xyz/p/game-theory/</link>
+      <link>https://blog.crazyark.me/p/game-theory/</link>
       <pubDate>Wed, 11 Oct 2017 00:40:08 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/game-theory/</guid>
+      <guid>https://blog.crazyark.me/p/game-theory/</guid>
       <description>&lt;p&gt;上回说到接下来都是图算法&amp;hellip; 这个，我食个言 🙃&lt;/p&gt;
 &lt;p&gt;做题目碰到了博弈论，对这方面我真是完全不了解，还是要学习一个。本篇文章主要介绍组合游戏中的 Impartial Combinatorial Games，结构和内容均参考自 CMU Thomas S. Ferguson 教授的博弈论讲稿，结合我自己的思考。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>二部图的最大匹配 (Maximum Matching in Bipartite Graph)</title>
-      <link>https://blog.crazyark.xyz/p/maximum-matching-in-bipartite-graph/</link>
+      <link>https://blog.crazyark.me/p/maximum-matching-in-bipartite-graph/</link>
       <pubDate>Tue, 26 Sep 2017 22:26:08 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/maximum-matching-in-bipartite-graph/</guid>
+      <guid>https://blog.crazyark.me/p/maximum-matching-in-bipartite-graph/</guid>
       <description>&lt;p&gt;上几篇博文主要是关于范围更新和范围查询的几个数据结构，接下去的主题是图论和图算法，希望能够学习和回忆起大部分图算法。&lt;/p&gt;
 &lt;p&gt;今天遇到一个问题，可以转化成二部图(bipartite graph)上的完美匹配的存在性问题，我们先来看一下完美匹配的理论，Hall&amp;rsquo;s Marriage theorem；然后介绍两个算法，用于解决完美匹配的超集——最大匹配问题。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>稀疏表和并行二分查找 (Sparse Table &amp; Parallel Binary Search)</title>
-      <link>https://blog.crazyark.xyz/p/hourrank23/</link>
+      <link>https://blog.crazyark.me/p/hourrank23/</link>
       <pubDate>Sun, 10 Sep 2017 01:06:11 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/hourrank23/</guid>
+      <guid>https://blog.crazyark.me/p/hourrank23/</guid>
       <description>&lt;p&gt;不刷题不知道自己菜，越刷题越发现自己🙄 —— 记 HourRank23 被虐。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>二叉索引树/树状数组 (Binary Indexed Tree)</title>
-      <link>https://blog.crazyark.xyz/p/binary-indexed-tree/</link>
+      <link>https://blog.crazyark.me/p/binary-indexed-tree/</link>
       <pubDate>Fri, 08 Sep 2017 22:23:50 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/binary-indexed-tree/</guid>
+      <guid>https://blog.crazyark.me/p/binary-indexed-tree/</guid>
       <description>&lt;p&gt;Binary Indexed Tree/Fenwick tree 的树构成方式我一直很疑惑，总是似懂非懂。现在终于弄清楚了它的节点的父子关系，记录下来防止忘记。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>线段树 (Segment Tree)</title>
-      <link>https://blog.crazyark.xyz/p/segment-tree/</link>
+      <link>https://blog.crazyark.me/p/segment-tree/</link>
       <pubDate>Fri, 08 Sep 2017 12:58:11 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/segment-tree/</guid>
+      <guid>https://blog.crazyark.me/p/segment-tree/</guid>
       <description>&lt;p&gt;本篇为WCIPEG上关于SegmentTree的翻译稿，除了删去了几个小节，其余行文结构将完全一致。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;线段树&lt;/strong&gt;是一种非常灵活的数据结构，它可以帮助我们高效地完成对底层数组区间查询或是修改。顾名思义，线段树可以被想象成底层数组区间构成的一棵树，它的基本思想是分治。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>神奇的组合数 (AGC019-F Mysterious Combinators)</title>
-      <link>https://blog.crazyark.xyz/p/agc019-mysterious-combinators/</link>
+      <link>https://blog.crazyark.me/p/agc019-mysterious-combinators/</link>
       <pubDate>Wed, 06 Sep 2017 21:16:06 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/agc019-mysterious-combinators/</guid>
+      <guid>https://blog.crazyark.me/p/agc019-mysterious-combinators/</guid>
       <description>&lt;p&gt;原题目在 AtCoder Grand Contest 019，F - Yes or No。&lt;/p&gt;
 &lt;p&gt;把它改成数学题，题目大意如下：&lt;/p&gt;
 &lt;blockquote&gt;
@@ -180,10 +180,10 @@
     
     <item>
       <title>最长递增子序列 (Longest Increasing Subsequence)</title>
-      <link>https://blog.crazyark.xyz/p/longest-increasing-subsequence/</link>
+      <link>https://blog.crazyark.me/p/longest-increasing-subsequence/</link>
       <pubDate>Fri, 01 Sep 2017 15:41:22 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/longest-increasing-subsequence/</guid>
+      <guid>https://blog.crazyark.me/p/longest-increasing-subsequence/</guid>
       <description>&lt;p&gt;最长递增子序列算法，原本以为已经记住了最快的算法，看来是记性太差，今天碰到一道题目又忘记了怎么做 🙄&lt;/p&gt;
 &lt;p&gt;三种做法：DP，Sort + LCS，DP + BS，我只记得第一种DP了 &amp;hellip;&lt;/p&gt;
 &lt;p&gt;然后咱们顺便把某道题目做了 🤣&lt;/p&gt;</description>
@@ -191,10 +191,10 @@
     
     <item>
       <title>SIGFPE When Doing DivQ</title>
-      <link>https://blog.crazyark.xyz/p/cpp-sigfpe/</link>
+      <link>https://blog.crazyark.me/p/cpp-sigfpe/</link>
       <pubDate>Sun, 27 Aug 2017 17:38:37 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/cpp-sigfpe/</guid>
+      <guid>https://blog.crazyark.me/p/cpp-sigfpe/</guid>
       <description>&lt;p&gt;第一次遇到了除0以外的SIGFPE，记录一下。&lt;/p&gt;
 &lt;h3 id=&#34;症状&#34;&gt;症状&lt;/h3&gt;
 &lt;p&gt;在使用以下函数的时候，假定 a = 1e18, b = 1e18, m = 1e9 + 7 就会触发 SIGFPE。&lt;/p&gt;
@@ -208,10 +208,10 @@
     
     <item>
       <title>整数的超幂 (Project Euler #188 -- The Hyperexponentiation of A Number)</title>
-      <link>https://blog.crazyark.xyz/p/project-euler-188/</link>
+      <link>https://blog.crazyark.me/p/project-euler-188/</link>
       <pubDate>Fri, 25 Aug 2017 21:32:26 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/project-euler-188/</guid>
+      <guid>https://blog.crazyark.me/p/project-euler-188/</guid>
       <description>&lt;p&gt;接上次的博文，我们来解决大整数分解问题，并最终解决 Project Euler #188。&lt;/p&gt;
 &lt;p&gt;回忆一下，问题要求解的是 $a\uparrow\uparrow b \ (\textrm{mod} \ m)$，其中 $1 \le a, b, m \le 10^{18}$。&lt;/p&gt;
 &lt;p&gt;其实这里的整数在整数分解领域并不算太大，之前并没有学习过这类的算法，正好也算是补上了。在这里我使用了 Pollard Rho 算法，其他的算法还有 Fermat Rho 和 Quadratic Sieve 算法。&lt;/p&gt;</description>
@@ -219,10 +219,10 @@
     
     <item>
       <title>非质数的欧拉定理扩展 (Euler Theorem for Non-coprime)</title>
-      <link>https://blog.crazyark.xyz/p/euler-theorem-for-noncoprime/</link>
+      <link>https://blog.crazyark.me/p/euler-theorem-for-noncoprime/</link>
       <pubDate>Wed, 23 Aug 2017 22:02:59 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/euler-theorem-for-noncoprime/</guid>
+      <guid>https://blog.crazyark.me/p/euler-theorem-for-noncoprime/</guid>
       <description>&lt;p&gt;刚遇到一道可怕的题目，迭代次幂(tetration)在超级大的范围下快速求解对某个模数的幂，模数范围在 1 到 1e18 之间。&lt;/p&gt;
 &lt;p&gt;OK，这道题其实思路很清晰，用欧拉定理降幂，但是最难的部分在于&lt;/p&gt;
 &lt;ol&gt;
@@ -234,10 +234,10 @@
     
     <item>
       <title>多项式哈希及Theu-Morse序列 (Polynomial Hash and Theu-Morse Sequence)</title>
-      <link>https://blog.crazyark.xyz/p/polynomial-hash-and-theu-morse-sequence/</link>
+      <link>https://blog.crazyark.me/p/polynomial-hash-and-theu-morse-sequence/</link>
       <pubDate>Mon, 21 Aug 2017 23:58:42 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/polynomial-hash-and-theu-morse-sequence/</guid>
+      <guid>https://blog.crazyark.me/p/polynomial-hash-and-theu-morse-sequence/</guid>
       <description>&lt;p&gt;前两天刷 Hackerrank 上的 &lt;a class=&#34;link&#34; href=&#34;https://www.hackerrank.com/contests/gs-codesprint/challenges&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Contest&lt;/a&gt;，给了两天时间，没想到被最后一题卡成🐶，谨记录思考和收获。&lt;/p&gt;
 &lt;p&gt;原题目在 &lt;a class=&#34;link&#34; href=&#34;https://www.hackerrank.com/contests/gs-codesprint/challenges/transaction-certificates&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
@@ -246,19 +246,19 @@
     
     <item>
       <title>无向带权图图全局最小割 Stoer-Wagner 算法 (Stoer-Wagner Algorithm -- Global Min-Cut in Undirected Weighted Graphs)</title>
-      <link>https://blog.crazyark.xyz/p/stoer-wagner-algorithm/</link>
+      <link>https://blog.crazyark.me/p/stoer-wagner-algorithm/</link>
       <pubDate>Sat, 05 Aug 2017 22:14:01 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/stoer-wagner-algorithm/</guid>
+      <guid>https://blog.crazyark.me/p/stoer-wagner-algorithm/</guid>
       <description>&lt;p&gt;最近碰到一道题目，求一个图的全局最小割，可惜图论博主学的不太好，至今只记得一个求s-t最大流/最小割的 ford-fulkerson。想了想总不能做$n^2$次最大流吧，最终还是求助了维基百科 🤣&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>优化比较次数的排序算法 (Ford Johnson Algorithm)</title>
-      <link>https://blog.crazyark.xyz/p/ford-johnson-algorithm/</link>
+      <link>https://blog.crazyark.me/p/ford-johnson-algorithm/</link>
       <pubDate>Fri, 04 Aug 2017 14:15:35 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/ford-johnson-algorithm/</guid>
+      <guid>https://blog.crazyark.me/p/ford-johnson-algorithm/</guid>
       <description>&lt;p&gt;偶然发现 AtCoder，上去注册了准备试试，结果卡在practice contest&amp;hellip;&lt;/p&gt;
 &lt;p&gt;问题倒是很简单：&lt;/p&gt;
 &lt;blockquote&gt;
@@ -284,10 +284,10 @@ In testset 3, N=5 and Q=7.&lt;/p&gt;
     
     <item>
       <title>滑动窗口中的最大值 (Sliding Window Maximum / Monotonic Queue)</title>
-      <link>https://blog.crazyark.xyz/p/monotonic-queue/</link>
+      <link>https://blog.crazyark.me/p/monotonic-queue/</link>
       <pubDate>Thu, 03 Aug 2017 15:55:02 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/monotonic-queue/</guid>
+      <guid>https://blog.crazyark.me/p/monotonic-queue/</guid>
       <description>&lt;p&gt;Leetcode 上有一道题叫 Sliding Window Maximum，虽然不是今天刷的，但是解法非常有意思，就记录一下。&lt;/p&gt;
 &lt;p&gt;问题描述：&lt;/p&gt;
 &lt;blockquote&gt;
@@ -304,10 +304,10 @@ In testset 3, N=5 and Q=7.&lt;/p&gt;
     
     <item>
       <title>有序矩阵中的第k大数 (Selection in X&#43;Y or Sorted Matrices)</title>
-      <link>https://blog.crazyark.xyz/p/selection-in-x-y-or-sorted-matrices/</link>
+      <link>https://blog.crazyark.me/p/selection-in-x-y-or-sorted-matrices/</link>
       <pubDate>Wed, 02 Aug 2017 20:58:55 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/selection-in-x-y-or-sorted-matrices/</guid>
+      <guid>https://blog.crazyark.me/p/selection-in-x-y-or-sorted-matrices/</guid>
       <description>&lt;p&gt;今天在刷 leetcode 的时候遇到一道题目 &lt;a class=&#34;link&#34; href=&#34;https://leetcode.com/problems/kth-smallest-element-in-a-sorted-matrix/description/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Kth Smallest Element in a Sorted Matrix&lt;/a&gt;。&lt;/p&gt;
 &lt;p&gt;首先用一个 Min-Heap 就可以得到 O(klgn) (n为列数)的算法，实现放在最后。&lt;/p&gt;
@@ -318,19 +318,19 @@ In testset 3, N=5 and Q=7.&lt;/p&gt;
     
     <item>
       <title>Dynamic Proxy in Java</title>
-      <link>https://blog.crazyark.xyz/p/dynamic-proxy-java/</link>
+      <link>https://blog.crazyark.me/p/dynamic-proxy-java/</link>
       <pubDate>Sat, 29 Jul 2017 22:44:24 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/dynamic-proxy-java/</guid>
+      <guid>https://blog.crazyark.me/p/dynamic-proxy-java/</guid>
       <description>&lt;p&gt;虽然在一年前就知道了 Proxy 模式，但是基本没有尝试使用过，仅在框架里看到一些例子。昨天翻阅《大型网站系统与Java中间件实践》时，偶然发现了 Proxy 模式在 Java 中的应用 —— 动态代理，遂记录下来，顺便复习一下 Proxy 模式。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Boyer-Moore 投票算法 (Boyer-Moore Majority Voting Algorithm)</title>
-      <link>https://blog.crazyark.xyz/p/majority-voting/</link>
+      <link>https://blog.crazyark.me/p/majority-voting/</link>
       <pubDate>Fri, 28 Jul 2017 21:08:02 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/majority-voting/</guid>
+      <guid>https://blog.crazyark.me/p/majority-voting/</guid>
       <description>&lt;p&gt;刷leetcode时碰到的问题，本篇仅做简要描述，以及记录思考。&lt;/p&gt;
 &lt;p&gt;参考自: &lt;a class=&#34;link&#34; href=&#34;https://gregable.com/2013/10/majority-vote-algorithm-find-majority.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;https://gregable.com/2013/10/majority-vote-algorithm-find-majority.html&lt;/a&gt;，一篇写的非常好的博客&lt;/p&gt;
@@ -340,10 +340,10 @@ In testset 3, N=5 and Q=7.&lt;/p&gt;
     
     <item>
       <title>2017 Alibaba Middleware 24h Final (Just for Fun 😀)</title>
-      <link>https://blog.crazyark.xyz/p/awrace-topkn/</link>
+      <link>https://blog.crazyark.me/p/awrace-topkn/</link>
       <pubDate>Wed, 26 Jul 2017 16:59:26 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/awrace-topkn/</guid>
+      <guid>https://blog.crazyark.me/p/awrace-topkn/</guid>
       <description>&lt;p&gt;今年阿里中间件比赛的时候不巧博主心情不好，外加要准备期末考试，并没有参加，非常遗憾。不过好在好基友 &lt;a class=&#34;link&#34; href=&#34;https://ericfu.me&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Eric Fu&lt;/a&gt; 参加并获得了冠军！今年的主题是分布式数据库，如果想了解详情及复赛的解题思路请读者前往 Eric 的博客。&lt;/p&gt;
 &lt;p&gt;博主没有参加甚是遗憾，外加看到题目手痒难耐，遂问基友讨了最后的24h极客赛来玩一玩。&lt;/p&gt;

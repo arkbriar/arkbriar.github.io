@@ -3,17 +3,17 @@
     <head><meta charset='utf-8'>
 <meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='最近阅读的几篇文章都是围绕着编程来的。在我看来，编程语言/模型/抽象的一大重要目的是在保证核心功能和性能的基础上，让开发人员更容易地开发出不'><title>代码杂谈：结构化并发</title>
 
-<link rel='canonical' href='https://blog.crazyark.xyz/p/structured-concurrency/'>
+<link rel='canonical' href='https://blog.crazyark.me/p/structured-concurrency/'>
 
 <link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='代码杂谈：结构化并发'>
 <meta property='og:description' content='最近阅读的几篇文章都是围绕着编程来的。在我看来，编程语言/模型/抽象的一大重要目的是在保证核心功能和性能的基础上，让开发人员更容易地开发出不'>
-<meta property='og:url' content='https://blog.crazyark.xyz/p/structured-concurrency/'>
+<meta property='og:url' content='https://blog.crazyark.me/p/structured-concurrency/'>
 <meta property='og:site_name' content='石沉溪洞 -- Ark&#39;s Blog'>
-<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='rust' /><meta property='article:tag' content='structured-concurrency' /><meta property='article:tag' content='tokio' /><meta property='article:published_time' content='2021-09-14T08:37:50&#43;08:00'/><meta property='article:modified_time' content='2021-09-14T08:37:50&#43;08:00'/><meta property='og:image' content='https://blog.crazyark.xyz/p/structured-concurrency/img/eva0.jpeg' />
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='rust' /><meta property='article:tag' content='structured-concurrency' /><meta property='article:tag' content='tokio' /><meta property='article:published_time' content='2021-09-14T08:37:50&#43;08:00'/><meta property='article:modified_time' content='2021-09-14T08:37:50&#43;08:00'/><meta property='og:image' content='https://blog.crazyark.me/p/structured-concurrency/img/eva0.jpeg' />
 <meta name="twitter:site" content="@ImperiusDs">
     <meta name="twitter:creator" content="@ImperiusDs"><meta name="twitter:title" content="代码杂谈：结构化并发">
 <meta name="twitter:description" content="最近阅读的几篇文章都是围绕着编程来的。在我看来，编程语言/模型/抽象的一大重要目的是在保证核心功能和性能的基础上，让开发人员更容易地开发出不"><meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content='https://blog.crazyark.xyz/p/structured-concurrency/img/eva0.jpeg' />
+    <meta name="twitter:image" content='https://blog.crazyark.me/p/structured-concurrency/img/eva0.jpeg' />
     </head>
     <body class="
     article-page has-toc
@@ -47,7 +47,7 @@
 ">
     
         <div id="article-toolbar">
-            <a href="https://blog.crazyark.xyz" class="back-home">
+            <a href="https://blog.crazyark.me" class="back-home">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z"/>
   <polyline points="15 6 9 12 15 18" />

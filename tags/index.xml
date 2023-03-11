@@ -2,503 +2,503 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on 石沉溪洞 -- Ark&#39;s Blog</title>
-    <link>https://blog.crazyark.xyz/tags/</link>
+    <link>https://blog.crazyark.me/tags/</link>
     <description>Recent content in Tags on 石沉溪洞 -- Ark&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Fri, 03 Feb 2023 13:56:33 +0800</lastBuildDate><atom:link href="https://blog.crazyark.xyz/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 03 Feb 2023 13:56:33 +0800</lastBuildDate><atom:link href="https://blog.crazyark.me/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>binlog</title>
-      <link>https://blog.crazyark.xyz/tags/binlog/</link>
+      <link>https://blog.crazyark.me/tags/binlog/</link>
       <pubDate>Fri, 03 Feb 2023 13:56:33 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/binlog/</guid>
+      <guid>https://blog.crazyark.me/tags/binlog/</guid>
       <description></description>
     </item>
     
     <item>
       <title>cancellation token</title>
-      <link>https://blog.crazyark.xyz/tags/cancellation-token/</link>
+      <link>https://blog.crazyark.me/tags/cancellation-token/</link>
       <pubDate>Sat, 07 May 2022 16:14:00 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/cancellation-token/</guid>
+      <guid>https://blog.crazyark.me/tags/cancellation-token/</guid>
       <description></description>
     </item>
     
     <item>
       <title>timeout</title>
-      <link>https://blog.crazyark.xyz/tags/timeout/</link>
+      <link>https://blog.crazyark.me/tags/timeout/</link>
       <pubDate>Sat, 07 May 2022 16:14:00 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/timeout/</guid>
+      <guid>https://blog.crazyark.me/tags/timeout/</guid>
       <description></description>
     </item>
     
     <item>
       <title>epoch gc</title>
-      <link>https://blog.crazyark.xyz/tags/epoch-gc/</link>
+      <link>https://blog.crazyark.me/tags/epoch-gc/</link>
       <pubDate>Sun, 28 Nov 2021 20:44:45 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/epoch-gc/</guid>
+      <guid>https://blog.crazyark.me/tags/epoch-gc/</guid>
       <description></description>
     </item>
     
     <item>
       <title>lock free linked list</title>
-      <link>https://blog.crazyark.xyz/tags/lock-free-linked-list/</link>
+      <link>https://blog.crazyark.me/tags/lock-free-linked-list/</link>
       <pubDate>Sun, 28 Nov 2021 20:44:45 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/lock-free-linked-list/</guid>
+      <guid>https://blog.crazyark.me/tags/lock-free-linked-list/</guid>
       <description></description>
     </item>
     
     <item>
       <title>rust</title>
-      <link>https://blog.crazyark.xyz/tags/rust/</link>
+      <link>https://blog.crazyark.me/tags/rust/</link>
       <pubDate>Tue, 14 Sep 2021 08:37:50 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/rust/</guid>
+      <guid>https://blog.crazyark.me/tags/rust/</guid>
       <description></description>
     </item>
     
     <item>
       <title>structured-concurrency</title>
-      <link>https://blog.crazyark.xyz/tags/structured-concurrency/</link>
+      <link>https://blog.crazyark.me/tags/structured-concurrency/</link>
       <pubDate>Tue, 14 Sep 2021 08:37:50 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/structured-concurrency/</guid>
+      <guid>https://blog.crazyark.me/tags/structured-concurrency/</guid>
       <description></description>
     </item>
     
     <item>
       <title>tokio</title>
-      <link>https://blog.crazyark.xyz/tags/tokio/</link>
+      <link>https://blog.crazyark.me/tags/tokio/</link>
       <pubDate>Tue, 14 Sep 2021 08:37:50 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/tokio/</guid>
+      <guid>https://blog.crazyark.me/tags/tokio/</guid>
       <description></description>
     </item>
     
     <item>
       <title>coroutine</title>
-      <link>https://blog.crazyark.xyz/tags/coroutine/</link>
+      <link>https://blog.crazyark.me/tags/coroutine/</link>
       <pubDate>Thu, 09 Sep 2021 00:37:00 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/coroutine/</guid>
+      <guid>https://blog.crazyark.me/tags/coroutine/</guid>
       <description></description>
     </item>
     
     <item>
       <title>go</title>
-      <link>https://blog.crazyark.xyz/tags/go/</link>
+      <link>https://blog.crazyark.me/tags/go/</link>
       <pubDate>Thu, 09 Sep 2021 00:37:00 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/go/</guid>
+      <guid>https://blog.crazyark.me/tags/go/</guid>
       <description></description>
     </item>
     
     <item>
       <title>direct io</title>
-      <link>https://blog.crazyark.xyz/tags/direct-io/</link>
+      <link>https://blog.crazyark.me/tags/direct-io/</link>
       <pubDate>Sat, 21 Aug 2021 12:36:51 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/direct-io/</guid>
+      <guid>https://blog.crazyark.me/tags/direct-io/</guid>
       <description></description>
     </item>
     
     <item>
       <title>group commit</title>
-      <link>https://blog.crazyark.xyz/tags/group-commit/</link>
+      <link>https://blog.crazyark.me/tags/group-commit/</link>
       <pubDate>Sat, 21 Aug 2021 12:36:51 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/group-commit/</guid>
+      <guid>https://blog.crazyark.me/tags/group-commit/</guid>
       <description></description>
     </item>
     
     <item>
       <title>sync</title>
-      <link>https://blog.crazyark.xyz/tags/sync/</link>
+      <link>https://blog.crazyark.me/tags/sync/</link>
       <pubDate>Sat, 21 Aug 2021 12:36:51 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/sync/</guid>
+      <guid>https://blog.crazyark.me/tags/sync/</guid>
       <description></description>
     </item>
     
     <item>
       <title>raft</title>
-      <link>https://blog.crazyark.xyz/tags/raft/</link>
+      <link>https://blog.crazyark.me/tags/raft/</link>
       <pubDate>Tue, 17 Aug 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/raft/</guid>
+      <guid>https://blog.crazyark.me/tags/raft/</guid>
       <description></description>
     </item>
     
     <item>
       <title>write-ahead-log</title>
-      <link>https://blog.crazyark.xyz/tags/write-ahead-log/</link>
+      <link>https://blog.crazyark.me/tags/write-ahead-log/</link>
       <pubDate>Tue, 17 Aug 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/write-ahead-log/</guid>
+      <guid>https://blog.crazyark.me/tags/write-ahead-log/</guid>
       <description></description>
     </item>
     
     <item>
       <title>collision</title>
-      <link>https://blog.crazyark.xyz/tags/collision/</link>
+      <link>https://blog.crazyark.me/tags/collision/</link>
       <pubDate>Thu, 16 Aug 2018 14:55:23 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/collision/</guid>
+      <guid>https://blog.crazyark.me/tags/collision/</guid>
       <description></description>
     </item>
     
     <item>
       <title>hash</title>
-      <link>https://blog.crazyark.xyz/tags/hash/</link>
+      <link>https://blog.crazyark.me/tags/hash/</link>
       <pubDate>Thu, 16 Aug 2018 14:55:23 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/hash/</guid>
+      <guid>https://blog.crazyark.me/tags/hash/</guid>
       <description></description>
     </item>
     
     <item>
       <title>contest</title>
-      <link>https://blog.crazyark.xyz/tags/contest/</link>
+      <link>https://blog.crazyark.me/tags/contest/</link>
       <pubDate>Wed, 01 Aug 2018 19:59:45 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/contest/</guid>
+      <guid>https://blog.crazyark.me/tags/contest/</guid>
       <description></description>
     </item>
     
     <item>
       <title>middelware</title>
-      <link>https://blog.crazyark.xyz/tags/middelware/</link>
+      <link>https://blog.crazyark.me/tags/middelware/</link>
       <pubDate>Wed, 01 Aug 2018 19:59:45 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/middelware/</guid>
+      <guid>https://blog.crazyark.me/tags/middelware/</guid>
       <description></description>
     </item>
     
     <item>
       <title>epoll</title>
-      <link>https://blog.crazyark.xyz/tags/epoll/</link>
+      <link>https://blog.crazyark.me/tags/epoll/</link>
       <pubDate>Mon, 16 Apr 2018 19:51:21 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/epoll/</guid>
+      <guid>https://blog.crazyark.me/tags/epoll/</guid>
       <description></description>
     </item>
     
     <item>
       <title>linux</title>
-      <link>https://blog.crazyark.xyz/tags/linux/</link>
+      <link>https://blog.crazyark.me/tags/linux/</link>
       <pubDate>Mon, 16 Apr 2018 19:51:21 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/linux/</guid>
+      <guid>https://blog.crazyark.me/tags/linux/</guid>
       <description></description>
     </item>
     
     <item>
       <title>bloom filter</title>
-      <link>https://blog.crazyark.xyz/tags/bloom-filter/</link>
+      <link>https://blog.crazyark.me/tags/bloom-filter/</link>
       <pubDate>Mon, 16 Apr 2018 13:02:27 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/bloom-filter/</guid>
+      <guid>https://blog.crazyark.me/tags/bloom-filter/</guid>
       <description></description>
     </item>
     
     <item>
       <title>algorithm</title>
-      <link>https://blog.crazyark.xyz/tags/algorithm/</link>
+      <link>https://blog.crazyark.me/tags/algorithm/</link>
       <pubDate>Fri, 13 Apr 2018 01:50:51 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/algorithm/</guid>
+      <guid>https://blog.crazyark.me/tags/algorithm/</guid>
       <description></description>
     </item>
     
     <item>
       <title>longest palindromic substring</title>
-      <link>https://blog.crazyark.xyz/tags/longest-palindromic-substring/</link>
+      <link>https://blog.crazyark.me/tags/longest-palindromic-substring/</link>
       <pubDate>Fri, 13 Apr 2018 01:50:51 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/longest-palindromic-substring/</guid>
+      <guid>https://blog.crazyark.me/tags/longest-palindromic-substring/</guid>
       <description></description>
     </item>
     
     <item>
       <title>game theory</title>
-      <link>https://blog.crazyark.xyz/tags/game-theory/</link>
+      <link>https://blog.crazyark.me/tags/game-theory/</link>
       <pubDate>Wed, 11 Oct 2017 00:40:08 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/game-theory/</guid>
+      <guid>https://blog.crazyark.me/tags/game-theory/</guid>
       <description></description>
     </item>
     
     <item>
       <title>math</title>
-      <link>https://blog.crazyark.xyz/tags/math/</link>
+      <link>https://blog.crazyark.me/tags/math/</link>
       <pubDate>Wed, 11 Oct 2017 00:40:08 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/math/</guid>
+      <guid>https://blog.crazyark.me/tags/math/</guid>
       <description></description>
     </item>
     
     <item>
       <title>bipartite graph</title>
-      <link>https://blog.crazyark.xyz/tags/bipartite-graph/</link>
+      <link>https://blog.crazyark.me/tags/bipartite-graph/</link>
       <pubDate>Tue, 26 Sep 2017 22:26:08 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/bipartite-graph/</guid>
+      <guid>https://blog.crazyark.me/tags/bipartite-graph/</guid>
       <description></description>
     </item>
     
     <item>
       <title>graph</title>
-      <link>https://blog.crazyark.xyz/tags/graph/</link>
+      <link>https://blog.crazyark.me/tags/graph/</link>
       <pubDate>Tue, 26 Sep 2017 22:26:08 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/graph/</guid>
+      <guid>https://blog.crazyark.me/tags/graph/</guid>
       <description></description>
     </item>
     
     <item>
       <title>hall&#39;s marriage theorem</title>
-      <link>https://blog.crazyark.xyz/tags/halls-marriage-theorem/</link>
+      <link>https://blog.crazyark.me/tags/halls-marriage-theorem/</link>
       <pubDate>Tue, 26 Sep 2017 22:26:08 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/halls-marriage-theorem/</guid>
+      <guid>https://blog.crazyark.me/tags/halls-marriage-theorem/</guid>
       <description></description>
     </item>
     
     <item>
       <title>hopcraft-karp algorithm</title>
-      <link>https://blog.crazyark.xyz/tags/hopcraft-karp-algorithm/</link>
+      <link>https://blog.crazyark.me/tags/hopcraft-karp-algorithm/</link>
       <pubDate>Tue, 26 Sep 2017 22:26:08 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/hopcraft-karp-algorithm/</guid>
+      <guid>https://blog.crazyark.me/tags/hopcraft-karp-algorithm/</guid>
       <description></description>
     </item>
     
     <item>
       <title>hungarian algorithm</title>
-      <link>https://blog.crazyark.xyz/tags/hungarian-algorithm/</link>
+      <link>https://blog.crazyark.me/tags/hungarian-algorithm/</link>
       <pubDate>Tue, 26 Sep 2017 22:26:08 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/hungarian-algorithm/</guid>
+      <guid>https://blog.crazyark.me/tags/hungarian-algorithm/</guid>
       <description></description>
     </item>
     
     <item>
       <title>maximum matching</title>
-      <link>https://blog.crazyark.xyz/tags/maximum-matching/</link>
+      <link>https://blog.crazyark.me/tags/maximum-matching/</link>
       <pubDate>Tue, 26 Sep 2017 22:26:08 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/maximum-matching/</guid>
+      <guid>https://blog.crazyark.me/tags/maximum-matching/</guid>
       <description></description>
     </item>
     
     <item>
       <title>parallel binary search</title>
-      <link>https://blog.crazyark.xyz/tags/parallel-binary-search/</link>
+      <link>https://blog.crazyark.me/tags/parallel-binary-search/</link>
       <pubDate>Sun, 10 Sep 2017 01:06:11 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/parallel-binary-search/</guid>
+      <guid>https://blog.crazyark.me/tags/parallel-binary-search/</guid>
       <description></description>
     </item>
     
     <item>
       <title>sparse table</title>
-      <link>https://blog.crazyark.xyz/tags/sparse-table/</link>
+      <link>https://blog.crazyark.me/tags/sparse-table/</link>
       <pubDate>Sun, 10 Sep 2017 01:06:11 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/sparse-table/</guid>
+      <guid>https://blog.crazyark.me/tags/sparse-table/</guid>
       <description></description>
     </item>
     
     <item>
       <title>binary-indexed-tree</title>
-      <link>https://blog.crazyark.xyz/tags/binary-indexed-tree/</link>
+      <link>https://blog.crazyark.me/tags/binary-indexed-tree/</link>
       <pubDate>Fri, 08 Sep 2017 22:23:50 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/binary-indexed-tree/</guid>
+      <guid>https://blog.crazyark.me/tags/binary-indexed-tree/</guid>
       <description></description>
     </item>
     
     <item>
       <title>segment tree</title>
-      <link>https://blog.crazyark.xyz/tags/segment-tree/</link>
+      <link>https://blog.crazyark.me/tags/segment-tree/</link>
       <pubDate>Fri, 08 Sep 2017 12:58:11 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/segment-tree/</guid>
+      <guid>https://blog.crazyark.me/tags/segment-tree/</guid>
       <description></description>
     </item>
     
     <item>
       <title>combination</title>
-      <link>https://blog.crazyark.xyz/tags/combination/</link>
+      <link>https://blog.crazyark.me/tags/combination/</link>
       <pubDate>Wed, 06 Sep 2017 21:16:06 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/combination/</guid>
+      <guid>https://blog.crazyark.me/tags/combination/</guid>
       <description></description>
     </item>
     
     <item>
       <title>lis</title>
-      <link>https://blog.crazyark.xyz/tags/lis/</link>
+      <link>https://blog.crazyark.me/tags/lis/</link>
       <pubDate>Fri, 01 Sep 2017 15:41:22 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/lis/</guid>
+      <guid>https://blog.crazyark.me/tags/lis/</guid>
       <description></description>
     </item>
     
     <item>
       <title>assembly</title>
-      <link>https://blog.crazyark.xyz/tags/assembly/</link>
+      <link>https://blog.crazyark.me/tags/assembly/</link>
       <pubDate>Sun, 27 Aug 2017 17:38:37 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/assembly/</guid>
+      <guid>https://blog.crazyark.me/tags/assembly/</guid>
       <description></description>
     </item>
     
     <item>
       <title>intel</title>
-      <link>https://blog.crazyark.xyz/tags/intel/</link>
+      <link>https://blog.crazyark.me/tags/intel/</link>
       <pubDate>Sun, 27 Aug 2017 17:38:37 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/intel/</guid>
+      <guid>https://blog.crazyark.me/tags/intel/</guid>
       <description></description>
     </item>
     
     <item>
       <title>x86_64</title>
-      <link>https://blog.crazyark.xyz/tags/x86_64/</link>
+      <link>https://blog.crazyark.me/tags/x86_64/</link>
       <pubDate>Sun, 27 Aug 2017 17:38:37 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/x86_64/</guid>
+      <guid>https://blog.crazyark.me/tags/x86_64/</guid>
       <description></description>
     </item>
     
     <item>
       <title>project euler</title>
-      <link>https://blog.crazyark.xyz/tags/project-euler/</link>
+      <link>https://blog.crazyark.me/tags/project-euler/</link>
       <pubDate>Fri, 25 Aug 2017 21:32:26 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/project-euler/</guid>
+      <guid>https://blog.crazyark.me/tags/project-euler/</guid>
       <description></description>
     </item>
     
     <item>
       <title>euler theorem</title>
-      <link>https://blog.crazyark.xyz/tags/euler-theorem/</link>
+      <link>https://blog.crazyark.me/tags/euler-theorem/</link>
       <pubDate>Wed, 23 Aug 2017 22:02:59 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/euler-theorem/</guid>
+      <guid>https://blog.crazyark.me/tags/euler-theorem/</guid>
       <description></description>
     </item>
     
     <item>
       <title>non-coprime</title>
-      <link>https://blog.crazyark.xyz/tags/non-coprime/</link>
+      <link>https://blog.crazyark.me/tags/non-coprime/</link>
       <pubDate>Wed, 23 Aug 2017 22:02:59 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/non-coprime/</guid>
+      <guid>https://blog.crazyark.me/tags/non-coprime/</guid>
       <description></description>
     </item>
     
     <item>
       <title>graph theory</title>
-      <link>https://blog.crazyark.xyz/tags/graph-theory/</link>
+      <link>https://blog.crazyark.me/tags/graph-theory/</link>
       <pubDate>Sat, 05 Aug 2017 22:14:01 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/graph-theory/</guid>
+      <guid>https://blog.crazyark.me/tags/graph-theory/</guid>
       <description></description>
     </item>
     
     <item>
       <title>min-cut</title>
-      <link>https://blog.crazyark.xyz/tags/min-cut/</link>
+      <link>https://blog.crazyark.me/tags/min-cut/</link>
       <pubDate>Sat, 05 Aug 2017 22:14:01 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/min-cut/</guid>
+      <guid>https://blog.crazyark.me/tags/min-cut/</guid>
       <description></description>
     </item>
     
     <item>
       <title>sort</title>
-      <link>https://blog.crazyark.xyz/tags/sort/</link>
+      <link>https://blog.crazyark.me/tags/sort/</link>
       <pubDate>Fri, 04 Aug 2017 14:15:35 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/sort/</guid>
+      <guid>https://blog.crazyark.me/tags/sort/</guid>
       <description></description>
     </item>
     
     <item>
       <title>monotonic queue</title>
-      <link>https://blog.crazyark.xyz/tags/monotonic-queue/</link>
+      <link>https://blog.crazyark.me/tags/monotonic-queue/</link>
       <pubDate>Thu, 03 Aug 2017 15:55:02 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/monotonic-queue/</guid>
+      <guid>https://blog.crazyark.me/tags/monotonic-queue/</guid>
       <description></description>
     </item>
     
     <item>
       <title>design pattern</title>
-      <link>https://blog.crazyark.xyz/tags/design-pattern/</link>
+      <link>https://blog.crazyark.me/tags/design-pattern/</link>
       <pubDate>Sat, 29 Jul 2017 22:44:24 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/design-pattern/</guid>
+      <guid>https://blog.crazyark.me/tags/design-pattern/</guid>
       <description></description>
     </item>
     
     <item>
       <title>dynamic proxy</title>
-      <link>https://blog.crazyark.xyz/tags/dynamic-proxy/</link>
+      <link>https://blog.crazyark.me/tags/dynamic-proxy/</link>
       <pubDate>Sat, 29 Jul 2017 22:44:24 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/dynamic-proxy/</guid>
+      <guid>https://blog.crazyark.me/tags/dynamic-proxy/</guid>
       <description></description>
     </item>
     
     <item>
       <title>java</title>
-      <link>https://blog.crazyark.xyz/tags/java/</link>
+      <link>https://blog.crazyark.me/tags/java/</link>
       <pubDate>Sat, 29 Jul 2017 22:44:24 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/java/</guid>
+      <guid>https://blog.crazyark.me/tags/java/</guid>
       <description></description>
     </item>
     
     <item>
       <title>boyer-moore</title>
-      <link>https://blog.crazyark.xyz/tags/boyer-moore/</link>
+      <link>https://blog.crazyark.me/tags/boyer-moore/</link>
       <pubDate>Fri, 28 Jul 2017 21:08:02 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/boyer-moore/</guid>
+      <guid>https://blog.crazyark.me/tags/boyer-moore/</guid>
       <description></description>
     </item>
     
     <item>
       <title>majority vote</title>
-      <link>https://blog.crazyark.xyz/tags/majority-vote/</link>
+      <link>https://blog.crazyark.me/tags/majority-vote/</link>
       <pubDate>Fri, 28 Jul 2017 21:08:02 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/majority-vote/</guid>
+      <guid>https://blog.crazyark.me/tags/majority-vote/</guid>
       <description></description>
     </item>
     
     <item>
       <title>distributed system</title>
-      <link>https://blog.crazyark.xyz/tags/distributed-system/</link>
+      <link>https://blog.crazyark.me/tags/distributed-system/</link>
       <pubDate>Wed, 26 Jul 2017 16:59:26 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/distributed-system/</guid>
+      <guid>https://blog.crazyark.me/tags/distributed-system/</guid>
       <description></description>
     </item>
     
     <item>
       <title>parallel computing</title>
-      <link>https://blog.crazyark.xyz/tags/parallel-computing/</link>
+      <link>https://blog.crazyark.me/tags/parallel-computing/</link>
       <pubDate>Wed, 26 Jul 2017 16:59:26 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/tags/parallel-computing/</guid>
+      <guid>https://blog.crazyark.me/tags/parallel-computing/</guid>
       <description></description>
     </item>
     

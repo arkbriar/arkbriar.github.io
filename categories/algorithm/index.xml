@@ -2,65 +2,65 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Algorithm on 石沉溪洞 -- Ark&#39;s Blog</title>
-    <link>https://blog.crazyark.xyz/categories/algorithm/</link>
+    <link>https://blog.crazyark.me/categories/algorithm/</link>
     <description>Recent content in Algorithm on 石沉溪洞 -- Ark&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Fri, 13 Apr 2018 01:50:51 +0800</lastBuildDate><atom:link href="https://blog.crazyark.xyz/categories/algorithm/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 13 Apr 2018 01:50:51 +0800</lastBuildDate><atom:link href="https://blog.crazyark.me/categories/algorithm/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>最长回文子串 Manacher 算法 (Longest Palindromic Substring -- Manacher&#39;s Algorithm)</title>
-      <link>https://blog.crazyark.xyz/p/manachers-algorithm/</link>
+      <link>https://blog.crazyark.me/p/manachers-algorithm/</link>
       <pubDate>Fri, 13 Apr 2018 01:50:51 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/manachers-algorithm/</guid>
+      <guid>https://blog.crazyark.me/p/manachers-algorithm/</guid>
       <description>&lt;p&gt;Emm，这篇其实在 2017 年 9 月就打算写了，到现在才填上，再不填又要忘记了&amp;hellip;&lt;/p&gt;
 &lt;p&gt;字符串界的明星回文串，总是有各种稀奇古怪难搞的题目，比如说这道最长回文子串 (Longest Palindromic Substring)，显而易见的算法复杂度是 $O(n^2)$，而这个 Manacher&amp;rsquo;s Algorithm 则可以在 $O(n)$ 的时间给出答案。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>二部图的最大匹配 (Maximum Matching in Bipartite Graph)</title>
-      <link>https://blog.crazyark.xyz/p/maximum-matching-in-bipartite-graph/</link>
+      <link>https://blog.crazyark.me/p/maximum-matching-in-bipartite-graph/</link>
       <pubDate>Tue, 26 Sep 2017 22:26:08 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/maximum-matching-in-bipartite-graph/</guid>
+      <guid>https://blog.crazyark.me/p/maximum-matching-in-bipartite-graph/</guid>
       <description>&lt;p&gt;上几篇博文主要是关于范围更新和范围查询的几个数据结构，接下去的主题是图论和图算法，希望能够学习和回忆起大部分图算法。&lt;/p&gt;
 &lt;p&gt;今天遇到一个问题，可以转化成二部图(bipartite graph)上的完美匹配的存在性问题，我们先来看一下完美匹配的理论，Hall&amp;rsquo;s Marriage theorem；然后介绍两个算法，用于解决完美匹配的超集——最大匹配问题。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>稀疏表和并行二分查找 (Sparse Table &amp; Parallel Binary Search)</title>
-      <link>https://blog.crazyark.xyz/p/hourrank23/</link>
+      <link>https://blog.crazyark.me/p/hourrank23/</link>
       <pubDate>Sun, 10 Sep 2017 01:06:11 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/hourrank23/</guid>
+      <guid>https://blog.crazyark.me/p/hourrank23/</guid>
       <description>&lt;p&gt;不刷题不知道自己菜，越刷题越发现自己🙄 —— 记 HourRank23 被虐。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>二叉索引树/树状数组 (Binary Indexed Tree)</title>
-      <link>https://blog.crazyark.xyz/p/binary-indexed-tree/</link>
+      <link>https://blog.crazyark.me/p/binary-indexed-tree/</link>
       <pubDate>Fri, 08 Sep 2017 22:23:50 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/binary-indexed-tree/</guid>
+      <guid>https://blog.crazyark.me/p/binary-indexed-tree/</guid>
       <description>&lt;p&gt;Binary Indexed Tree/Fenwick tree 的树构成方式我一直很疑惑，总是似懂非懂。现在终于弄清楚了它的节点的父子关系，记录下来防止忘记。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>线段树 (Segment Tree)</title>
-      <link>https://blog.crazyark.xyz/p/segment-tree/</link>
+      <link>https://blog.crazyark.me/p/segment-tree/</link>
       <pubDate>Fri, 08 Sep 2017 12:58:11 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/segment-tree/</guid>
+      <guid>https://blog.crazyark.me/p/segment-tree/</guid>
       <description>&lt;p&gt;本篇为WCIPEG上关于SegmentTree的翻译稿，除了删去了几个小节，其余行文结构将完全一致。&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;线段树&lt;/strong&gt;是一种非常灵活的数据结构，它可以帮助我们高效地完成对底层数组区间查询或是修改。顾名思义，线段树可以被想象成底层数组区间构成的一棵树，它的基本思想是分治。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>最长递增子序列 (Longest Increasing Subsequence)</title>
-      <link>https://blog.crazyark.xyz/p/longest-increasing-subsequence/</link>
+      <link>https://blog.crazyark.me/p/longest-increasing-subsequence/</link>
       <pubDate>Fri, 01 Sep 2017 15:41:22 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/longest-increasing-subsequence/</guid>
+      <guid>https://blog.crazyark.me/p/longest-increasing-subsequence/</guid>
       <description>&lt;p&gt;最长递增子序列算法，原本以为已经记住了最快的算法，看来是记性太差，今天碰到一道题目又忘记了怎么做 🙄&lt;/p&gt;
 &lt;p&gt;三种做法：DP，Sort + LCS，DP + BS，我只记得第一种DP了 &amp;hellip;&lt;/p&gt;
 &lt;p&gt;然后咱们顺便把某道题目做了 🤣&lt;/p&gt;</description>
@@ -68,10 +68,10 @@
     
     <item>
       <title>整数的超幂 (Project Euler #188 -- The Hyperexponentiation of A Number)</title>
-      <link>https://blog.crazyark.xyz/p/project-euler-188/</link>
+      <link>https://blog.crazyark.me/p/project-euler-188/</link>
       <pubDate>Fri, 25 Aug 2017 21:32:26 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/project-euler-188/</guid>
+      <guid>https://blog.crazyark.me/p/project-euler-188/</guid>
       <description>&lt;p&gt;接上次的博文，我们来解决大整数分解问题，并最终解决 Project Euler #188。&lt;/p&gt;
 &lt;p&gt;回忆一下，问题要求解的是 $a\uparrow\uparrow b \ (\textrm{mod} \ m)$，其中 $1 \le a, b, m \le 10^{18}$。&lt;/p&gt;
 &lt;p&gt;其实这里的整数在整数分解领域并不算太大，之前并没有学习过这类的算法，正好也算是补上了。在这里我使用了 Pollard Rho 算法，其他的算法还有 Fermat Rho 和 Quadratic Sieve 算法。&lt;/p&gt;</description>
@@ -79,19 +79,19 @@
     
     <item>
       <title>无向带权图图全局最小割 Stoer-Wagner 算法 (Stoer-Wagner Algorithm -- Global Min-Cut in Undirected Weighted Graphs)</title>
-      <link>https://blog.crazyark.xyz/p/stoer-wagner-algorithm/</link>
+      <link>https://blog.crazyark.me/p/stoer-wagner-algorithm/</link>
       <pubDate>Sat, 05 Aug 2017 22:14:01 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/stoer-wagner-algorithm/</guid>
+      <guid>https://blog.crazyark.me/p/stoer-wagner-algorithm/</guid>
       <description>&lt;p&gt;最近碰到一道题目，求一个图的全局最小割，可惜图论博主学的不太好，至今只记得一个求s-t最大流/最小割的 ford-fulkerson。想了想总不能做$n^2$次最大流吧，最终还是求助了维基百科 🤣&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>优化比较次数的排序算法 (Ford Johnson Algorithm)</title>
-      <link>https://blog.crazyark.xyz/p/ford-johnson-algorithm/</link>
+      <link>https://blog.crazyark.me/p/ford-johnson-algorithm/</link>
       <pubDate>Fri, 04 Aug 2017 14:15:35 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/ford-johnson-algorithm/</guid>
+      <guid>https://blog.crazyark.me/p/ford-johnson-algorithm/</guid>
       <description>&lt;p&gt;偶然发现 AtCoder，上去注册了准备试试，结果卡在practice contest&amp;hellip;&lt;/p&gt;
 &lt;p&gt;问题倒是很简单：&lt;/p&gt;
 &lt;blockquote&gt;
@@ -117,10 +117,10 @@ In testset 3, N=5 and Q=7.&lt;/p&gt;
     
     <item>
       <title>滑动窗口中的最大值 (Sliding Window Maximum / Monotonic Queue)</title>
-      <link>https://blog.crazyark.xyz/p/monotonic-queue/</link>
+      <link>https://blog.crazyark.me/p/monotonic-queue/</link>
       <pubDate>Thu, 03 Aug 2017 15:55:02 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/monotonic-queue/</guid>
+      <guid>https://blog.crazyark.me/p/monotonic-queue/</guid>
       <description>&lt;p&gt;Leetcode 上有一道题叫 Sliding Window Maximum，虽然不是今天刷的，但是解法非常有意思，就记录一下。&lt;/p&gt;
 &lt;p&gt;问题描述：&lt;/p&gt;
 &lt;blockquote&gt;
@@ -137,10 +137,10 @@ In testset 3, N=5 and Q=7.&lt;/p&gt;
     
     <item>
       <title>有序矩阵中的第k大数 (Selection in X&#43;Y or Sorted Matrices)</title>
-      <link>https://blog.crazyark.xyz/p/selection-in-x-y-or-sorted-matrices/</link>
+      <link>https://blog.crazyark.me/p/selection-in-x-y-or-sorted-matrices/</link>
       <pubDate>Wed, 02 Aug 2017 20:58:55 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/selection-in-x-y-or-sorted-matrices/</guid>
+      <guid>https://blog.crazyark.me/p/selection-in-x-y-or-sorted-matrices/</guid>
       <description>&lt;p&gt;今天在刷 leetcode 的时候遇到一道题目 &lt;a class=&#34;link&#34; href=&#34;https://leetcode.com/problems/kth-smallest-element-in-a-sorted-matrix/description/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Kth Smallest Element in a Sorted Matrix&lt;/a&gt;。&lt;/p&gt;
 &lt;p&gt;首先用一个 Min-Heap 就可以得到 O(klgn) (n为列数)的算法，实现放在最后。&lt;/p&gt;
@@ -151,10 +151,10 @@ In testset 3, N=5 and Q=7.&lt;/p&gt;
     
     <item>
       <title>Boyer-Moore 投票算法 (Boyer-Moore Majority Voting Algorithm)</title>
-      <link>https://blog.crazyark.xyz/p/majority-voting/</link>
+      <link>https://blog.crazyark.me/p/majority-voting/</link>
       <pubDate>Fri, 28 Jul 2017 21:08:02 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/p/majority-voting/</guid>
+      <guid>https://blog.crazyark.me/p/majority-voting/</guid>
       <description>&lt;p&gt;刷leetcode时碰到的问题，本篇仅做简要描述，以及记录思考。&lt;/p&gt;
 &lt;p&gt;参考自: &lt;a class=&#34;link&#34; href=&#34;https://gregable.com/2013/10/majority-vote-algorithm-find-majority.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;https://gregable.com/2013/10/majority-vote-algorithm-find-majority.html&lt;/a&gt;，一篇写的非常好的博客&lt;/p&gt;

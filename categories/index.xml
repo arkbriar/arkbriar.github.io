@@ -2,197 +2,197 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Categories on 石沉溪洞 -- Ark&#39;s Blog</title>
-    <link>https://blog.crazyark.xyz/categories/</link>
+    <link>https://blog.crazyark.me/categories/</link>
     <description>Recent content in Categories on 石沉溪洞 -- Ark&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Fri, 03 Feb 2023 13:56:33 +0800</lastBuildDate><atom:link href="https://blog.crazyark.xyz/categories/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 03 Feb 2023 13:56:33 +0800</lastBuildDate><atom:link href="https://blog.crazyark.me/categories/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Golang</title>
-      <link>https://blog.crazyark.xyz/categories/golang/</link>
+      <link>https://blog.crazyark.me/categories/golang/</link>
       <pubDate>Fri, 03 Feb 2023 13:56:33 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/categories/golang/</guid>
+      <guid>https://blog.crazyark.me/categories/golang/</guid>
       <description></description>
     </item>
     
     <item>
       <title>MySQL</title>
-      <link>https://blog.crazyark.xyz/categories/mysql/</link>
+      <link>https://blog.crazyark.me/categories/mysql/</link>
       <pubDate>Fri, 03 Feb 2023 13:56:33 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/categories/mysql/</guid>
+      <guid>https://blog.crazyark.me/categories/mysql/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Programming</title>
-      <link>https://blog.crazyark.xyz/categories/programming/</link>
+      <link>https://blog.crazyark.me/categories/programming/</link>
       <pubDate>Sat, 07 May 2022 16:14:00 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/categories/programming/</guid>
+      <guid>https://blog.crazyark.me/categories/programming/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Lock-Free Programming</title>
-      <link>https://blog.crazyark.xyz/categories/lock-free-programming/</link>
+      <link>https://blog.crazyark.me/categories/lock-free-programming/</link>
       <pubDate>Sun, 28 Nov 2021 20:44:45 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/categories/lock-free-programming/</guid>
+      <guid>https://blog.crazyark.me/categories/lock-free-programming/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Concurrency</title>
-      <link>https://blog.crazyark.xyz/categories/concurrency/</link>
+      <link>https://blog.crazyark.me/categories/concurrency/</link>
       <pubDate>Tue, 14 Sep 2021 08:37:50 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/categories/concurrency/</guid>
+      <guid>https://blog.crazyark.me/categories/concurrency/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Coroutine</title>
-      <link>https://blog.crazyark.xyz/categories/coroutine/</link>
+      <link>https://blog.crazyark.me/categories/coroutine/</link>
       <pubDate>Tue, 14 Sep 2021 08:37:50 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/categories/coroutine/</guid>
+      <guid>https://blog.crazyark.me/categories/coroutine/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Database</title>
-      <link>https://blog.crazyark.xyz/categories/database/</link>
+      <link>https://blog.crazyark.me/categories/database/</link>
       <pubDate>Sat, 21 Aug 2021 12:36:51 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/categories/database/</guid>
+      <guid>https://blog.crazyark.me/categories/database/</guid>
       <description></description>
     </item>
     
     <item>
       <title>File System</title>
-      <link>https://blog.crazyark.xyz/categories/file-system/</link>
+      <link>https://blog.crazyark.me/categories/file-system/</link>
       <pubDate>Sat, 21 Aug 2021 12:36:51 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/categories/file-system/</guid>
+      <guid>https://blog.crazyark.me/categories/file-system/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Operating System</title>
-      <link>https://blog.crazyark.xyz/categories/operating-system/</link>
+      <link>https://blog.crazyark.me/categories/operating-system/</link>
       <pubDate>Sat, 21 Aug 2021 12:36:51 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/categories/operating-system/</guid>
+      <guid>https://blog.crazyark.me/categories/operating-system/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Consensus</title>
-      <link>https://blog.crazyark.xyz/categories/consensus/</link>
+      <link>https://blog.crazyark.me/categories/consensus/</link>
       <pubDate>Tue, 17 Aug 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://blog.crazyark.xyz/categories/consensus/</guid>
+      <guid>https://blog.crazyark.me/categories/consensus/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Data Structure</title>
-      <link>https://blog.crazyark.xyz/categories/data-structure/</link>
+      <link>https://blog.crazyark.me/categories/data-structure/</link>
       <pubDate>Thu, 16 Aug 2018 14:55:23 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/categories/data-structure/</guid>
+      <guid>https://blog.crazyark.me/categories/data-structure/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Contest</title>
-      <link>https://blog.crazyark.xyz/categories/contest/</link>
+      <link>https://blog.crazyark.me/categories/contest/</link>
       <pubDate>Wed, 01 Aug 2018 19:59:45 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/categories/contest/</guid>
+      <guid>https://blog.crazyark.me/categories/contest/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Tianchi</title>
-      <link>https://blog.crazyark.xyz/categories/tianchi/</link>
+      <link>https://blog.crazyark.me/categories/tianchi/</link>
       <pubDate>Wed, 01 Aug 2018 19:59:45 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/categories/tianchi/</guid>
+      <guid>https://blog.crazyark.me/categories/tianchi/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Linux</title>
-      <link>https://blog.crazyark.xyz/categories/linux/</link>
+      <link>https://blog.crazyark.me/categories/linux/</link>
       <pubDate>Mon, 16 Apr 2018 19:51:21 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/categories/linux/</guid>
+      <guid>https://blog.crazyark.me/categories/linux/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Network</title>
-      <link>https://blog.crazyark.xyz/categories/network/</link>
+      <link>https://blog.crazyark.me/categories/network/</link>
       <pubDate>Mon, 16 Apr 2018 19:51:21 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/categories/network/</guid>
+      <guid>https://blog.crazyark.me/categories/network/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Algorithm</title>
-      <link>https://blog.crazyark.xyz/categories/algorithm/</link>
+      <link>https://blog.crazyark.me/categories/algorithm/</link>
       <pubDate>Fri, 13 Apr 2018 01:50:51 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/categories/algorithm/</guid>
+      <guid>https://blog.crazyark.me/categories/algorithm/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Game Theory</title>
-      <link>https://blog.crazyark.xyz/categories/game-theory/</link>
+      <link>https://blog.crazyark.me/categories/game-theory/</link>
       <pubDate>Wed, 11 Oct 2017 00:40:08 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/categories/game-theory/</guid>
+      <guid>https://blog.crazyark.me/categories/game-theory/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Math</title>
-      <link>https://blog.crazyark.xyz/categories/math/</link>
+      <link>https://blog.crazyark.me/categories/math/</link>
       <pubDate>Wed, 11 Oct 2017 00:40:08 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/categories/math/</guid>
+      <guid>https://blog.crazyark.me/categories/math/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Graph Theory</title>
-      <link>https://blog.crazyark.xyz/categories/graph-theory/</link>
+      <link>https://blog.crazyark.me/categories/graph-theory/</link>
       <pubDate>Tue, 26 Sep 2017 22:26:08 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/categories/graph-theory/</guid>
+      <guid>https://blog.crazyark.me/categories/graph-theory/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Assembly</title>
-      <link>https://blog.crazyark.xyz/categories/assembly/</link>
+      <link>https://blog.crazyark.me/categories/assembly/</link>
       <pubDate>Sun, 27 Aug 2017 17:38:37 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/categories/assembly/</guid>
+      <guid>https://blog.crazyark.me/categories/assembly/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Java</title>
-      <link>https://blog.crazyark.xyz/categories/java/</link>
+      <link>https://blog.crazyark.me/categories/java/</link>
       <pubDate>Sat, 29 Jul 2017 22:44:24 +0800</pubDate>
       
-      <guid>https://blog.crazyark.xyz/categories/java/</guid>
+      <guid>https://blog.crazyark.me/categories/java/</guid>
       <description></description>
     </item>
     
