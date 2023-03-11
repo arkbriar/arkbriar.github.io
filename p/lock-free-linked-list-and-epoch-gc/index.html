@@ -120,7 +120,7 @@
 
 
                 <time class="article-time--reading">
-                    阅读时长: 10 分钟
+                    阅读时长: 9 分钟
                 </time>
             </div>
         
@@ -220,7 +220,7 @@
 </li>
 </ul>
 <p>在插入和删除的向后查找过程中，如果遇到 <code>INV</code> 的无效节点，则会尝试使用 CAS 删除该节点，从而达到缩短链表的目的。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="n">CAS</span><span class="p">(</span><span class="n">prev</span><span class="p">.</span><span class="n">next</span><span class="p">,</span><span class="w"> </span><span class="n">cur_ptr</span><span class="p">,</span><span class="w"> </span><span class="n">cur</span><span class="p">.</span><span class="n">next</span><span class="p">)</span><span class="w">
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="no">CAS</span><span class="p">(</span><span class="n">prev</span><span class="p">.</span><span class="n">next</span><span class="p">,</span><span class="w"> </span><span class="n">cur_ptr</span><span class="p">,</span><span class="w"> </span><span class="n">cur</span><span class="p">.</span><span class="n">next</span><span class="p">)</span><span class="w">
 </span></span></span></code></pre></div><p>在基于 CAS 的无锁链表算法中，通常会遇到两个问题：</p>
 <ol>
 <li>ABA 问题：即在一个线程 1 进行原子 CAS 操作前，它看到的是 A，此时另一个线程 2将它修改为 B，然后又修改回 A，然后线程 1 再进行 CAS 操作时将会成功完成操作并可能破坏数据结构；
@@ -478,7 +478,7 @@
         
             2018 - 
         
-        2022 石沉溪洞 -- Ark&#39;s Blog
+        2023 石沉溪洞 -- Ark&#39;s Blog
     </section>
     
     <section class="powerby">

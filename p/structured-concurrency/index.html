@@ -355,7 +355,7 @@ Carl Lerche 尝试在 tokio 的 issue [4] 中提出了一个结构化并发的�
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">timer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tokio</span>::<span class="n">time</span>::<span class="n">sleep</span><span class="p">(</span><span class="n">timeout</span><span class="p">));</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">request_fut</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">async_do_request</span><span class="p">();</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">tokio</span>::<span class="n">select</span><span class="o">!</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">tokio</span>::<span class="fm">select!</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">_</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">timer</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="c1">// request_fut is dropped immediately before exiting current block
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">            </span><span class="nb">Err</span><span class="p">(</span><span class="s">&#34;timeout&#34;</span><span class="p">)</span><span class="w">
@@ -548,7 +548,7 @@ Carl Lerche 尝试在 tokio 的 issue [4] 中提出了一个结构化并发的�
         
             2018 - 
         
-        2022 石沉溪洞 -- Ark&#39;s Blog
+        2023 石沉溪洞 -- Ark&#39;s Blog
     </section>
     
     <section class="powerby">

@@ -251,7 +251,7 @@
 </span></span><span class="line"><span class="cl">    <span class="o">...</span>
 </span></span><span class="line"><span class="cl"><span class="o">}</span>
 </span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">BufferedFileSegmentReadProcessor</span> <span class="kd">implements</span> <span class="n">Runnable</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">bufferMargin</span> <span class="o">=</span> <span class="n">1024</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">bufferMargin</span> <span class="o">=</span> <span class="mi">1024</span><span class="o">;</span>
 </span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="n">FileSegmentLoader</span> <span class="n">fileSegmentLoader</span><span class="o">;</span>
 </span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="kt">int</span> <span class="n">bufferSize</span><span class="o">;</span>
 </span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="kt">byte</span><span class="o">[]</span> <span class="n">readBuffer</span><span class="o">;</span>
@@ -264,10 +264,10 @@
 </span></span><span class="line"><span class="cl">    <span class="o">}</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">    <span class="kd">private</span> <span class="kt">int</span> <span class="nf">readSegment</span><span class="o">(</span><span class="n">FileSegment</span> <span class="n">segment</span><span class="o">,</span> <span class="kt">byte</span><span class="o">[]</span> <span class="n">readBuffer</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
-</span></span><span class="line"><span class="cl">        <span class="kt">int</span> <span class="n">limit</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">int</span> <span class="n">limit</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
 </span></span><span class="line"><span class="cl">        <span class="k">try</span> <span class="o">(</span><span class="n">RandomAccessFile</span> <span class="n">randomAccessFile</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RandomAccessFile</span><span class="o">(</span><span class="n">segment</span><span class="o">.</span><span class="na">getFile</span><span class="o">(),</span> <span class="s">&#34;r&#34;</span><span class="o">))</span> <span class="o">{</span>
 </span></span><span class="line"><span class="cl">            <span class="n">randomAccessFile</span><span class="o">.</span><span class="na">seek</span><span class="o">(</span><span class="n">segment</span><span class="o">.</span><span class="na">getOffset</span><span class="o">());</span>
-</span></span><span class="line"><span class="cl">            <span class="n">limit</span> <span class="o">=</span> <span class="n">randomAccessFile</span><span class="o">.</span><span class="na">read</span><span class="o">(</span><span class="n">readBuffer</span><span class="o">,</span> <span class="n">0</span><span class="o">,</span> <span class="n">readBuffer</span><span class="o">.</span><span class="na">length</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">limit</span> <span class="o">=</span> <span class="n">randomAccessFile</span><span class="o">.</span><span class="na">read</span><span class="o">(</span><span class="n">readBuffer</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">readBuffer</span><span class="o">.</span><span class="na">length</span><span class="o">);</span>
 </span></span><span class="line"><span class="cl">        <span class="o">}</span>
 </span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">limit</span><span class="o">;</span>
 </span></span><span class="line"><span class="cl">    <span class="o">}</span>
@@ -455,7 +455,7 @@
         
             2018 - 
         
-        2022 石沉溪洞 -- Ark&#39;s Blog
+        2023 石沉溪洞 -- Ark&#39;s Blog
     </section>
     
     <section class="powerby">

@@ -148,12 +148,12 @@
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">int</span> <span class="nf">close</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1">// 顺序读写
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">ssize_t</span> <span class="nf">read</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">nbyte</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="n">ssize_t</span> <span class="nf">write</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">nbyte</span><span class="p">);</span>
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">ssize_t</span> <span class="nf">read</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">nbyte</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">ssize_t</span> <span class="nf">write</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">nbyte</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="c1">// 指定 offset 读写
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">ssize_t</span> <span class="nf">pread</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">nbyte</span><span class="p">,</span> <span class="n">off_t</span> <span class="n">offset</span><span class="p">);</span>
-</span></span><span class="line"><span class="cl"><span class="n">ssize_t</span> <span class="nf">pwrite</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">nbyte</span><span class="p">,</span> <span class="n">off_t</span> <span class="n">offset</span><span class="p">);</span>
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">ssize_t</span> <span class="nf">pread</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">nbyte</span><span class="p">,</span> <span class="kt">off_t</span> <span class="n">offset</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">ssize_t</span> <span class="nf">pwrite</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">nbyte</span><span class="p">,</span> <span class="kt">off_t</span> <span class="n">offset</span><span class="p">);</span>
 </span></span></code></pre></div><p>这里面有个不可避免的问题：当我进行一次文件操作的时候，它是否已经写入了磁盘，aka. 即使断电也不会丢失？了解过操作系统的同学都知道，为了优化性能，操作系统通常会提供一种叫 page cache 的东西。</p>
 <ul>
 <li>当使用 read 操作进行一次读取的时候，如果此时对应文件磁盘区域的 page cache 不存在，操作系统会先将对应的内容读取出来，存放到 page cache 中，然后在其中拷贝对应的内容到用户给的 buffer 中，再返回给用户；</li>
@@ -175,7 +175,7 @@
 <li>另外，操作系统并不是傻傻地等着应用程序读取/写入时才准备 page cache，根据访问模式/用户 advice，操作系统会提前读取磁盘内容到内存中，使得 CPU 和磁盘更充分的被（同时）使用起来，从而提升应用程序 IO 操作的响应速度；</li>
 </ul>
 <p>综上，操作系统默认就会打开 page cache 来提升性能。但由于控制 page cache 的操作系统无法完全预测应用程序的行为，反而会导致某些应用程序无法有效利用磁盘，例如数据库管理系统。不必惊慌，想必很多同学都了解过 direct (unbuffered) IO，可以关闭操作系统的 page cache，让每一次读写都直接<em>经过</em>磁盘。几乎所有的操作系统都提供了 direct IO，例如在 Linux 上我们用这种方式打开文件：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">fd</span> <span class="o">=</span> <span class="n">open</span><span class="p">(</span><span class="s">&#34;/path/to/file&#34;</span><span class="p">,</span> <span class="n">O_CREAT</span> <span class="o">|</span> <span class="n">O_RDWR</span> <span class="o">|</span> <span class="n">O_DIRECT</span><span class="p">);</span>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">fd</span> <span class="o">=</span> <span class="nf">open</span><span class="p">(</span><span class="s">&#34;/path/to/file&#34;</span><span class="p">,</span> <span class="n">O_CREAT</span> <span class="o">|</span> <span class="n">O_RDWR</span> <span class="o">|</span> <span class="n">O_DIRECT</span><span class="p">);</span>
 </span></span></code></pre></div><p>就获得了一个关闭 page cache 的文件描述符。此时再进行 read/write 操作时，会直接对磁盘设备进行请求。由于请求的特殊性（DMA 操作），Linux 甚至对传入 read/write 的参数有额外的要求：buf 的地址要做到扇区对齐，且大小是扇区的整数倍。显然，在类似顺序写（日志文件）这种场景中，direct IO 省去了内存拷贝，也更能完全发挥磁盘的性能。也正因此，数据库系统会倾向于使用 direct 的方式来写它的 write-ahead log（WAL）。</p>
 <p>听起来到这里我们就已经能保证数据库管理系统的持久性了：用 direct 的方式写 WAL，写入成功意味着磁盘上持久化成功了，可是真的如此么？</p>
 <h3 id="同步写-synchronized-write">同步写 (Synchronized Write)</h3>
@@ -183,7 +183,7 @@
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-C" data-lang="C"><span class="line"><span class="cl"><span class="n">O_SYNC</span>                  <span class="c1">// 同步写，操作系统将尽可能等待数据真的写入到对应的设备
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">O_DSYNC</span>                 <span class="c1">// 同步写，和上面有所区别的是只等待数据写入到对应的设备
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span>
-</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">fsync</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">);</span>      <span class="c1">// 同步文件修改，操作系统将尽可能地将所有文件修改写入到设备
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">fsync</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">);</span>      <span class="c1">// 同步文件修改，操作系统将尽可能地将所有文件修改写入到设备
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">int</span> <span class="nf">fdatasync</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">);</span>  <span class="c1">// 同步文件修改，不过也是只等待数据和数据相关元数据写入设备
 </span></span></span></code></pre></div><p>为什么要有这些参数和接口？因为除了操作系统有缓存，存储设备也有缓存（你搁这套娃呢），而direct write 只是将用户的 buffer 拷贝到了存储设备的缓存之中。当然热心的同学可能要问了，存储设备的缓存有什么用？AFAIK [5]，</p>
 <ul>
@@ -404,7 +404,7 @@
         
             2018 - 
         
-        2022 石沉溪洞 -- Ark&#39;s Blog
+        2023 石沉溪洞 -- Ark&#39;s Blog
     </section>
     
     <section class="powerby">
