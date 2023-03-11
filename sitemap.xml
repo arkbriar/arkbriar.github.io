@@ -2,28 +2,40 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://blog.crazyark.xyz/tags/binlog/</loc>
+    <lastmod>2023-02-03T13:56:33+08:00</lastmod>
+  </url><url>
+    <loc>https://blog.crazyark.xyz/categories/</loc>
+    <lastmod>2023-02-03T13:56:33+08:00</lastmod>
+  </url><url>
+    <loc>https://blog.crazyark.xyz/categories/golang/</loc>
+    <lastmod>2023-02-03T13:56:33+08:00</lastmod>
+  </url><url>
+    <loc>https://blog.crazyark.xyz/categories/mysql/</loc>
+    <lastmod>2023-02-03T13:56:33+08:00</lastmod>
+  </url><url>
+    <loc>https://blog.crazyark.xyz/post/</loc>
+    <lastmod>2023-02-03T13:56:33+08:00</lastmod>
+  </url><url>
+    <loc>https://blog.crazyark.xyz/tags/</loc>
+    <lastmod>2023-02-03T13:56:33+08:00</lastmod>
+  </url><url>
+    <loc>https://blog.crazyark.xyz/</loc>
+    <lastmod>2023-02-03T13:56:33+08:00</lastmod>
+  </url><url>
+    <loc>https://blog.crazyark.xyz/p/yet-another-binlog-parser/</loc>
+    <lastmod>2023-02-03T13:56:33+08:00</lastmod>
+  </url><url>
     <loc>https://blog.crazyark.xyz/tags/cancellation-token/</loc>
     <lastmod>2022-05-07T16:14:00+08:00</lastmod>
   </url><url>
-    <loc>https://blog.crazyark.xyz/categories/</loc>
-    <lastmod>2022-05-07T16:14:00+08:00</lastmod>
-  </url><url>
-    <loc>https://blog.crazyark.xyz/post/</loc>
-    <lastmod>2022-05-07T16:14:00+08:00</lastmod>
-  </url><url>
     <loc>https://blog.crazyark.xyz/categories/programming/</loc>
-    <lastmod>2022-05-07T16:14:00+08:00</lastmod>
-  </url><url>
-    <loc>https://blog.crazyark.xyz/tags/</loc>
     <lastmod>2022-05-07T16:14:00+08:00</lastmod>
   </url><url>
     <loc>https://blog.crazyark.xyz/tags/timeout/</loc>
     <lastmod>2022-05-07T16:14:00+08:00</lastmod>
   </url><url>
     <loc>https://blog.crazyark.xyz/p/timeouts-and-cancellation-for-humans/</loc>
-    <lastmod>2022-05-07T16:14:00+08:00</lastmod>
-  </url><url>
-    <loc>https://blog.crazyark.xyz/</loc>
     <lastmod>2022-05-07T16:14:00+08:00</lastmod>
   </url><url>
     <loc>https://blog.crazyark.xyz/tags/epoch-gc/</loc>

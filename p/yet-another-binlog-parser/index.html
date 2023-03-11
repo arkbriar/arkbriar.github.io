@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Although the article was originally written in Chinese, with the help of ChatGPT, I was able to provide an English translation. If you want to read the English version, please jump to here for reading. 为什么要再造一个轮子？ 造轮子是程序员的浪漫！🥰 在前东家工作的时候，我设'><title>又一个 binlog 解析器 -- Yet Another Binlog Parser</title>
+
+<link rel='canonical' href='https://blog.crazyark.xyz/p/yet-another-binlog-parser/'>
+
+<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='又一个 binlog 解析器 -- Yet Another Binlog Parser'>
+<meta property='og:description' content='Although the article was originally written in Chinese, with the help of ChatGPT, I was able to provide an English translation. If you want to read the English version, please jump to here for reading. 为什么要再造一个轮子？ 造轮子是程序员的浪漫！🥰 在前东家工作的时候，我设'>
+<meta property='og:url' content='https://blog.crazyark.xyz/p/yet-another-binlog-parser/'>
+<meta property='og:site_name' content='石沉溪洞 -- Ark&#39;s Blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='binlog' /><meta property='article:published_time' content='2023-02-03T13:56:33&#43;08:00'/><meta property='article:modified_time' content='2023-02-03T13:56:33&#43;08:00'/><meta property='og:image' content='https://blog.crazyark.xyz/p/yet-another-binlog-parser/img/cover.png' />
+<meta name="twitter:site" content="@ImperiusDs">
+    <meta name="twitter:creator" content="@ImperiusDs"><meta name="twitter:title" content="又一个 binlog 解析器 -- Yet Another Binlog Parser">
+<meta name="twitter:description" content="Although the article was originally written in Chinese, with the help of ChatGPT, I was able to provide an English translation. If you want to read the English version, please jump to here for reading. 为什么要再造一个轮子？ 造轮子是程序员的浪漫！🥰 在前东家工作的时候，我设"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://blog.crazyark.xyz/p/yet-another-binlog-parser/img/cover.png' />
+    </head>
+    <body class="
+    article-page has-toc
+">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex 
+    
+        extended
+    
+">
+    
+        <div id="article-toolbar">
+            <a href="https://blog.crazyark.xyz" class="back-home">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="15 6 9 12 15 18" />
+</svg>
+
+
+
+                <span>返回</span>
+            </a>
+        </div>
+    
+<main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/p/yet-another-binlog-parser/">
+                <img src="/p/yet-another-binlog-parser/img/cover_hue5491a8376b6bfd0d21ba4cd4ca85181_362715_800x0_resize_box_3.png"
+                        srcset="/p/yet-another-binlog-parser/img/cover_hue5491a8376b6bfd0d21ba4cd4ca85181_362715_800x0_resize_box_3.png 800w, /p/yet-another-binlog-parser/img/cover_hue5491a8376b6bfd0d21ba4cd4ca85181_362715_1600x0_resize_box_3.png 1600w"
+                        width="800" 
+                        height="412" 
+                        loading="lazy"
+                        alt="Featured image of post 又一个 binlog 解析器 -- Yet Another Binlog Parser" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/golang/" >
+                Golang
+            </a>
+        
+            <a href="/categories/mysql/" >
+                MySQL
+            </a>
+        
+    </header>
+    
+
+    <h2 class="article-title">
+        <a href="/p/yet-another-binlog-parser/">又一个 binlog 解析器 -- Yet Another Binlog Parser</a>
+    </h2>
+
+    
+
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Feb 03, 2023</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 9 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+</div>
+</header>
+
+    <section class="article-content">
+    <p>Although the article was originally written in Chinese, with the help of ChatGPT, I was able to provide an English translation. If you want to read the English version, please jump to <a class="link" href="#why-do-we-need-to-reinvent-the-wheel" >here</a> for reading.</p>
+<h2 id="为什么要再造一个轮子">为什么要再造一个轮子？</h2>
+<blockquote>
+<p>造轮子是程序员的浪漫！🥰</p>
+</blockquote>
+<p>在前东家工作的时候，我设计了一个分布式场景下的备份恢复方案需要解析和操作 binlog。当时，我比较想要一个干净没有依赖的工具，因此没有选择用成熟的 Java 的库，而使用 Go 来进行了实现。在实现的过程中，我尝试了一些比较有意思的方式。最终效果是我用一周时间糊完了整个解析部分，并且支持了像模糊搜索等的一些比较有意思的功能，堪堪赶在跑路前完成。本文主要是记录一下当时的一些想法和其中一些有趣的部分。</p>
+<p>本文的代码<a class="link" href="https://github.com/polardb/polardbx-operator/tree/main/pkg/binlogtool"  target="_blank" rel="noopener"
+    >在 Github 上</a>，感谢前司同事们继续维护并最终将它开源。</p>
+<h2 id="简单介绍-binlog">简单介绍 Binlog</h2>
+<p>Binlog 是 binary log 的缩写，通常指 MySQL 中实现的二进制日志。Binlog 包含了一系列的用来描述数据库变更情况的<strong>事件</strong>，例如建表、删表、增删改查等等。在 binlog 中，每一个事件都被编码成一段连续的二进制内容，其中包含了：</p>
+<ul>
+<li>固定的事件头，包含了事件类型、时间戳、事件长度等等；</li>
+<li>事件体，对每一个不同的事件类型事件体的内容和编码方式都不同；</li>
+</ul>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 94; 
+			flex-basis: 227px"
+	>
+	<a href="/p/yet-another-binlog-parser/img/binlog_event_header.png" data-size="340x358">
+		<img src="/p/yet-another-binlog-parser/img/binlog_event_header.png"
+			width="340"
+			height="358"
+			srcset="/p/yet-another-binlog-parser/img/binlog_event_header_hufa6fa0b91f889c0460e4f242276b284d_45436_480x0_resize_box_3.png 480w, /p/yet-another-binlog-parser/img/binlog_event_header_hufa6fa0b91f889c0460e4f242276b284d_45436_1024x0_resize_box_3.png 1024w"
+			loading="lazy"
+			alt="Binlog 事件头">
+	</a>
+	
+	<figcaption>Binlog 事件头</figcaption>
+	
+</figure></p>
+<p>Binlog 解析器的工作就是把编码后的事件解析成一个个内存中程序可操作的对象。值得注意的是，在 binlog 的衍化过程中，出现几个不同的版本，它们分别是 v1, v3 和 v4。其中 v2 从来没有正式发布过，因此可以忽略[1]。</p>
+<p>关于 binlog 的详细介绍网上有很多资料，这里不再赘述。你可以参考<a class="link" href="https://dev.mysql.com/doc/refman/8.0/en/binary-log.html"  target="_blank" rel="noopener"
+    >官方文档</a>或是其他资料。</p>
+<h2 id="一些有趣的尝试">一些有趣的尝试</h2>
+<p>通常来说，解析器这种东西都是体力活。特别是针对 binlog 这种编码方式稳定、事件数量几乎固定的日志，实现一个解析器最好的办法就是对每一个事件硬编码一个解析函数，例如 <code>go-mysql</code> 中对 <code>ROWS_EVENT</code> 的<a class="link" href="https://github.com/go-mysql-org/go-mysql/blob/master/replication/row_event.go#L86-L145"  target="_blank" rel="noopener"
+    >解码函数</a>的实现。这样的实现方式性能好，但是阅读起来非常费劲。同时，因为 Go “大道至简”的错误处理方式，编写出来的代码常常到处都是 <code>if err != nil</code>。而且二进制编解码的调试实在是费劲，想要尽快实现迫使我考虑一些其他的方法。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">e</span> <span class="o">*</span><span class="nx">TableMapEvent</span><span class="p">)</span> <span class="nf">Decode</span><span class="p">(</span><span class="nx">data</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// ...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="nx">err</span> <span class="kt">error</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="nx">metaData</span> <span class="p">[]</span><span class="kt">byte</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">metaData</span><span class="p">,</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">n</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nf">LengthEncodedString</span><span class="p">(</span><span class="nx">data</span><span class="p">[</span><span class="nx">pos</span><span class="p">:]);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">Trace</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">e</span><span class="p">.</span><span class="nf">decodeMeta</span><span class="p">(</span><span class="nx">metaData</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">Trace</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">pos</span> <span class="o">+=</span> <span class="nx">n</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// ...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">e</span><span class="p">.</span><span class="nf">decodeOptionalMeta</span><span class="p">(</span><span class="nx">data</span><span class="p">[</span><span class="nx">pos</span><span class="p">:]);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="nx">err</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h3 id="迭代器接口">迭代器接口</h3>
+<p>相比于回调接口，我更喜欢迭代器式的接口。因此，在我的实现中，接口是这样的：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">LogEventScanner</span> <span class="kd">interface</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">Next</span><span class="p">()</span> <span class="p">(</span><span class="nx">EventOffset</span><span class="p">,</span> <span class="nx">event</span><span class="p">.</span><span class="nx">LogEvent</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h3 id="声明式的解析器">声明式的解析器</h3>
+<p>经过我一番研究之后，我发现虽然整个编码方式看起来很复杂，但大部分都是一些固定的组合。例如，对各种整数的编码通常都是一样的经典 variable-length 编码，而对字符串的编码则大概率是下面几种方式的其中一个：</p>
+<ul>
+<li>一个编码后的整数代表长度，后面是对应长度的字节</li>
+<li>NUL 结尾的字节串</li>
+<li>和第一种方式一样，同时结尾有 NUL</li>
+</ul>
+<p>显然这些相同的编码方式可以变成一个个函数来调用。但是，使用函数并不能够避免连续而繁琐的错误处理。实际上，当时的我受到 SwiftUI 等框架的影响，脑中早就想到了一个方法：它需要把事件解码方式的声明和解码动作解耦，这样我就可以不用在调整事件布局的同时关注错误的处理了。类似地，我将这种方式实现的解析器成为一个声明式的解析器。与 SwiftUI 等框架相同，使用这种方式编写的代码在简单场景下非常精简，且极大地提高了可读性。</p>
+<p>在这种方式中，事件的解析过程使用一个 <code>Layout</code> 函数来声明（定义）。之所以用函数而不是 <code>XxxLayout</code> 结构体，是因为这种方式并不灵活。使用闭包可以完美地解决问题，我可以在闭包中塞各种临时状态，并且利用闭包的特性把它们传到各处。以下是 <code>QueryEvent</code> 的例子：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">QueryEvent</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">ThreadID</span>   <span class="kt">uint32</span>          <span class="s">`json:&#34;thread_id,omitempty&#34;`</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">ExecTime</span>   <span class="kt">uint32</span>          <span class="s">`json:&#34;exec_time&#34;`</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">ErrorCode</span>  <span class="kt">uint16</span>          <span class="s">`json:&#34;error_code&#34;`</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">Schema</span>     <span class="nx">str</span><span class="p">.</span><span class="nx">Str</span>         <span class="s">`json:&#34;schema&#34;`</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">Query</span>      <span class="nx">str</span><span class="p">.</span><span class="nx">Str</span>         <span class="s">`json:&#34;query&#34;`</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">StatusVars</span> <span class="nx">StatusVariables</span> <span class="s">`json:&#34;status_vars,omitempty&#34;`</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">d</span> <span class="o">*</span><span class="nx">QueryEvent</span><span class="p">)</span> <span class="nf">Layout</span><span class="p">(</span><span class="nx">version</span> <span class="kt">uint32</span><span class="p">,</span> <span class="nx">code</span> <span class="kt">byte</span><span class="p">,</span> <span class="nx">fde</span> <span class="o">*</span><span class="nx">FormatDescriptionEvent</span><span class="p">)</span> <span class="o">*</span><span class="nx">layout</span><span class="p">.</span><span class="nx">Layout</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="nx">schemaLength</span> <span class="kt">uint8</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="nx">statusVarsLength</span> <span class="kt">uint16</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="nx">layout</span><span class="p">.</span><span class="nf">Decl</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// Post header
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="nx">layout</span><span class="p">.</span><span class="nf">Number</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">d</span><span class="p">.</span><span class="nx">ThreadID</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">layout</span><span class="p">.</span><span class="nf">Number</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">d</span><span class="p">.</span><span class="nx">ExecTime</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">layout</span><span class="p">.</span><span class="nf">Number</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">schemaLength</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">layout</span><span class="p">.</span><span class="nf">Number</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">d</span><span class="p">.</span><span class="nx">ErrorCode</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">layout</span><span class="p">.</span><span class="nf">If</span><span class="p">(</span><span class="nx">version</span> <span class="o">==</span> <span class="nx">spec</span><span class="p">.</span><span class="nx">V4</span><span class="p">,</span> <span class="nx">layout</span><span class="p">.</span><span class="nf">Number</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">statusVarsLength</span><span class="p">)),</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		<span class="c1">// Payload
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="nx">layout</span><span class="p">.</span><span class="nf">If</span><span class="p">(</span><span class="nx">version</span> <span class="o">==</span> <span class="nx">spec</span><span class="p">.</span><span class="nx">V4</span><span class="p">,</span> <span class="nx">layout</span><span class="p">.</span><span class="nf">Area</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">statusVarsLength</span><span class="p">,</span> <span class="kd">func</span><span class="p">(</span><span class="nx">data</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)</span> <span class="p">(</span><span class="kt">int</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="nx">statusVarsLength</span><span class="p">),</span> <span class="nx">d</span><span class="p">.</span><span class="nx">StatusVars</span><span class="p">.</span><span class="nf">parseStatusVarsBlock</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="p">})),</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">layout</span><span class="p">.</span><span class="nf">Bytes</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">schemaLength</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">d</span><span class="p">.</span><span class="nx">Schema</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">layout</span><span class="p">.</span><span class="nf">Null</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">layout</span><span class="p">.</span><span class="nf">Bytes</span><span class="p">(</span><span class="nx">layout</span><span class="p">.</span><span class="nf">Infinite</span><span class="p">(),</span> <span class="o">&amp;</span><span class="nx">d</span><span class="p">.</span><span class="nx">Query</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">	<span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>相信即使你现在看不懂 <code>layout.Number</code> 等的是什么，你也能很快理解这就是在说 <code>QUERY_EVENT</code> 编码后的布局是这样的：</p>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 107; 
+			flex-basis: 258px"
+	>
+	<a href="/p/yet-another-binlog-parser/img/query_event_data.png" data-size="340x316">
+		<img src="/p/yet-another-binlog-parser/img/query_event_data.png"
+			width="340"
+			height="316"
+			srcset="/p/yet-another-binlog-parser/img/query_event_data_hua4b1c7c3057bb9f734790a6209f1d2bc_52705_480x0_resize_box_3.png 480w, /p/yet-another-binlog-parser/img/query_event_data_hua4b1c7c3057bb9f734790a6209f1d2bc_52705_1024x0_resize_box_3.png 1024w"
+			loading="lazy"
+			alt="QUERY EVENT DATA">
+	</a>
+	
+	<figcaption>QUERY EVENT DATA</figcaption>
+	
+</figure></p>
+<p>从 <code>layout.Number</code> 调用方式，我相信你已经能猜出这是怎么实现的了 &ndash; 它就是一个绑定到 <code>&amp;d.ThreadID</code> 这个 <code>int32</code> 类型的变量的一个解码器。对于不同的类型，我在 <code>layout</code> 包中实现了不同的解码器，我将它们称为 <code>Field</code>。以下是 <code>Number</code> 的实现：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">NumberField</span><span class="p">[</span><span class="nx">N</span> <span class="nx">constraints</span><span class="p">.</span><span class="nx">Integer</span> <span class="p">|</span> <span class="nx">constraints</span><span class="p">.</span><span class="nx">Float</span><span class="p">]</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">r</span> <span class="o">*</span><span class="nx">N</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">f</span> <span class="nx">NumberField</span><span class="p">[</span><span class="nx">N</span><span class="p">])</span> <span class="nf">FromBlock</span><span class="p">(</span><span class="nx">data</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)</span> <span class="p">(</span><span class="kt">int</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nf">checkDataSize</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nx">unsafe</span><span class="p">.</span><span class="nf">Sizeof</span><span class="p">(</span><span class="nf">N</span><span class="p">(</span><span class="mi">0</span><span class="p">))),</span> <span class="nx">data</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">err</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">utils</span><span class="p">.</span><span class="nf">ReadNumberLittleEndianHack</span><span class="p">(</span><span class="nx">f</span><span class="p">.</span><span class="nx">r</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="nx">unsafe</span><span class="p">.</span><span class="nf">Sizeof</span><span class="p">(</span><span class="nf">N</span><span class="p">(</span><span class="mi">0</span><span class="p">))),</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nx">Number</span><span class="p">[</span><span class="nx">N</span> <span class="nx">constraints</span><span class="p">.</span><span class="nx">Integer</span> <span class="p">|</span> <span class="nx">constraints</span><span class="p">.</span><span class="nx">Float</span><span class="p">](</span><span class="nx">r</span> <span class="o">*</span><span class="nx">N</span><span class="p">)</span> <span class="nx">NumberField</span><span class="p">[</span><span class="nx">N</span><span class="p">]</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="nx">NumberField</span><span class="p">[</span><span class="nx">N</span><span class="p">]{</span><span class="nx">r</span><span class="p">:</span> <span class="nx">r</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>最后依样画葫芦把所有事件类型都支持了就行。在这个过程中，繁琐的函数调用和错误处理不再是我写码的阻碍，反而是 MySQL 中恶心的编码方式和不详细的文档不时阻碍着我的步子 &ndash; 大部分时候，我必须要翻着 MySQL 的代码来理解为什么是这样编码的。</p>
+<p>有细心的同学可能会问了，这种方式会不会解码每一个事件都要生成一堆的 <code>Field</code> 小对象，会不会对性能有很大影响？你是对的，确实很影响，但也不是没有办法 🥵。 Binlog 的特性决定了它的解析过程一定是一个确定性的过程，意味着在确定了要解析哪条日志后，不管是日志中的哪个事件它的解码过程都是确定的 &ndash; 这提示了可以对每一个事件都缓存 <code>Layout</code> 的结果。在糊完了大部分事件之后，我就实现了这样的一个 cache。想要详细了解的可以参考的 <a class="link" href="https://github.com/polardb/polardbx-operator/blob/main/pkg/binlogtool/binlog/cache.go"  target="_blank" rel="noopener"
+    >binlog/cache.go</a> 这个文件。</p>
+<p>最终测试后，大约性能是单线程全字段解析约为 200 MB/s，测试环境是 MacBook Pro 13&rsquo;&rsquo; 2019, Intel。在我看来是完全足够的了，毕竟谁家的 binlog 写的速度有 200 MB（不考虑大事务），这么好的磁盘请一定邮寄给我测试一下。</p>
+<h3 id="模糊探测事件头">模糊探测事件头</h3>
+<p>有了解析器之后，我就可以造我自己的 CLI 工具了（嘿嘿嘿 😃）。如果你用过 <code>mysqlbinlog</code> 这个工具来查看过 binlog，相信你一定会用到 <code>--start-position</code> 这个参数来快速跳转到某个事件的开头。然而，由于 binlog 流式的特征，如果你指定的位置不是事件头，<code>mysqlbinlog</code> 就无法继续读下去了，它非常光棍地直接报错了 :) 是的，这很让人难受。这意味着我必须另外开一个计算器咔咔算出事件位置，然后再丢给 <code>mysqlbinlog</code>。每当这个时候，我都在想如果能随便帮我找到下一个事件输出就好，这样我很快就能二分找到想要的事件。</p>
+<p>理论上来说，从流里面探测事件的事件头是没法实现的。但幸运的是，现在的场景是文件，而且事件头里面恰好（不知道是不是故意地）留下了冗余信息： <code>event_length</code> 和 <code>next_position</code> 这两个字段。在读取文件的过程中，我们很容易地就能得知当前的位置，也就是 <code>current_position</code>。那么显而易见，<code>current_position + event_length = next_position</code> 必须成立。这是一个非常强的特征，如果符合的话，很大概率这个位置是一个合法的事件头。因此，探测的方式就决定是它了！实现的代码可以<a class="link" href="https://github.com/polardb/polardbx-operator/blob/0c9db54f02e832b15dc9b163c9bcf1424b2cd32b/pkg/binlogtool/binlog/scan.go#LL122-L208C2"  target="_blank" rel="noopener"
+    >看这里</a>。</p>
+<p>里面用了一个 <code>ring buffer</code> 的小技巧来减少内存开销。最终实现的效果就是，随便指定什么开始位置，只要下一个事件在探测长度内都能非常快地找到！</p>
+<h2 id="尾声和下集预告">尾声和下集预告</h2>
+<p>当然，造轮子的人永远不会满足，一些花里胡哨的功能也必不可少，例如事件过滤、原始事件、结束位置、事件校验、JSON 输出等等。在解析器的基础上，我同时编写了一个 2PC 事务的分析工具，用来完成我一开始讲的备份恢复方案中的一个步骤（毕竟我还是要吃饭的）。本文主要是简单记录了在实现这个解析器过程中的一些有意思的思考和尝试。下一篇应该会讲讲我的分布式备份方案，完全无锁哦，敬请期待 🥰。</p>
+<p>P.S. 方案专利应该快下来了吧，请不要告我&hellip;</p>
+<h2 id="参考文献">参考文献</h2>
+<p>[1] <a class="link" href="https://dev.mysql.com/doc/dev/mysql-server/latest/page_protocol_replication.html#sect_protocol_replication_binlog_version_v4"  target="_blank" rel="noopener"
+    >https://dev.mysql.com/doc/dev/mysql-server/latest/page_protocol_replication.html#sect_protocol_replication_binlog_version_v4</a></p>
+<p>[2] <a class="link" href="https://github.com/polardb/polardbx-operator/tree/main/pkg/binlogtool"  target="_blank" rel="noopener"
+    >https://github.com/polardb/polardbx-operator/tree/main/pkg/binlogtool</a></p>
+<blockquote>
+<p>Below is the English version translated by the ChatGPT. Thanks for his great contribution!</p>
+</blockquote>
+<h2 id="why-do-we-need-to-reinvent-the-wheel">Why do we need to reinvent the wheel?</h2>
+<blockquote>
+<p>Building your own tools is the romance of programmers! 🥰</p>
+</blockquote>
+<p>When I was working for my previous employer, I designed a backup and recovery plan for distributed scenarios that required parsing and operating binlog. At the time, I wanted a clean tool without dependencies, so instead of using mature Java libraries, I implemented it in Go. During the implementation process, I tried some interesting approaches. In the end, it took me a week to complete the entire parsing part and support some interesting features such as fuzzy search just before leaving. This article mainly records some of my thoughts at that time and some interesting parts.</p>
+<p>This article&rsquo;s code is available on Github (<a class="link" href="https://github.com/polardb/polardbx-operator/tree/main/pkg/binlogtool%29"  target="_blank" rel="noopener"
+    >https://github.com/polardb/polardbx-operator/tree/main/pkg/binlogtool)</a>. Thanks to my former colleagues for continuing to maintain it and eventually open sourcing it.</p>
+<h2 id="brief-introduction-to-binlog">Brief Introduction to Binlog</h2>
+<p>Binlog is short for binary log, which usually refers to the binary logs implemented in MySQL. Binlog contains a series of <strong>events</strong> used to describe changes made to the database, such as creating tables, deleting tables, inserting/updating/deleting data and so on. In binlog, each event is encoded into a continuous segment of binary content that includes:</p>
+<ul>
+<li>Fixed event header, which includes the event type, timestamp, event length and so on;</li>
+<li>Event body, the content and encoding method of which are different for each type of event.</li>
+</ul>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 94; 
+			flex-basis: 227px"
+	>
+	<a href="/p/yet-another-binlog-parser/img/binlog_event_header.png" data-size="340x358">
+		<img src="/p/yet-another-binlog-parser/img/binlog_event_header.png"
+			width="340"
+			height="358"
+			srcset="/p/yet-another-binlog-parser/img/binlog_event_header_hufa6fa0b91f889c0460e4f242276b284d_45436_480x0_resize_box_3.png 480w, /p/yet-another-binlog-parser/img/binlog_event_header_hufa6fa0b91f889c0460e4f242276b284d_45436_1024x0_resize_box_3.png 1024w"
+			loading="lazy"
+			alt="Binlog 事件头">
+	</a>
+	
+	<figcaption>Binlog 事件头</figcaption>
+	
+</figure></p>
+<p>The job of the Binlog parser is to decode encoded events into objects that can be operated on in memory by a program. It&rsquo;s worth noting that during the evolution of binlogs, several different versions have emerged: v1, v3, and v4. Version 2 was never officially released and can therefore be ignored[1].</p>
+<p>There are many resources online that provide detailed information about binlogs, so we won&rsquo;t go into further detail here. You can refer to the official documentation or other sources for more information.</p>
+<h2 id="some-interesting-attempts">Some interesting attempts</h2>
+<p>Generally speaking, a parser is a labor-intensive task. Especially for logs with stable encoding methods and almost fixed number of events like binlog, the best way to implement a parser is to hard-code a parsing function for each event, such as the implementation of the decoding function for <code>ROWS_EVENT</code> in <code>go-mysql</code>. This implementation has good performance but is very difficult to read. At the same time, because Go&rsquo;s error handling approach is &ldquo;simplest thing that could possibly work&rdquo;, code written often contains <code>if err != nil</code> everywhere. Debugging binary encoding and decoding can be quite challenging too. In order to implement it as soon as possible, I had to consider some other methods.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">e</span> <span class="o">*</span><span class="nx">TableMapEvent</span><span class="p">)</span> <span class="nf">Decode</span><span class="p">(</span><span class="nx">data</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// ...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="nx">err</span> <span class="kt">error</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="nx">metaData</span> <span class="p">[]</span><span class="kt">byte</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">metaData</span><span class="p">,</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">n</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nf">LengthEncodedString</span><span class="p">(</span><span class="nx">data</span><span class="p">[</span><span class="nx">pos</span><span class="p">:]);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">Trace</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">e</span><span class="p">.</span><span class="nf">decodeMeta</span><span class="p">(</span><span class="nx">metaData</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">Trace</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">pos</span> <span class="o">+=</span> <span class="nx">n</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="c1">// ...
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">e</span><span class="p">.</span><span class="nf">decodeOptionalMeta</span><span class="p">(</span><span class="nx">data</span><span class="p">[</span><span class="nx">pos</span><span class="p">:]);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="nx">err</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h3 id="iterator-interface">Iterator Interface</h3>
+<p>Compared to callback interfaces, I prefer iterator-style interfaces. Therefore, in my implementation, the interface looks like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">LogEventScanner</span> <span class="kd">interface</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">Next</span><span class="p">()</span> <span class="p">(</span><span class="nx">EventOffset</span><span class="p">,</span> <span class="nx">event</span><span class="p">.</span><span class="nx">LogEvent</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h3 id="declarative-parser">Declarative Parser</h3>
+<p>After my research, I found that although the entire coding method looks very complicated, most of it is a combination of fixed patterns. For example, the encoding for various integers is usually the same classic variable-length encoding, while the encoding for strings is likely to be one of the following methods:</p>
+<ul>
+<li>
+<p>An encoded integer represents its length, followed by corresponding bytes</p>
+</li>
+<li>
+<p>A byte string terminated with NUL</p>
+</li>
+<li>
+<p>Same as the first method but with a NUL termination</p>
+</li>
+</ul>
+<p>Obviously, these similar encoding methods can be turned into individual functions to call. However, using functions cannot avoid continuous and tedious error handling. In fact, at that time I was influenced by frameworks such as SwiftUI and had already thought of a way in my mind: it needs to decouple the declaration of event decoding methods from their decoding actions so that I can focus on adjusting event layout without worrying about error handling at the same time. Similarly, I implemented this type of parser as a declarative parser. Like SwiftUI and other frameworks, code written using this approach is very concise in simple scenarios and greatly improves readability.</p>
+<p>In this approach, an <code>Layout</code> function is used to declare (define) an event&rsquo;s parsing process. The reason why we use a function instead of an <code>XxxLayout</code> structure is because this approach isn&rsquo;t flexible enough. Using closures can perfectly solve this problem; I can stuff all kinds of temporary states into closures and use closure features to pass them around everywhere. Here&rsquo;s an example for <code>QueryEvent</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">QueryEvent</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">ThreadID</span>   <span class="kt">uint32</span>          <span class="s">`json:&#34;thread_id,omitempty&#34;`</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">ExecTime</span>   <span class="kt">uint32</span>          <span class="s">`json:&#34;exec_time&#34;`</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">ErrorCode</span>  <span class="kt">uint16</span>          <span class="s">`json:&#34;error_code&#34;`</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">Schema</span>     <span class="nx">str</span><span class="p">.</span><span class="nx">Str</span>         <span class="s">`json:&#34;schema&#34;`</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">Query</span>      <span class="nx">str</span><span class="p">.</span><span class="nx">Str</span>         <span class="s">`json:&#34;query&#34;`</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">StatusVars</span> <span class="nx">StatusVariables</span> <span class="s">`json:&#34;status_vars,omitempty&#34;`</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">d</span> <span class="o">*</span><span class="nx">QueryEvent</span><span class="p">)</span> <span class="nf">Layout</span><span class="p">(</span><span class="nx">version</span> <span class="kt">uint32</span><span class="p">,</span> <span class="nx">code</span> <span class="kt">byte</span><span class="p">,</span> <span class="nx">fde</span> <span class="o">*</span><span class="nx">FormatDescriptionEvent</span><span class="p">)</span> <span class="o">*</span><span class="nx">layout</span><span class="p">.</span><span class="nx">Layout</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="nx">schemaLength</span> <span class="kt">uint8</span>
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="nx">statusVarsLength</span> <span class="kt">uint16</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="nx">layout</span><span class="p">.</span><span class="nf">Decl</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">		<span class="c1">// Post header
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="nx">layout</span><span class="p">.</span><span class="nf">Number</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">d</span><span class="p">.</span><span class="nx">ThreadID</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">layout</span><span class="p">.</span><span class="nf">Number</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">d</span><span class="p">.</span><span class="nx">ExecTime</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">layout</span><span class="p">.</span><span class="nf">Number</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">schemaLength</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">layout</span><span class="p">.</span><span class="nf">Number</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">d</span><span class="p">.</span><span class="nx">ErrorCode</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">layout</span><span class="p">.</span><span class="nf">If</span><span class="p">(</span><span class="nx">version</span> <span class="o">==</span> <span class="nx">spec</span><span class="p">.</span><span class="nx">V4</span><span class="p">,</span> <span class="nx">layout</span><span class="p">.</span><span class="nf">Number</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">statusVarsLength</span><span class="p">)),</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">		<span class="c1">// Payload
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="nx">layout</span><span class="p">.</span><span class="nf">If</span><span class="p">(</span><span class="nx">version</span> <span class="o">==</span> <span class="nx">spec</span><span class="p">.</span><span class="nx">V4</span><span class="p">,</span> <span class="nx">layout</span><span class="p">.</span><span class="nf">Area</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">statusVarsLength</span><span class="p">,</span> <span class="kd">func</span><span class="p">(</span><span class="nx">data</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)</span> <span class="p">(</span><span class="kt">int</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">			<span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="nx">statusVarsLength</span><span class="p">),</span> <span class="nx">d</span><span class="p">.</span><span class="nx">StatusVars</span><span class="p">.</span><span class="nf">parseStatusVarsBlock</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">		<span class="p">})),</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">layout</span><span class="p">.</span><span class="nf">Bytes</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">schemaLength</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">d</span><span class="p">.</span><span class="nx">Schema</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">layout</span><span class="p">.</span><span class="nf">Null</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">		<span class="nx">layout</span><span class="p">.</span><span class="nf">Bytes</span><span class="p">(</span><span class="nx">layout</span><span class="p">.</span><span class="nf">Infinite</span><span class="p">(),</span> <span class="o">&amp;</span><span class="nx">d</span><span class="p">.</span><span class="nx">Query</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">	<span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>Believe that even if you don&rsquo;t understand what <code>layout.Number</code> means now, you will soon understand that it refers to the layout of the encoded <code>QUERY_EVENT</code>.</p>
+<p><figure 
+	
+		class="gallery-image" 
+		style="
+			flex-grow: 107; 
+			flex-basis: 258px"
+	>
+	<a href="/p/yet-another-binlog-parser/img/query_event_data.png" data-size="340x316">
+		<img src="/p/yet-another-binlog-parser/img/query_event_data.png"
+			width="340"
+			height="316"
+			srcset="/p/yet-another-binlog-parser/img/query_event_data_hua4b1c7c3057bb9f734790a6209f1d2bc_52705_480x0_resize_box_3.png 480w, /p/yet-another-binlog-parser/img/query_event_data_hua4b1c7c3057bb9f734790a6209f1d2bc_52705_1024x0_resize_box_3.png 1024w"
+			loading="lazy"
+			alt="QUERY EVENT DATA">
+	</a>
+	
+	<figcaption>QUERY EVENT DATA</figcaption>
+	
+</figure></p>
+<p>From the <code>layout.Number</code> calling method, I believe you can already guess how this is implemented - it is a decoder that is bound to the <code>int32</code> type variable <code>&amp;d.ThreadID</code>. For different types, I have implemented different decoders in the <code>layout</code> package, which I call <code>Field</code>. Here is the implementation of <code>Number</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">NumberField</span><span class="p">[</span><span class="nx">N</span> <span class="nx">constraints</span><span class="p">.</span><span class="nx">Integer</span> <span class="p">|</span> <span class="nx">constraints</span><span class="p">.</span><span class="nx">Float</span><span class="p">]</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">r</span> <span class="o">*</span><span class="nx">N</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="p">(</span><span class="nx">f</span> <span class="nx">NumberField</span><span class="p">[</span><span class="nx">N</span><span class="p">])</span> <span class="nf">FromBlock</span><span class="p">(</span><span class="nx">data</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)</span> <span class="p">(</span><span class="kt">int</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nf">checkDataSize</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nx">unsafe</span><span class="p">.</span><span class="nf">Sizeof</span><span class="p">(</span><span class="nf">N</span><span class="p">(</span><span class="mi">0</span><span class="p">))),</span> <span class="nx">data</span><span class="p">);</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">err</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">utils</span><span class="p">.</span><span class="nf">ReadNumberLittleEndianHack</span><span class="p">(</span><span class="nx">f</span><span class="p">.</span><span class="nx">r</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="nx">unsafe</span><span class="p">.</span><span class="nf">Sizeof</span><span class="p">(</span><span class="nf">N</span><span class="p">(</span><span class="mi">0</span><span class="p">))),</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nx">Number</span><span class="p">[</span><span class="nx">N</span> <span class="nx">constraints</span><span class="p">.</span><span class="nx">Integer</span> <span class="p">|</span> <span class="nx">constraints</span><span class="p">.</span><span class="nx">Float</span><span class="p">](</span><span class="nx">r</span> <span class="o">*</span><span class="nx">N</span><span class="p">)</span> <span class="nx">NumberField</span><span class="p">[</span><span class="nx">N</span><span class="p">]</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="nx">NumberField</span><span class="p">[</span><span class="nx">N</span><span class="p">]{</span><span class="nx">r</span><span class="p">:</span> <span class="nx">r</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>In the end, I just followed the same pattern to support all event types. In this process, tedious function calls and error handling were no longer obstacles to my coding, but rather MySQL&rsquo;s nasty encoding and lack of detailed documentation occasionally hindered my progress - most of the time, I had to flip through MySQL&rsquo;s code to understand why it was encoded that way.</p>
+<p>Careful students may ask whether this approach will decode a bunch of <code>Field</code> objects for each event generated, which could have a significant impact on performance? You are right; it does affect performance. However, there is still a solution 🥵. The nature of Binlog determines that its parsing process must be deterministic. This means that once you determine which log needs to be parsed, regardless of which event in the log needs decoding, the decoding process is always determined - this suggests caching the results for each event&rsquo;s <code>Layout</code>. After completing most events&rsquo; layout mapping work haphazardly (i.e., without much care), I implemented such a cache. For those who want more details about it can refer to <a class="link" href="https://github.com/polardb/polardbx-operator/blob/main/pkg/binlogtool/binlog/cache.go"  target="_blank" rel="noopener"
+    >binlog/cache.go</a>.</p>
+<p>After the final test, the performance of parsing all fields in a single thread is about 200 MB/s. The test environment was MacBook Pro 13&rsquo;&rsquo; 2019 with Intel processor. In my opinion, this is completely sufficient since no one&rsquo;s binlog can write at a speed of 200 MB (excluding large transactions). Please send me such a good disk for testing.</p>
+<h3 id="fuzzy-probe-event-header">Fuzzy Probe Event Header</h3>
+<p>With the parser, I can now create my own CLI tool (hehe 😃). If you have used <code>mysqlbinlog</code> to view binlogs before, you must have used the <code>--start-position</code> parameter to quickly jump to the beginning of an event. However, due to the streaming nature of binlogs, if you specify a position that is not an event header, <code>mysqlbinlog</code> cannot continue reading and will simply report an error :) Yes, it&rsquo;s very frustrating. This means that I have to use another calculator to calculate the event position and then pass it on to <code>mysqlbinlog</code>. Every time this happens, I wish there was something that could help me find the next output event easily so that I could quickly binary search for what I want.</p>
+<p>In theory, it is impossible to detect an event header from within a stream. But fortunately, in this case we are dealing with files and there happens to be redundant information left in each event header (<code>event_length</code> and <code>next_position</code>). While reading through the file we can easily determine our current position (<code>current_position</code>). Therefore it follows logically that: <code>current_position + event_length = next_position</code>. This is a very strong feature; if these conditions are met then there is high probability that this location represents a valid event header. Thus we decided on using this method! You can see how it was implemented <a class="link" href="https://github.com/polardb/polardbx-operator/blob/0c9db54f02e832b15dc9b163c9bcf1424b2cd32b/pkg/binlogtool/binlog/scan.go#LL122-L208C2"  target="_blank" rel="noopener"
+    >here</a>.</p>
+<p>We also utilized some clever tricks like using ring buffers which helped reduce memory overheads significantly. Ultimately what we achieved was being able start searching from any arbitrary point - as long as there exists another subsequent valid events within our detection range!</p>
+<h2 id="conclusion-and-preview-of-next-episode">Conclusion and Preview of Next Episode</h2>
+<p>Of course, wheel makers will never be satisfied. Some fancy features are also essential, such as event filtering, raw events, end positions, event validation, JSON output and so on. Based on the parser, I also wrote an analysis tool for 2PC transactions to complete a step in the backup and recovery plan that I mentioned at the beginning (after all, I still need to eat). This article mainly records some interesting thoughts and attempts during the implementation of this parser. The next article should talk about my distributed backup plan which is completely lock-free. Stay tuned 🥰.</p>
+<p>P.S. The patent for this plan should be coming soon. Please don&rsquo;t sue me&hellip;</p>
+<h2 id="references">References</h2>
+<p>[1] <a class="link" href="https://dev.mysql.com/doc/dev/mysql-server/latest/page_protocol_replication.html#sect_protocol_replication_binlog_version_v4"  target="_blank" rel="noopener"
+    >https://dev.mysql.com/doc/dev/mysql-server/latest/page_protocol_replication.html#sect_protocol_replication_binlog_version_v4</a></p>
+<p>[2] <a class="link" href="https://github.com/polardb/polardbx-operator/tree/main/pkg/binlogtool"  target="_blank" rel="noopener"
+    >https://github.com/polardb/polardbx-operator/tree/main/pkg/binlogtool</a></p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/tags/binlog/">binlog</a>
+        
+    </section>
+
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    <aside class="related-contents--wrapper">
+    
+    
+</aside>
+
+     
+     
+        
+    <script src="https://beaudar.lipk.org/client.js"
+        repo="arkbriar/blog"
+        issue-term="pathname"
+        
+        label="comments"
+        
+        comment-order="desc"
+        input-position="top"
+        crossorigin="anonymous"
+        async
+        >
+</script>
+
+<style>
+    .beaudar {
+        max-width: unset;
+    }
+</style>
+
+<script>
+    function setUtterancesTheme(theme) {
+        let beaudar = document.querySelector('.beaudar iframe');
+        if (beaudar) {
+            beaudar.contentWindow.postMessage(
+                {
+                    type: 'set-theme',
+                    theme: `github-${theme}`
+                },
+                'https://beaudar.lipk.org'
+            );
+        }
+    }
+
+    addEventListener('message', event => {
+        if (event.origin !== 'https://beaudar.lipk.org') return;
+        setUtterancesTheme(document.documentElement.dataset.scheme)
+    });
+
+    window.addEventListener('onColorSchemeChange', (e) => {
+        setUtterancesTheme(e.detail)
+    })
+</script>
+
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2018 - 
+        
+        2023 石沉溪洞 -- Ark&#39;s Blog
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.2.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+            >
+
+            </main>
+    
+        <aside class="sidebar right-sidebar sticky">
+            <section class="widget archives">
+                <div class="widget-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+                </div>
+                <h2 class="widget-title section-title">目录</h2>
+                
+                <div class="widget--toc">
+                    <nav id="TableOfContents">
+  <ol>
+    <li><a href="#为什么要再造一个轮子">为什么要再造一个轮子？</a></li>
+    <li><a href="#简单介绍-binlog">简单介绍 Binlog</a></li>
+    <li><a href="#一些有趣的尝试">一些有趣的尝试</a>
+      <ol>
+        <li><a href="#迭代器接口">迭代器接口</a></li>
+        <li><a href="#声明式的解析器">声明式的解析器</a></li>
+        <li><a href="#模糊探测事件头">模糊探测事件头</a></li>
+      </ol>
+    </li>
+    <li><a href="#尾声和下集预告">尾声和下集预告</a></li>
+    <li><a href="#参考文献">参考文献</a></li>
+    <li><a href="#why-do-we-need-to-reinvent-the-wheel">Why do we need to reinvent the wheel?</a></li>
+    <li><a href="#brief-introduction-to-binlog">Brief Introduction to Binlog</a></li>
+    <li><a href="#some-interesting-attempts">Some interesting attempts</a>
+      <ol>
+        <li><a href="#iterator-interface">Iterator Interface</a></li>
+        <li><a href="#declarative-parser">Declarative Parser</a></li>
+        <li><a href="#fuzzy-probe-event-header">Fuzzy Probe Event Header</a></li>
+      </ol>
+    </li>
+    <li><a href="#conclusion-and-preview-of-next-episode">Conclusion and Preview of Next Episode</a></li>
+    <li><a href="#references">References</a></li>
+  </ol>
+</nav>
+                </div>
+            </section>
+        </aside>
+    
+
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

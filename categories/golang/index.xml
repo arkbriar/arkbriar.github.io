@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Golang on 石沉溪洞 -- Ark&#39;s Blog</title>
+    <link>https://blog.crazyark.xyz/categories/golang/</link>
+    <description>Recent content in Golang on 石沉溪洞 -- Ark&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Fri, 03 Feb 2023 13:56:33 +0800</lastBuildDate><atom:link href="https://blog.crazyark.xyz/categories/golang/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>又一个 binlog 解析器 -- Yet Another Binlog Parser</title>
+      <link>https://blog.crazyark.xyz/p/yet-another-binlog-parser/</link>
+      <pubDate>Fri, 03 Feb 2023 13:56:33 +0800</pubDate>
+      
+      <guid>https://blog.crazyark.xyz/p/yet-another-binlog-parser/</guid>
+      <description>Although the article was originally written in Chinese, with the help of ChatGPT, I was able to provide an English translation. If you want to read the English version, please jump to here for reading. 为什么要再造一个轮子？ 造轮子是程序员的浪漫！🥰 在前东家工作的时候，我设</description>
+    </item>
+    
+  </channel>
+</rss>
