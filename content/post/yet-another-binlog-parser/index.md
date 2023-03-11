@@ -4,7 +4,7 @@ description:
 date: 2023-02-03T13:56:33+08:00
 slug: yet-another-binlog-parser
 image: img/cover.png
-draft: true
+draft: false
 categories: [Golang, MySQL]
 tags: [binlog]
 ---
