@@ -122,14 +122,14 @@
 	
 		class=&#34;gallery-image&#34; 
 		style=&#34;
-			flex-grow: 107; 
-			flex-basis: 258px&#34;
+			flex-grow: 101; 
+			flex-basis: 244px&#34;
 	&gt;
-	&lt;a href=&#34;https://blog.crazyark.me/p/yet-another-binlog-parser/img/query_event_data.png&#34; data-size=&#34;340x316&#34;&gt;
+	&lt;a href=&#34;https://blog.crazyark.me/p/yet-another-binlog-parser/img/query_event_data.png&#34; data-size=&#34;717x705&#34;&gt;
 		&lt;img src=&#34;https://blog.crazyark.me/p/yet-another-binlog-parser/img/query_event_data.png&#34;
-			width=&#34;340&#34;
-			height=&#34;316&#34;
-			srcset=&#34;https://blog.crazyark.me/p/yet-another-binlog-parser/img/query_event_data_hua4b1c7c3057bb9f734790a6209f1d2bc_52705_480x0_resize_box_3.png 480w, https://blog.crazyark.me/p/yet-another-binlog-parser/img/query_event_data_hua4b1c7c3057bb9f734790a6209f1d2bc_52705_1024x0_resize_box_3.png 1024w&#34;
+			width=&#34;717&#34;
+			height=&#34;705&#34;
+			srcset=&#34;https://blog.crazyark.me/p/yet-another-binlog-parser/img/query_event_data_hu6be4374eb9dd29c1d8f6fc4befaf82c9_62677_480x0_resize_box_3.png 480w, https://blog.crazyark.me/p/yet-another-binlog-parser/img/query_event_data_hu6be4374eb9dd29c1d8f6fc4befaf82c9_62677_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;QUERY EVENT DATA&#34;&gt;
 	&lt;/a&gt;
@@ -199,10 +199,10 @@
 			height=&#34;358&#34;
 			srcset=&#34;https://blog.crazyark.me/p/yet-another-binlog-parser/img/binlog_event_header_hufa6fa0b91f889c0460e4f242276b284d_45436_480x0_resize_box_3.png 480w, https://blog.crazyark.me/p/yet-another-binlog-parser/img/binlog_event_header_hufa6fa0b91f889c0460e4f242276b284d_45436_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
-			alt=&#34;Binlog 事件头&#34;&gt;
+			alt=&#34;Binlog Event Header&#34;&gt;
 	&lt;/a&gt;
 	
-	&lt;figcaption&gt;Binlog 事件头&lt;/figcaption&gt;
+	&lt;figcaption&gt;Binlog Event Header&lt;/figcaption&gt;
 	
 &lt;/figure&gt;&lt;/p&gt;
 &lt;p&gt;The job of the Binlog parser is to decode encoded events into objects that can be operated on in memory by a program. It&amp;rsquo;s worth noting that during the evolution of binlogs, several different versions have emerged: v1, v3, and v4. Version 2 was never officially released and can therefore be ignored[1].&lt;/p&gt;
@@ -236,9 +236,7 @@
 &lt;p&gt;Compared to callback interfaces, I prefer iterator-style interfaces. Therefore, in my implementation, the interface looks like this:&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-go&#34; data-lang=&#34;go&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kd&#34;&gt;type&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;LogEventScanner&lt;/span&gt; &lt;span class=&#34;kd&#34;&gt;interface&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nf&#34;&gt;Next&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;EventOffset&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;event&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;LogEvent&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;error&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;	&lt;span class=&#34;nf&#34;&gt;Next&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;EventOffset&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;event&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;LogEvent&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;kt&#34;&gt;error&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;declarative-parser&#34;&gt;Declarative Parser&lt;/h3&gt;
 &lt;p&gt;After my research, I found that although the entire coding method looks very complicated, most of it is a combination of fixed patterns. For example, the encoding for various integers is usually the same classic variable-length encoding, while the encoding for strings is likely to be one of the following methods:&lt;/p&gt;
@@ -289,14 +287,14 @@
 	
 		class=&#34;gallery-image&#34; 
 		style=&#34;
-			flex-grow: 107; 
-			flex-basis: 258px&#34;
+			flex-grow: 101; 
+			flex-basis: 244px&#34;
 	&gt;
-	&lt;a href=&#34;https://blog.crazyark.me/p/yet-another-binlog-parser/img/query_event_data.png&#34; data-size=&#34;340x316&#34;&gt;
+	&lt;a href=&#34;https://blog.crazyark.me/p/yet-another-binlog-parser/img/query_event_data.png&#34; data-size=&#34;717x705&#34;&gt;
 		&lt;img src=&#34;https://blog.crazyark.me/p/yet-another-binlog-parser/img/query_event_data.png&#34;
-			width=&#34;340&#34;
-			height=&#34;316&#34;
-			srcset=&#34;https://blog.crazyark.me/p/yet-another-binlog-parser/img/query_event_data_hua4b1c7c3057bb9f734790a6209f1d2bc_52705_480x0_resize_box_3.png 480w, https://blog.crazyark.me/p/yet-another-binlog-parser/img/query_event_data_hua4b1c7c3057bb9f734790a6209f1d2bc_52705_1024x0_resize_box_3.png 1024w&#34;
+			width=&#34;717&#34;
+			height=&#34;705&#34;
+			srcset=&#34;https://blog.crazyark.me/p/yet-another-binlog-parser/img/query_event_data_hu6be4374eb9dd29c1d8f6fc4befaf82c9_62677_480x0_resize_box_3.png 480w, https://blog.crazyark.me/p/yet-another-binlog-parser/img/query_event_data_hu6be4374eb9dd29c1d8f6fc4befaf82c9_62677_1024x0_resize_box_3.png 1024w&#34;
 			loading=&#34;lazy&#34;
 			alt=&#34;QUERY EVENT DATA&#34;&gt;
 	&lt;/a&gt;

@@ -244,14 +244,14 @@
 	
 		class="gallery-image" 
 		style="
-			flex-grow: 107; 
-			flex-basis: 258px"
+			flex-grow: 101; 
+			flex-basis: 244px"
 	>
-	<a href="/p/yet-another-binlog-parser/img/query_event_data.png" data-size="340x316">
+	<a href="/p/yet-another-binlog-parser/img/query_event_data.png" data-size="717x705">
 		<img src="/p/yet-another-binlog-parser/img/query_event_data.png"
-			width="340"
-			height="316"
-			srcset="/p/yet-another-binlog-parser/img/query_event_data_hua4b1c7c3057bb9f734790a6209f1d2bc_52705_480x0_resize_box_3.png 480w, /p/yet-another-binlog-parser/img/query_event_data_hua4b1c7c3057bb9f734790a6209f1d2bc_52705_1024x0_resize_box_3.png 1024w"
+			width="717"
+			height="705"
+			srcset="/p/yet-another-binlog-parser/img/query_event_data_hu6be4374eb9dd29c1d8f6fc4befaf82c9_62677_480x0_resize_box_3.png 480w, /p/yet-another-binlog-parser/img/query_event_data_hu6be4374eb9dd29c1d8f6fc4befaf82c9_62677_1024x0_resize_box_3.png 1024w"
 			loading="lazy"
 			alt="QUERY EVENT DATA">
 	</a>
@@ -321,10 +321,10 @@
 			height="358"
 			srcset="/p/yet-another-binlog-parser/img/binlog_event_header_hufa6fa0b91f889c0460e4f242276b284d_45436_480x0_resize_box_3.png 480w, /p/yet-another-binlog-parser/img/binlog_event_header_hufa6fa0b91f889c0460e4f242276b284d_45436_1024x0_resize_box_3.png 1024w"
 			loading="lazy"
-			alt="Binlog 事件头">
+			alt="Binlog Event Header">
 	</a>
 	
-	<figcaption>Binlog 事件头</figcaption>
+	<figcaption>Binlog Event Header</figcaption>
 	
 </figure></p>
 <p>The job of the Binlog parser is to decode encoded events into objects that can be operated on in memory by a program. It&rsquo;s worth noting that during the evolution of binlogs, several different versions have emerged: v1, v3, and v4. Version 2 was never officially released and can therefore be ignored[1].</p>
@@ -358,9 +358,7 @@
 <p>Compared to callback interfaces, I prefer iterator-style interfaces. Therefore, in my implementation, the interface looks like this:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">LogEventScanner</span> <span class="kd">interface</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="nf">Next</span><span class="p">()</span> <span class="p">(</span><span class="nx">EventOffset</span><span class="p">,</span> <span class="nx">event</span><span class="p">.</span><span class="nx">LogEvent</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nf">Next</span><span class="p">()</span> <span class="p">(</span><span class="nx">EventOffset</span><span class="p">,</span> <span class="nx">event</span><span class="p">.</span><span class="nx">LogEvent</span><span class="p">,</span> <span class="kt">error</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></div><h3 id="declarative-parser">Declarative Parser</h3>
 <p>After my research, I found that although the entire coding method looks very complicated, most of it is a combination of fixed patterns. For example, the encoding for various integers is usually the same classic variable-length encoding, while the encoding for strings is likely to be one of the following methods:</p>
@@ -411,14 +409,14 @@
 	
 		class="gallery-image" 
 		style="
-			flex-grow: 107; 
-			flex-basis: 258px"
+			flex-grow: 101; 
+			flex-basis: 244px"
 	>
-	<a href="/p/yet-another-binlog-parser/img/query_event_data.png" data-size="340x316">
+	<a href="/p/yet-another-binlog-parser/img/query_event_data.png" data-size="717x705">
 		<img src="/p/yet-another-binlog-parser/img/query_event_data.png"
-			width="340"
-			height="316"
-			srcset="/p/yet-another-binlog-parser/img/query_event_data_hua4b1c7c3057bb9f734790a6209f1d2bc_52705_480x0_resize_box_3.png 480w, /p/yet-another-binlog-parser/img/query_event_data_hua4b1c7c3057bb9f734790a6209f1d2bc_52705_1024x0_resize_box_3.png 1024w"
+			width="717"
+			height="705"
+			srcset="/p/yet-another-binlog-parser/img/query_event_data_hu6be4374eb9dd29c1d8f6fc4befaf82c9_62677_480x0_resize_box_3.png 480w, /p/yet-another-binlog-parser/img/query_event_data_hu6be4374eb9dd29c1d8f6fc4befaf82c9_62677_1024x0_resize_box_3.png 1024w"
 			loading="lazy"
 			alt="QUERY EVENT DATA">
 	</a>
