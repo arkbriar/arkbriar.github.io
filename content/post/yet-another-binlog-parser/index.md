@@ -184,7 +184,7 @@ Binlog is short for binary log, which usually refers to the binary logs implemen
 - Fixed event header, which includes the event type, timestamp, event length and so on;
 - Event body, the content and encoding method of which are different for each type of event.
 
-![Binlog 事件头](img/binlog_event_header.png)
+![Binlog Event Header](img/binlog_event_header.png)
 
 The job of the Binlog parser is to decode encoded events into objects that can be operated on in memory by a program. It's worth noting that during the evolution of binlogs, several different versions have emerged: v1, v3, and v4. Version 2 was never officially released and can therefore be ignored[1].
 
@@ -227,9 +227,7 @@ Compared to callback interfaces, I prefer iterator-style interfaces. Therefore, 
 ```go
 
 type LogEventScanner interface {
-
-Next() (EventOffset, event.LogEvent, error)
-
+	Next() (EventOffset, event.LogEvent, error)
 }
 
 ```
